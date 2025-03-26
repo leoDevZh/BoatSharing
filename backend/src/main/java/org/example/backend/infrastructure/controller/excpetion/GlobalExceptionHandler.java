@@ -1,5 +1,6 @@
 package org.example.backend.infrastructure.controller.excpetion;
 
+import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,6 +13,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionDTO> handleMethodArgumentNotValidExceptions(MethodArgumentNotValidException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionDTO.builder().httpStatus(HttpStatus.BAD_REQUEST).message("Provide a valid Requestbody").build());
+    }
+
+    @ExceptionHandler(CannotAcquireLockException.class)
+    public ResponseEntity<ExceptionDTO> handleCannotAcquireLockException(RuntimeException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ExceptionDTO.builder().httpStatus(HttpStatus.CONFLICT).message("Resource is currently locked - try again").build());
     }
 
     @ExceptionHandler(RuntimeException.class)

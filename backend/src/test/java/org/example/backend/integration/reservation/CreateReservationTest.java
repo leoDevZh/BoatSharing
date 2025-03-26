@@ -22,16 +22,18 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -219,6 +221,46 @@ public class CreateReservationTest {
                         .content(jsonRequest))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Provide a valid Requestbody"));
+    }
+
+    @Test
+    void createReservationOnConcurrentCall() throws Exception {
+        LocalDateTime start = LocalDateTime.of(2025, 3, 23, 10, 0);
+        LocalDateTime end = LocalDateTime.of(2025, 3, 23, 12, 0);
+        CreateReservationDTO createReservationDTO = new CreateReservationDTO(
+                start,
+                end,
+                new BoatId(boat1.getId())
+        );
+        String reservationJson = objectMapper.writeValueAsString(createReservationDTO);
+
+        CompletableFuture<ResultActions> future = CompletableFuture.supplyAsync(() -> {
+            try {
+                return mockMvc.perform(post("/api/reservation/create")
+                        .with(user(customUserDetail))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(reservationJson));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        CompletableFuture<ResultActions> future2 = CompletableFuture.supplyAsync(() -> {
+            try {
+                return mockMvc.perform(post("/api/reservation/create")
+                        .with(user(customUserDetail))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(reservationJson));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        int statusOne = future.join().andReturn().getResponse().getStatus();
+        int statusTwo = future2.join().andReturn().getResponse().getStatus();
+        assertTrue(statusOne != statusTwo);
+        assertTrue(List.of(statusOne, statusTwo).contains(HttpStatus.CREATED.value()));
+        assertTrue(List.of(statusOne, statusTwo).contains(HttpStatus.CONFLICT.value()));
     }
 
     static Stream<String> invalidRequestBodies() {

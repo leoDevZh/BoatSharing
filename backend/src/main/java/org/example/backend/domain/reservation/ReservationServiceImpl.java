@@ -7,6 +7,8 @@ import org.example.backend.domain.boat.BoatId;
 import org.example.backend.domain.boat.spi.BoatRepository;
 import org.example.backend.domain.reservation.api.ReservationService;
 import org.example.backend.domain.reservation.spi.ReservationRepository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +24,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void makeNewReservation(UserId userId, BoatId boatId, LocalDateTime start, LocalDateTime end) throws InvalidReservationException {
         if (!start.isBefore(end)) {
             throw new InvalidReservationException("Start time is after end time");
