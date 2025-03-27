@@ -6,19 +6,41 @@ import org.example.backend.domain.boat.BoatId;
 import java.time.LocalDateTime;
 
 public class Reservation {
-    ReservationId reservationId;
-    LocalDateTime startDateTime;
-    LocalDateTime endDateTime;
-    Integer boatHoursOnStart;
-    Integer boatHoursOnEnd;
-    BoatId boatId;
-    UserId userId;
+    private ReservationId reservationId;
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
+    private Integer boatHoursOnStart;
+    private Integer boatHoursOnEnd;
+    private BoatId boatId;
+    private UserId userId;
 
     public Reservation(LocalDateTime startDateTime, LocalDateTime endDateTime, BoatId boatId, UserId userId) {
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
         this.boatId = boatId;
         this.userId = userId;
+    }
+
+    private Reservation(ReservationBuilder reservationBuilder) {
+        this.reservationId = reservationBuilder.reservationId;
+        this.startDateTime = reservationBuilder.startDateTime;
+        this.endDateTime = reservationBuilder.endDateTime;
+        this.boatHoursOnStart = reservationBuilder.boatHoursOnStart;
+        this.boatHoursOnEnd = reservationBuilder.boatHoursOnEnd;
+        this.boatId = reservationBuilder.boatId;
+        this.userId = reservationBuilder.userId;
+    }
+
+    public void updateBoatEngineHours(int updatedBoatHoursOnStar, int updatedBoatHoursOnEnd) {
+        if (updatedBoatHoursOnStar > updatedBoatHoursOnEnd) {
+            throw new InvalidReservationException("Start hours is greater then end hours");
+        }
+        this.boatHoursOnStart = updatedBoatHoursOnStar;
+        this.boatHoursOnEnd = updatedBoatHoursOnEnd;
+    }
+
+    public boolean isOwner(UserId userId) {
+        return this.userId.equals(userId);
     }
 
     public ReservationId getReservationId() {
@@ -47,5 +69,61 @@ public class Reservation {
 
     public Integer getBoatHoursOnStart() {
         return boatHoursOnStart;
+    }
+
+    public static ReservationBuilder builder() {
+        return new ReservationBuilder();
+    }
+
+    public static class ReservationBuilder {
+        ReservationId reservationId;
+        LocalDateTime startDateTime;
+        LocalDateTime endDateTime;
+        Integer boatHoursOnStart;
+        Integer boatHoursOnEnd;
+        BoatId boatId;
+        UserId userId;
+
+        private ReservationBuilder() {
+        }
+
+        public ReservationBuilder reservationId(ReservationId reservationId) {
+            this.reservationId = reservationId;
+            return this;
+        }
+
+        public ReservationBuilder startDateTime(LocalDateTime startDateTime) {
+            this.startDateTime = startDateTime;
+            return this;
+        }
+
+        public ReservationBuilder endDateTime(LocalDateTime endDateTime) {
+            this.endDateTime = endDateTime;
+            return this;
+        }
+
+        public ReservationBuilder boatHoursOnStart(Integer boatHoursOnStart) {
+            this.boatHoursOnStart = boatHoursOnStart;
+            return this;
+        }
+
+        public ReservationBuilder boatHoursOnEnd(Integer boatHoursOnEnd) {
+            this.boatHoursOnEnd = boatHoursOnEnd;
+            return this;
+        }
+
+        public ReservationBuilder boatId(BoatId boatId) {
+            this.boatId = boatId;
+            return this;
+        }
+
+        public ReservationBuilder userId(UserId userId) {
+            this.userId = userId;
+            return this;
+        }
+
+        public Reservation build() {
+            return new Reservation(this);
+        }
     }
 }

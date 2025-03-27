@@ -37,6 +37,16 @@ public class ReservationServiceImpl implements ReservationService {
             throw new InvalidReservationException("Reservation overlap with an existing reservation");
         }
         Reservation newReservation = new Reservation(start, end, boatId, userId);
-        reservationRepository.saveNewReservation(newReservation);
+        reservationRepository.saveReservation(newReservation);
+    }
+
+    @Override
+    public void updateEngineHoursForReservation(UserId userId, ReservationId reservationId, int boatHoursOnStar, int boatHoursOnEnd) {
+        Reservation reservation = reservationRepository.findReservationById(reservationId).orElseThrow(() -> new InvalidReservationException("Reservation not found"));
+        if (!reservation.isOwner(userId)) {
+            throw new InvalidReservationException("User is not owner of reservation");
+        }
+        reservation.updateBoatEngineHours(boatHoursOnStar, boatHoursOnEnd);
+        reservationRepository.saveReservation(reservation);
     }
 }

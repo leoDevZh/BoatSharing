@@ -18,7 +18,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class ReservationServiceTest {
+public class CreateReservationServiceTest {
 
     @Mock
     private BoatRepository boatRepository;
@@ -47,12 +47,12 @@ public class ReservationServiceTest {
 
         ArgumentCaptor<Reservation> reservationCaptor = ArgumentCaptor.forClass(Reservation.class);
         assertDoesNotThrow(() -> reservationService.makeNewReservation(userId, boatId, start, end));
-        verify(reservationRepository, times(1)).saveNewReservation(reservationCaptor.capture());
+        verify(reservationRepository, times(1)).saveReservation(reservationCaptor.capture());
         Reservation reservationCaptured = reservationCaptor.getValue();
-        assertEquals(start, reservationCaptured.startDateTime);
-        assertEquals(end, reservationCaptured.endDateTime);
-        assertEquals(boatId, reservationCaptured.boatId);
-        assertEquals(userId, reservationCaptured.userId);
+        assertEquals(start, reservationCaptured.getStartDateTime());
+        assertEquals(end, reservationCaptured.getEndDateTime());
+        assertEquals(boatId, reservationCaptured.getBoatId());
+        assertEquals(userId, reservationCaptured.getUserId());
     }
 
     @Test
