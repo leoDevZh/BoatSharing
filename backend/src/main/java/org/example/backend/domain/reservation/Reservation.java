@@ -14,14 +14,14 @@ public class Reservation {
     private BoatId boatId;
     private UserId userId;
 
-    public Reservation(LocalDateTime startDateTime, LocalDateTime endDateTime, BoatId boatId, UserId userId) {
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.boatId = boatId;
-        this.userId = userId;
-    }
-
     private Reservation(ReservationBuilder reservationBuilder) {
+        if (reservationBuilder.userId == null || reservationBuilder.boatId == null || reservationBuilder.startDateTime == null || reservationBuilder.endDateTime == null) {
+            throw new InvalidReservationException("Invalid reservation required values must not be null");
+        }
+        if (!reservationBuilder.startDateTime.isBefore(reservationBuilder.endDateTime)) {
+            throw new InvalidReservationException("Start time is after end time");
+        }
+        checkBoatHoursValid(reservationBuilder.boatHoursOnStart, reservationBuilder.boatHoursOnEnd);
         this.reservationId = reservationBuilder.reservationId;
         this.startDateTime = reservationBuilder.startDateTime;
         this.endDateTime = reservationBuilder.endDateTime;
@@ -32,11 +32,18 @@ public class Reservation {
     }
 
     public void updateBoatEngineHours(int updatedBoatHoursOnStar, int updatedBoatHoursOnEnd) {
+        checkBoatHoursValid(updatedBoatHoursOnStar, updatedBoatHoursOnEnd);
+        this.boatHoursOnStart = updatedBoatHoursOnStar;
+        this.boatHoursOnEnd = updatedBoatHoursOnEnd;
+    }
+
+    private static void checkBoatHoursValid(Integer updatedBoatHoursOnStar, Integer updatedBoatHoursOnEnd) {
+        if (updatedBoatHoursOnStar == null || updatedBoatHoursOnEnd == null) {
+            return;
+        }
         if (updatedBoatHoursOnStar > updatedBoatHoursOnEnd) {
             throw new InvalidReservationException("Start hours is greater then end hours");
         }
-        this.boatHoursOnStart = updatedBoatHoursOnStar;
-        this.boatHoursOnEnd = updatedBoatHoursOnEnd;
     }
 
     public boolean isOwner(UserId userId) {

@@ -1,6 +1,7 @@
 package org.example.backend.domain.reservation;
 
 import org.example.backend.domain.User.UserId;
+import org.example.backend.domain.boat.BoatId;
 import org.example.backend.domain.reservation.spi.ReservationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,6 +39,9 @@ public class UpdateEngineHoursForReservationServiceTest {
         Reservation reservation = Reservation.builder()
                 .reservationId(reservationId)
                 .userId(userId)
+                .boatId(new BoatId(1L))
+                .startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now().plusHours(boatHoursOnEnd))
                 .build();
         when(reservationRepository.findReservationById(reservationId)).thenReturn(Optional.of(reservation));
 
@@ -62,6 +67,9 @@ public class UpdateEngineHoursForReservationServiceTest {
         Reservation reservation = Reservation.builder()
                 .reservationId(reservationId)
                 .userId(reservationUserId)
+                .boatId(new BoatId(1L))
+                .startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now().plusHours(boatHoursOnEnd))
                 .build();
         when(reservationRepository.findReservationById(reservationId)).thenReturn(Optional.of(reservation));
 
@@ -81,6 +89,9 @@ public class UpdateEngineHoursForReservationServiceTest {
         Reservation reservation = Reservation.builder()
                 .reservationId(reservationId)
                 .userId(userId)
+                .boatId(new BoatId(1L))
+                .startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now().plusHours(boatHoursOnEnd))
                 .build();
         when(reservationRepository.findReservationById(reservationId)).thenReturn(Optional.of(reservation));
 

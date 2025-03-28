@@ -26,9 +26,6 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void makeNewReservation(UserId userId, BoatId boatId, LocalDateTime start, LocalDateTime end) throws InvalidReservationException {
-        if (!start.isBefore(end)) {
-            throw new InvalidReservationException("Start time is after end time");
-        }
         Boat boat = boatRepository.findByIdWithOwners(boatId).orElseThrow(() -> new InvalidReservationException("Boat not found"));
         if (!boat.isCoOwner(userId)) {
             throw new InvalidReservationException("User is not co-owner of boat");
@@ -36,7 +33,12 @@ public class ReservationServiceImpl implements ReservationService {
         if (reservationRepository.countOverlappingReservations(start, end, boatId) > 0) {
             throw new InvalidReservationException("Reservation overlap with an existing reservation");
         }
-        Reservation newReservation = new Reservation(start, end, boatId, userId);
+        Reservation newReservation = Reservation.builder()
+                .userId(userId)
+                .boatId(boatId)
+                .startDateTime(start)
+                .endDateTime(end)
+                .build();
         reservationRepository.saveReservation(newReservation);
     }
 
