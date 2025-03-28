@@ -26,6 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,6 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(TestDBConfiguration.class)
+@Testcontainers
 public class CreateReservationTest {
     @Autowired
     private MockMvc mockMvc;
@@ -266,8 +268,8 @@ public class CreateReservationTest {
     static Stream<String> invalidRequestBodies() {
         return Stream.of(
                 "{\"startTime\":\"2025-03-23T10:00:00\",\"endTime\":\"2025-03-23T12:00:00\"}",
-                "{\"boatId\":{\"id\":123},\"endTime\":\"2025-03-23T12:00:00\"}",
-                "{\"boatId\":{\"id\":123},\"startTime\":\"2025-03-23T10:00:00\"}"
+                "{\"boatId\":{\"value\":123},\"endTime\":\"2025-03-23T12:00:00\"}",
+                "{\"boatId\":{\"value\":123},\"startTime\":\"2025-03-23T10:00:00\"}"
         );
     }
 
