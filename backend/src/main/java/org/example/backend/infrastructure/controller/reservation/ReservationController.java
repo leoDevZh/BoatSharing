@@ -35,4 +35,17 @@ public class ReservationController {
                     .body(ExceptionDTO.builder().httpStatus(HttpStatus.BAD_REQUEST).message(e.getMessage()).build());
         }
     }
+
+    @PostMapping("updateEngineHours")
+    public ResponseEntity updateEngineHours(@Valid @RequestBody UpdateEngineHoursDTO reservation) {
+        try {
+            CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            reservationService.updateEngineHoursForReservation(new UserId(userDetail.getId()), reservation.reservationId, reservation.boatEngineHoursOnStart, reservation.boatEngineHoursOnEnd);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (InvalidReservationException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ExceptionDTO.builder().httpStatus(HttpStatus.BAD_REQUEST).message(e.getMessage()).build());
+        }
+    }
 }
