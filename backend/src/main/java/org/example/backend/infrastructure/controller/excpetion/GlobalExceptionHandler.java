@@ -3,6 +3,7 @@ package org.example.backend.infrastructure.controller.excpetion;
 import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -16,8 +17,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(CannotAcquireLockException.class)
-    public ResponseEntity<ExceptionDTO> handleCannotAcquireLockException(RuntimeException ex) {
+    public ResponseEntity<ExceptionDTO> handleCannotAcquireLockException(CannotAcquireLockException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ExceptionDTO.builder().httpStatus(HttpStatus.CONFLICT).message("Resource is currently locked - try again").build());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ExceptionDTO> handleBadCredentialException(BadCredentialsException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ExceptionDTO.builder().httpStatus(HttpStatus.UNAUTHORIZED).message("Bad credentials").build());
     }
 
     @ExceptionHandler(RuntimeException.class)

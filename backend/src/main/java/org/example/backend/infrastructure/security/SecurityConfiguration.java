@@ -13,6 +13,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFilter;
 
@@ -28,13 +30,18 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         authorizeHttp -> {
-                            authorizeHttp.requestMatchers("/api/" + "/auth/login").permitAll();
+                            authorizeHttp.requestMatchers("/api/auth/login").permitAll();
                             authorizeHttp.anyRequest().authenticated();
                         }
                 )
                 .addFilterBefore(jwtFilter, AuthenticationFilter.class)
-                .authenticationProvider(new JwtAuthenticationProvider(userDetailsService))
+                .authenticationProvider(jwtAuthenticationProvider(userDetailsService))
                 .build();
+    }
+
+    @Bean
+    PasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -51,6 +58,7 @@ public class SecurityConfiguration {
     public DaoAuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService) {
         DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
         daoProvider.setUserDetailsService(userDetailsService);
+        daoProvider.setPasswordEncoder(getPasswordEncoder());
         return daoProvider;
     }
 
