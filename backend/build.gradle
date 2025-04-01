@@ -50,3 +50,13 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+tasks.register('generateOpenApiSpec', Test) {
+    group = "Code generation"
+    description = "Generates OpenAPI spec using MockMvc"
+    include 'org.example.backend.openapi.OpenApiGeneratorTest.class'
+}
+
+tasks.named('build') {
+    dependsOn 'generateOpenApiSpec'
+}

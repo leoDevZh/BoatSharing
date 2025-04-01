@@ -41,7 +41,6 @@ public class AuthenticationTest {
 
     @BeforeEach
     void setup() {
-        userRepository.deleteAll();
         user = User.builder()
                 .username(UUID.randomUUID().toString().substring(0, 8))
                 .password("$2a$12$GbqlJ0fs.00G5MLiCA9AZuA0QF000rXCrkQ0sP5EkGbwsOb.KmlEm") // password123
