@@ -16,6 +16,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.UUID;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,10 +37,13 @@ public class AuthenticationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private User user;
+
     @BeforeEach
     void setup() {
-        User user = User.builder()
-                .username("testUser")
+        userRepository.deleteAll();
+        user = User.builder()
+                .username(UUID.randomUUID().toString().substring(0, 8))
                 .password("$2a$12$GbqlJ0fs.00G5MLiCA9AZuA0QF000rXCrkQ0sP5EkGbwsOb.KmlEm") // password123
                 .build();
         userRepository.save(user);
@@ -47,7 +52,7 @@ public class AuthenticationTest {
     @Test
     void authenticateUserOnSuccess() throws Exception {
         AuthenticationRequestTO authenticationRequestTO = new AuthenticationRequestTO();
-        authenticationRequestTO.setUsername("testUser");
+        authenticationRequestTO.setUsername(user.getUsername());
         authenticationRequestTO.setPassword("password123");
         String authenticationRequestJson = objectMapper.writeValueAsString(authenticationRequestTO);
 
@@ -61,7 +66,7 @@ public class AuthenticationTest {
     @Test
     void authenticateUserOnWrongPassword() throws Exception {
         AuthenticationRequestTO authenticationRequestTO = new AuthenticationRequestTO();
-        authenticationRequestTO.setUsername("testUser");
+        authenticationRequestTO.setUsername(user.getUsername());
         authenticationRequestTO.setPassword("someOtherPassword");
         String authenticationRequestJson = objectMapper.writeValueAsString(authenticationRequestTO);
 
