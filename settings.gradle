@@ -6,3 +6,4 @@
  */
 rootProject.name = 'BoatSharing'
 include 'backend'
+include 'frontend'

@@ -1,0 +1,39 @@
+plugins {
+    id 'base'
+}
+
+group = 'org.example'
+version = '0.0.1-SNAPSHOT'
+
+tasks.register('npmApiBuild', Exec) {
+    group = 'Frontend'
+    description = 'Runs the npm api build script'
+    workingDir = file("$projectDir/app")
+    commandLine = ['npm', 'run', 'buildApi']
+}
+
+tasks.register('npmBuild', Exec) {
+    group = 'Frontend'
+    description = 'Runs the npm build script'
+    workingDir = file("$projectDir/app")
+    commandLine = ['npm', 'run', 'build']
+}
+
+tasks.register('npmClean', Exec) {
+    group = 'Frontend'
+    description = 'Runs the npm clean script'
+    workingDir = file("$projectDir/app")
+    commandLine = ['npm', 'run', 'clean']
+}
+
+tasks.named('clean') {
+    dependsOn 'npmClean'
+}
+
+tasks.named('npmBuild') {
+    dependsOn 'npmApiBuild'
+}
+
+tasks.named('build') {
+    dependsOn 'npmBuild'
+}
