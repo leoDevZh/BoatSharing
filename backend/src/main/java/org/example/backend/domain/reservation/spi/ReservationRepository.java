@@ -13,4 +13,6 @@ public interface ReservationRepository {
     void saveReservation(Reservation reservation);
 
     Optional<Reservation> findReservationById(ReservationId reservationId);
+
+    void deleteReservation(ReservationId reservationId);
 }

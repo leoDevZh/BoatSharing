@@ -11,4 +11,6 @@ public interface ReservationService {
     void makeNewReservation(UserId userId, BoatId boatId, LocalDateTime start, LocalDateTime end) throws InvalidReservationException;
 
     void updateEngineHoursForReservation(UserId userId, ReservationId reservationId, int boatHoursOnStar, int boatHoursOnEnd);
+
+    void cancelReservation(UserId userId, ReservationId reservationId);
 }

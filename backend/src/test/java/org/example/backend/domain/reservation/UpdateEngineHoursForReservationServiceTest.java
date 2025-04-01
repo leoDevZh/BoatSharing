@@ -101,4 +101,19 @@ public class UpdateEngineHoursForReservationServiceTest {
 
         assertEquals("Start hours is greater then end hours", exception.getMessage());
     }
+
+    @Test
+    void shouldThrowExceptionWhenReservationNotFound() {
+        ReservationId reservationId = new ReservationId(1L);
+        UserId userId = new UserId(1L);
+        int boatHoursOnStar = 1;
+        int boatHoursOnEnd = 2;
+        when(reservationRepository.findReservationById(reservationId)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(InvalidReservationException.class, () -> {
+            reservationService.updateEngineHoursForReservation(userId, reservationId, boatHoursOnStar, boatHoursOnEnd);
+        });
+
+        assertEquals("Reservation not found", exception.getMessage());
+    }
 }

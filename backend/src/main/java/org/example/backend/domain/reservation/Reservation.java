@@ -31,6 +31,10 @@ public class Reservation {
         this.userId = reservationBuilder.userId;
     }
 
+    public boolean canCancelReservation() {
+        return this.startDateTime.isAfter(LocalDateTime.now());
+    }
+
     public void updateBoatEngineHours(int updatedBoatHoursOnStar, int updatedBoatHoursOnEnd) {
         checkBoatHoursValid(updatedBoatHoursOnStar, updatedBoatHoursOnEnd);
         this.boatHoursOnStart = updatedBoatHoursOnStar;

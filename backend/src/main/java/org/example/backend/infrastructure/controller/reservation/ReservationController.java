@@ -3,6 +3,7 @@ package org.example.backend.infrastructure.controller.reservation;
 import jakarta.validation.Valid;
 import org.example.backend.domain.User.UserId;
 import org.example.backend.domain.reservation.InvalidReservationException;
+import org.example.backend.domain.reservation.ReservationId;
 import org.example.backend.domain.reservation.api.ReservationService;
 import org.example.backend.infrastructure.controller.excpetion.ExceptionDTO;
 import org.example.backend.infrastructure.security.user.CustomUserDetail;
@@ -10,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -42,6 +40,19 @@ public class ReservationController {
             CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             reservationService.updateEngineHoursForReservation(new UserId(userDetail.getId()), reservation.reservationId, reservation.boatEngineHoursOnStart, reservation.boatEngineHoursOnEnd);
             return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (InvalidReservationException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ExceptionDTO.builder().httpStatus(HttpStatus.BAD_REQUEST).message(e.getMessage()).build());
+        }
+    }
+
+    @DeleteMapping("cancel/{reservationId}")
+    public ResponseEntity cancelReservation(@PathVariable(value = "reservationId") ReservationId reservationId) {
+        try {
+            CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            reservationService.cancelReservation(new UserId(userDetail.getId()), reservationId);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (InvalidReservationException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)

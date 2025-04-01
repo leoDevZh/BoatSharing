@@ -35,6 +35,11 @@ public class ReservationRepositoryImplementation implements ReservationRepositor
         return reservationOptional.map(ReservationMapper::toDomain);
     }
 
+    @Override
+    public void deleteReservation(ReservationId reservationId) {
+        jpaReservationRepository.deleteById(reservationId.value());
+    }
+
     static class ReservationMapper {
 
         static org.example.backend.infrastructure.repository.reservation.Reservation toEntity(Reservation reservation) {

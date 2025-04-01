@@ -51,4 +51,16 @@ public class ReservationServiceImpl implements ReservationService {
         reservation.updateBoatEngineHours(boatHoursOnStar, boatHoursOnEnd);
         reservationRepository.saveReservation(reservation);
     }
+
+    @Override
+    public void cancelReservation(UserId userId, ReservationId reservationId) {
+        Reservation reservation = reservationRepository.findReservationById(reservationId).orElseThrow(() -> new InvalidReservationException("Reservation not found"));
+        if (!reservation.isOwner(userId)) {
+            throw new InvalidReservationException("User is not owner of reservation");
+        }
+        if (!reservation.canCancelReservation()) {
+            throw new InvalidReservationException("Can not delete reservation anymore");
+        }
+        reservationRepository.deleteReservation(reservationId);
+    }
 }
