@@ -66,3 +66,68 @@ html {
 .mdc-text-field--filled:not(.mdc-text-field--disabled) {
   background-color: var(--color-bg-primary) !important;
 }
+
+/* Directives */
+/* Button-Directive */
+.bs-btn {
+  position: relative;
+  background-color: transparent;
+  border: 2px solid;
+  border-radius: 15px;
+  cursor: pointer;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.btn-cancel {
+  border-color: var(--color-accent-cancel);
+}
+
+.btn-cancel::before, .btn-cancel::after {
+  background-color: var(--color-accent-cancel);
+}
+
+.btn-submit {
+  border-color: var(--color-accent-dark);
+}
+
+.btn-submit::before, .btn-submit::after {
+  background-color: var(--color-accent-dark);
+}
+
+.bs-btn::before, .bs-btn::after {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 50px;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  border-radius: 50%;
+  z-index: -1;
+  transition: 1s ease;
+}
+
+.bs-btn::before {
+  top: -25px;
+  left: -25px;
+}
+
+.bs-btn::after {
+  left: calc(100% + 25px);
+  top: calc(100% + 25px);
+}
+
+.bs-btn:hover::before, .bs-btn:hover::after, .bs-btn:active::before, .bs-btn:active::after {
+  height: 410px;
+  width: 410px;
+}
+
+
+.bs-btn.disabled {
+  border-color: var(--color-accent-disabled) !important;
+  cursor: default;
+}
+
+.bs-btn.disabled::before, .bs-btn.disabled::after {
+  display: none !important;
+}
