@@ -1,18 +1,18 @@
 package org.example.backend.infrastructure.security.jwt;
 
+import org.example.backend.infrastructure.security.user.CustomUserDetail;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.UserDetails;
 
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
-    private String username;
+    private CustomUserDetail customUserDetail;
     private String token;
 
-    private JwtAuthenticationToken(UserDetails userDetails) {
+    private JwtAuthenticationToken(CustomUserDetail userDetails) {
         super(userDetails.getAuthorities());
         super.setAuthenticated(true);
-        this.username = userDetails.getUsername();
+        this.customUserDetail = clearPasswordFromCustomUserDetails(userDetails);
     }
 
     private JwtAuthenticationToken(String token) {
@@ -21,7 +21,7 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
         this.token = token;
     }
 
-    public static JwtAuthenticationToken authenticated(UserDetails userDetails) {
+    public static JwtAuthenticationToken authenticated(CustomUserDetail userDetails) {
         return new JwtAuthenticationToken(userDetails);
     }
 
@@ -40,11 +40,18 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        return username;
+        return customUserDetail;
     }
 
     @Override
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
         throw new RuntimeException("Cannot change authenticated status");
+    }
+
+    private static CustomUserDetail clearPasswordFromCustomUserDetails(CustomUserDetail customUserDetail1) {
+        return CustomUserDetail.builder()
+                .id(customUserDetail1.getId())
+                .username(customUserDetail1.getUsername())
+                .build();
     }
 }
