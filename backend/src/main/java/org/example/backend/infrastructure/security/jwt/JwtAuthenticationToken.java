@@ -48,10 +48,10 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
         throw new RuntimeException("Cannot change authenticated status");
     }
 
-    private static CustomUserDetail clearPasswordFromCustomUserDetails(CustomUserDetail customUserDetail1) {
+    private static CustomUserDetail clearPasswordFromCustomUserDetails(CustomUserDetail customUserDetail) {
         return CustomUserDetail.builder()
-                .id(customUserDetail1.getId())
-                .username(customUserDetail1.getUsername())
+                .id(customUserDetail.getId())
+                .username(customUserDetail.getUsername())
                 .build();
     }
 }
