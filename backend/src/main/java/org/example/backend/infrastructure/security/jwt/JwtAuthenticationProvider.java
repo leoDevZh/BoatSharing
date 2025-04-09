@@ -1,9 +1,9 @@
 package org.example.backend.infrastructure.security.jwt;
 
+import org.example.backend.infrastructure.security.user.CustomUserDetail;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         if (token != null) {
             String username = JwtUtil.extractUsername(token);
             if (JwtUtil.validateToken(token, username)) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                CustomUserDetail userDetails = (CustomUserDetail) userDetailsService.loadUserByUsername(username);
                 return JwtAuthenticationToken.authenticated(userDetails);
             }
         }
