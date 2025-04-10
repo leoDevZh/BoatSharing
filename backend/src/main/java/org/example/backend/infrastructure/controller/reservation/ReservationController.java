@@ -1,5 +1,9 @@
 package org.example.backend.infrastructure.controller.reservation;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.example.backend.domain.User.UserId;
 import org.example.backend.domain.reservation.InvalidReservationException;
@@ -22,7 +26,12 @@ public class ReservationController {
     private ReservationService reservationService;
 
     @PostMapping("create")
-    public ResponseEntity create(@Valid @RequestBody CreateReservationDTO reservation) {
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Reservation created successfully, no content returned"),
+            @ApiResponse(responseCode = "400", description = "Invalid reservation",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
+    })
+    public ResponseEntity<ExceptionDTO> create(@Valid @RequestBody CreateReservationDTO reservation) {
         try {
             CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             reservationService.makeNewReservation(new UserId(userDetail.getId()), reservation.boatId, reservation.startTime, reservation.endTime);
@@ -35,7 +44,12 @@ public class ReservationController {
     }
 
     @PostMapping("updateEngineHours")
-    public ResponseEntity updateEngineHours(@Valid @RequestBody UpdateEngineHoursDTO reservation) {
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Reservation updated successfully, no content returned"),
+            @ApiResponse(responseCode = "400", description = "Invalid reservation",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
+    })
+    public ResponseEntity<ExceptionDTO> updateEngineHours(@Valid @RequestBody UpdateEngineHoursDTO reservation) {
         try {
             CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             reservationService.updateEngineHoursForReservation(new UserId(userDetail.getId()), reservation.reservationId, reservation.boatEngineHoursOnStart, reservation.boatEngineHoursOnEnd);
@@ -48,6 +62,11 @@ public class ReservationController {
     }
 
     @DeleteMapping("cancel/{reservationId}")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Reservation cancelled successfully, no content returned"),
+            @ApiResponse(responseCode = "400", description = "Invalid reservation",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
+    })
     public ResponseEntity cancelReservation(@PathVariable(value = "reservationId") ReservationId reservationId) {
         try {
             CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

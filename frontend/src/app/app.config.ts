@@ -5,6 +5,8 @@ import {routes} from './app.routes';
 import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {BASE_PATH} from './api';
 import {authInterceptor} from './interceptors/auth.interceptor';
+import {errorInterceptor} from './interceptors/error.interceptor';
+import {HAMMER_LOADER, HammerModule} from '@angular/platform-browser';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -12,7 +14,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(
       withInterceptors([
-        authInterceptor
+        authInterceptor,
+        errorInterceptor
       ])
     ),
     {

@@ -15,6 +15,7 @@ model/authenticationRequestTO.ts
 model/authenticationResponseTO.ts
 model/boatId.ts
 model/createReservationDTO.ts
+model/exceptionDTO.ts
 model/models.ts
 model/reservationId.ts
 model/updateEngineHoursDTO.ts
