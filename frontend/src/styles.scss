@@ -1,8 +1,9 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
 :root {
   /* COLORS */
   --color-bg-primary: #ebf7ff;
-  --color-bg-secondary: #8fd5f9;
+  --color-bg-secondary: #fff;
   --color-accent-dark: #2160c9;
   --color-accent-bright: #9fe5ff;
   --color-accent-cancel: #c9214e;
@@ -43,7 +44,7 @@
 body {
   width: 100vw;
   min-height: 100vh;
-  background: linear-gradient(45deg, var(--color-bg-primary), #fff);
+  background: linear-gradient(45deg, var(--color-bg-primary), var(--color-bg-secondary));
 }
 
 @font-face {
@@ -51,4 +52,17 @@ body {
   src: url('../public/fonts/Delius/Delius-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+}
+
+/* Material */
+html {
+  @include mat.theme(
+      (
+        color: mat.$azure-palette,
+      ),
+  );
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: var(--color-bg-primary) !important;
 }
