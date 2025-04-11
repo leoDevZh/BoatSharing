@@ -1,4 +1,4 @@
-import {ApplicationConfig, provideZoneChangeDetection} from '@angular/core';
+import {ApplicationConfig, importProvidersFrom, provideZoneChangeDetection} from '@angular/core';
 import {provideRouter} from '@angular/router';
 
 import {routes} from './app.routes';
@@ -10,6 +10,7 @@ import {HAMMER_LOADER, HammerModule} from '@angular/platform-browser';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    importProvidersFrom(HammerModule),
     provideZoneChangeDetection({eventCoalescing: true}),
     provideRouter(routes),
     provideHttpClient(
@@ -21,6 +22,10 @@ export const appConfig: ApplicationConfig = {
     {
       provide: BASE_PATH,
       useValue: 'http://localhost:8080'
+    },
+    {
+      provide: HAMMER_LOADER,
+      useValue: () => import('hammerjs')
     }
   ]
 };

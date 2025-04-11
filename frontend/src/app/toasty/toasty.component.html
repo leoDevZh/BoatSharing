@@ -1,0 +1,12 @@
+@for (toasty of toasties(); track toasty.id; let idx = $index) {
+  <div
+    class="toasty"
+    [ngClass]="getClassForType(toasty)"
+    [class.exit]="exitingToasties.has(toasty.id)"
+    (swiperight)="removeToasty(toasty.id)"
+    #toasty
+  >
+    <h2>{{ getTitle(toasty) }}</h2>
+    <p class="toasty-message">{{ toasty.message }}</p>
+  </div>
+}
