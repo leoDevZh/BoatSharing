@@ -25,7 +25,7 @@ public class ReservationController {
     @Autowired
     private ReservationService reservationService;
 
-    @PostMapping("create")
+    @PostMapping(value = "create", produces = "application/json")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Reservation created successfully, no content returned"),
             @ApiResponse(responseCode = "400", description = "Invalid reservation",
@@ -43,7 +43,7 @@ public class ReservationController {
         }
     }
 
-    @PostMapping("updateEngineHours")
+    @PostMapping(value = "updateEngineHours", produces = "application/json")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Reservation updated successfully, no content returned"),
             @ApiResponse(responseCode = "400", description = "Invalid reservation",
@@ -61,7 +61,7 @@ public class ReservationController {
         }
     }
 
-    @DeleteMapping("cancel/{reservationId}")
+    @DeleteMapping(value = "cancel/{reservationId}", produces = "application/json")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Reservation cancelled successfully, no content returned"),
             @ApiResponse(responseCode = "400", description = "Invalid reservation",
