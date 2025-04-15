@@ -1,5 +1,6 @@
 package org.example.backend.infrastructure.security.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,6 +27,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        if (request.getRequestURI().equals("/api/auth/login")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ") || SecurityContextHolder.getContext().getAuthentication() != null) {
@@ -41,7 +46,7 @@ public class JwtFilter extends OncePerRequestFilter {
             newContext.setAuthentication(authentication);
             SecurityContextHolder.setContext(newContext);
             filterChain.doFilter(request, response);
-        } catch (AuthenticationException | SignatureException e) {
+        } catch (AuthenticationException | SignatureException | ExpiredJwtException e) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
         }
     }

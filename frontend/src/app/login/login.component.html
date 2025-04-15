@@ -1,0 +1,9 @@
+<form [formGroup]="userForm" (ngSubmit)="loginUser()">
+  <mat-form-field>
+    <input matInput type="text" placeholder="Username..." formControlName="username">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput type="password" placeholder="Password..." formControlName="password">
+  </mat-form-field>
+  <button [bsButton]="'submit'" size="md" [disabled]="userForm.invalid">Login</button>
+</form>
