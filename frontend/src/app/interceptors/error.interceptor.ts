@@ -2,6 +2,8 @@ import {HttpInterceptorFn} from '@angular/common/http';
 import {catchError, throwError} from 'rxjs';
 import {ErrorInfo} from '../model/ErrorInfo';
 import {ExceptionDTO} from '../api';
+import {inject} from '@angular/core';
+import {Router} from '@angular/router';
 
 function mapCodeToErrorInfo(statusCode: number): ErrorInfo {
   switch (statusCode) {
@@ -35,12 +37,17 @@ function isExceptionDTO(obj: any): obj is ExceptionDTO {
 }
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
+  const router = inject(Router)
+
   return next(req).pipe(
     catchError(errorResponse => {
       const errorResponseObj = errorResponse.error
       const errorInfo = mapCodeToErrorInfo(errorResponse.status)
       if (isExceptionDTO(errorResponseObj)) {
         errorInfo.msg += ` - ${errorResponseObj.message}`
+      }
+      if ((errorResponse.status === 401 || errorResponse.status === 403) && !req.url.includes('/api/auth/login')) {
+        router.navigate(['/login'])
       }
       return throwError(() => errorInfo)
     })
