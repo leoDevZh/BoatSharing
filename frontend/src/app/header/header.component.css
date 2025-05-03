@@ -1,0 +1,21 @@
+header {
+  height: var(--header-height);
+  width: 100%;
+  position: relative;
+  box-shadow: 0 5px 25px var(--color-accent-bright);
+}
+
+h1 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.imageContainer {
+  width: 30px;
+  height: 20px;
+  position: absolute;
+  bottom: 0;
+  left: 20%;
+}

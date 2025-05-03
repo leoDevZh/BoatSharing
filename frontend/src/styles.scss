@@ -1,0 +1,133 @@
+@use '@angular/material' as mat;
+
+:root {
+  /* COLORS */
+  --color-bg-primary: #ebf7ff;
+  --color-bg-secondary: #fff;
+  --color-accent-dark: #2160c9;
+  --color-accent-bright: #9fe5ff;
+  --color-accent-cancel: #c9214e;
+  --color-accent-disabled: #6d6d6d;
+
+  /* MARGIN */
+  --margin-xxs: 0.25rem;
+  --margin-xs: 0.5rem;
+  --margin-m: 0.75rem;
+  --margin-l: 1rem;
+  --margin-xl: 1.5rem;
+
+  /* PADDING */
+  --padding-xxs: 0.25rem;
+  --padding-xs: 0.5rem;
+  --padding-m: 0.75rem;
+  --padding-l: 1rem;
+  --padding-xl: 1.5rem;
+
+  /* FONT */
+  --font-size-xxs: 0.5rem;
+  --font-size-xs: 0.75rem;
+  --font-size-m: 1rem;
+  --font-size-l: 1.4rem;
+  --font-size-xl: 1.8rem;
+
+  /* HEADER */
+  --header-height: 64px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Delius', serif;
+  box-sizing: border-box;
+}
+
+body {
+  width: 100vw;
+  min-height: 100vh;
+  background: linear-gradient(45deg, var(--color-bg-primary), var(--color-bg-secondary));
+}
+
+@font-face {
+  font-family: 'Delius';
+  src: url('../public/fonts/Delius/Delius-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Material */
+html {
+  @include mat.theme(
+      (
+        color: mat.$azure-palette,
+      ),
+  );
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: var(--color-bg-primary) !important;
+}
+
+/* Directives */
+/* Button-Directive */
+.bs-btn {
+  position: relative;
+  background-color: transparent;
+  border: 2px solid;
+  border-radius: 15px;
+  cursor: pointer;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.btn-cancel {
+  border-color: var(--color-accent-cancel);
+}
+
+.btn-cancel::before, .btn-cancel::after {
+  background-color: var(--color-accent-cancel);
+}
+
+.btn-submit {
+  border-color: var(--color-accent-dark);
+}
+
+.btn-submit::before, .btn-submit::after {
+  background-color: var(--color-accent-dark);
+}
+
+.bs-btn::before, .bs-btn::after {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 50px;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  border-radius: 50%;
+  z-index: -1;
+  transition: 1s ease;
+}
+
+.bs-btn::before {
+  top: -25px;
+  left: -25px;
+}
+
+.bs-btn::after {
+  left: calc(100% + 25px);
+  top: calc(100% + 25px);
+}
+
+.bs-btn:hover::before, .bs-btn:hover::after, .bs-btn:active::before, .bs-btn:active::after {
+  height: 410px;
+  width: 410px;
+}
+
+
+.bs-btn.disabled {
+  border-color: var(--color-accent-disabled) !important;
+  cursor: default;
+}
+
+.bs-btn.disabled::before, .bs-btn.disabled::after {
+  display: none !important;
+}

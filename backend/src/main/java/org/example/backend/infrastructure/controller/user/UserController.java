@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/user")
 public class UserController {
 
-    @GetMapping
+    @GetMapping(produces = "application/json")
     public ResponseEntity<UserDTO> getUser() {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok(UserDTO.builder().username(userDetail.getUsername()).build());
