@@ -4,7 +4,7 @@ import {AuthenticationControllerService, AuthenticationResponseTO} from './api';
 import {AuthService} from './services/AuthService/auth.service';
 import {of, throwError} from 'rxjs';
 
-fdescribe('AppComponent', () => {
+describe('AppComponent', () => {
   let authController: jasmine.NonTypedSpyObj<AuthenticationControllerService>
   let authService: jasmine.SpyObj<AuthService>
 
