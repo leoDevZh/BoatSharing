@@ -36,10 +36,9 @@ describe('TabMenuComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render correct tab by default', () => {
+  it('should render first tab by default', () => {
     const liElements = fixture.nativeElement.querySelectorAll('li')
     const renderedContent = fixture.nativeElement.querySelector('p')
-    // select first tab by default
     expect(component.activeTab).toBe(0)
     expect(liElements[0].classList.contains('active')).toBeTrue()
     expect(liElements[1].classList.contains('active')).toBeFalse()
@@ -47,7 +46,7 @@ describe('TabMenuComponent', () => {
     expect(renderedContent.textContent).toBe('ONE')
   })
 
-  it('should render correct tab on click second tab', () => {
+  it('should change active tab on click', () => {
     const liElements = fixture.nativeElement.querySelectorAll('li')
     liElements[1].click()
     fixture.detectChanges()
