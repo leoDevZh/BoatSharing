@@ -1,0 +1,9 @@
+<ul class="header">
+  @for (tab of tabs(); track tab.title; let idx = $index) {
+    <li [class.active]="activeTab === idx" (click)="activateTab(idx)">
+      <span>{{ tab.title }}</span>
+    </li>
+  }
+  <div class="underline"></div>
+</ul>
+<ng-container *ngComponentOutlet="activeComponent"/>
