@@ -23,7 +23,7 @@ public class ReadReservationServiceImpl implements ReadReservationService {
     }
 
     @Override
-    public List<ReservationUserDTO> getReservationForPeriod(LocalDateTime from, LocalDateTime to, BoatId boatId, UserId userId) {
+    public List<ReservationUserDTO> getReservationForPeriod(LocalDateTime from, LocalDateTime to, BoatId boatId, UserId userId) throws InvalidReservationException {
         Boat boat = boatRepository.findByIdWithOwners(boatId).orElseThrow(() -> new InvalidReservationException("Boat not found"));
         if (!boat.isCoOwner(userId)) {
             throw new InvalidReservationException("User is not co-owner of boat");
