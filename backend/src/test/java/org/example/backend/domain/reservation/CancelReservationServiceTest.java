@@ -2,6 +2,8 @@ package org.example.backend.domain.reservation;
 
 import org.example.backend.domain.User.UserId;
 import org.example.backend.domain.boat.BoatId;
+import org.example.backend.domain.reservation.model.Reservation;
+import org.example.backend.domain.reservation.model.ReservationId;
 import org.example.backend.domain.reservation.spi.ReservationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -6,6 +6,8 @@ import org.example.backend.domain.boat.Boat;
 import org.example.backend.domain.boat.BoatId;
 import org.example.backend.domain.boat.spi.BoatRepository;
 import org.example.backend.domain.reservation.api.ReservationService;
+import org.example.backend.domain.reservation.model.Reservation;
+import org.example.backend.domain.reservation.model.ReservationId;
 import org.example.backend.domain.reservation.spi.ReservationRepository;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,6 +1,6 @@
 package org.example.backend.infrastructure.controller.converter;
 
-import org.example.backend.domain.reservation.ReservationId;
+import org.example.backend.domain.reservation.model.ReservationId;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 

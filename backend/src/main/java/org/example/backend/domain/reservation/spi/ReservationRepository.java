@@ -1,8 +1,8 @@
 package org.example.backend.domain.reservation.spi;
 
 import org.example.backend.domain.boat.BoatId;
-import org.example.backend.domain.reservation.Reservation;
-import org.example.backend.domain.reservation.ReservationId;
+import org.example.backend.domain.reservation.model.Reservation;
+import org.example.backend.domain.reservation.model.ReservationId;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

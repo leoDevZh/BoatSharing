@@ -2,7 +2,7 @@ package org.example.backend.integration.reservation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.backend.TestDBConfiguration;
-import org.example.backend.domain.reservation.ReservationId;
+import org.example.backend.domain.reservation.model.ReservationId;
 import org.example.backend.infrastructure.controller.reservation.UpdateEngineHoursDTO;
 import org.example.backend.infrastructure.repository.boat.Boat;
 import org.example.backend.infrastructure.repository.boat.JpaBoatRepository;

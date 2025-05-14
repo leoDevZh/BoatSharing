@@ -3,7 +3,7 @@ package org.example.backend.infrastructure.controller.reservation;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.example.backend.domain.reservation.ReservationId;
+import org.example.backend.domain.reservation.model.ReservationId;
 
 @Data
 @AllArgsConstructor
