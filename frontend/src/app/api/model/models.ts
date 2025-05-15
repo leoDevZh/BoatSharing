@@ -7,3 +7,4 @@ export * from './reservationId';
 export * from './reservationUserDTO';
 export * from './updateEngineHoursDTO';
 export * from './userDTO';
+export * from './userId';

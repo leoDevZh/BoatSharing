@@ -17,9 +17,9 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { BoatId } from '../model/boatId';
-// @ts-ignore
 import { ExceptionDTO } from '../model/exceptionDTO';
+// @ts-ignore
+import { ReservationUserDTO } from '../model/reservationUserDTO';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -31,20 +31,40 @@ import { BaseService } from '../api.base.service';
 @Injectable({
   providedIn: 'root'
 })
-export class BoatControllerService extends BaseService {
+export class ReadReservationControllerService extends BaseService {
 
     constructor(protected httpClient: HttpClient, @Optional() @Inject(BASE_PATH) basePath: string|string[], @Optional() configuration?: Configuration) {
         super(basePath, configuration);
     }
 
     /**
+     * @param from 
+     * @param to 
+     * @param boatId 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getBoatFromUser(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<BoatId>;
-    public getBoatFromUser(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<BoatId>>;
-    public getBoatFromUser(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<BoatId>>;
-    public getBoatFromUser(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public findReservationForPeriod(from: string, to: string, boatId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ReservationUserDTO>>;
+    public findReservationForPeriod(from: string, to: string, boatId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ReservationUserDTO>>>;
+    public findReservationForPeriod(from: string, to: string, boatId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ReservationUserDTO>>>;
+    public findReservationForPeriod(from: string, to: string, boatId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (from === null || from === undefined) {
+            throw new Error('Required parameter from was null or undefined when calling findReservationForPeriod.');
+        }
+        if (to === null || to === undefined) {
+            throw new Error('Required parameter to was null or undefined when calling findReservationForPeriod.');
+        }
+        if (boatId === null || boatId === undefined) {
+            throw new Error('Required parameter boatId was null or undefined when calling findReservationForPeriod.');
+        }
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+          <any>from, 'from');
+        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+          <any>to, 'to');
+        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+          <any>boatId, 'boatId');
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -71,10 +91,11 @@ export class BoatControllerService extends BaseService {
             }
         }
 
-        let localVarPath = `/api/boat`;
-        return this.httpClient.request<BoatId>('get', `${this.configuration.basePath}${localVarPath}`,
+        let localVarPath = `/api/read-reservation`;
+        return this.httpClient.request<Array<ReservationUserDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
