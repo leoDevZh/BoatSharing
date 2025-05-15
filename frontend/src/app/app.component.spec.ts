@@ -3,19 +3,23 @@ import {AppComponent} from './app.component';
 import {AuthenticationControllerService, AuthenticationResponseTO} from './api';
 import {AuthService} from './services/AuthService/auth.service';
 import {of, throwError} from 'rxjs';
+import {Router} from '@angular/router';
 
 describe('AppComponent', () => {
   let authController: jasmine.NonTypedSpyObj<AuthenticationControllerService>
   let authService: jasmine.SpyObj<AuthService>
+  let router: jasmine.SpyObj<Router>
 
   beforeEach(async () => {
     authController = jasmine.createSpyObj('AuthenticationControllerService', ['refresh'])
     authService = jasmine.createSpyObj('AuthService', ['setToken'])
+    router = jasmine.createSpyObj('Router', ['navigate'])
     await TestBed.configureTestingModule({
       imports: [AppComponent],
       providers: [
         {provide: AuthenticationControllerService, useValue: authController},
-        {provide: AuthService, useValue: authService}
+        {provide: AuthService, useValue: authService},
+        {provide: Router, useValue: router}
       ]
     }).compileComponents();
   });
@@ -35,6 +39,7 @@ describe('AppComponent', () => {
 
     expect(authController.refresh).toHaveBeenCalledTimes(1)
     expect(authService.setToken).toHaveBeenCalledWith(mockResponse.token)
+    expect(router.navigate).toHaveBeenCalledWith(['/home'])
   })
 
   it('should not call services on error refresh', () => {

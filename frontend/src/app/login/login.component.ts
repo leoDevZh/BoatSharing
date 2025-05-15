@@ -64,7 +64,7 @@ export class LoginComponent {
       )
       .subscribe(response => {
         this.authService.setToken(response.token)
-        this.router.navigate(['/'])
+        this.router.navigate(['/home'])
       })
   }
 

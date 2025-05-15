@@ -72,7 +72,7 @@ describe('LoginComponent', () => {
 
     expect(authenticationController.authenticate).toHaveBeenCalledWith({username: username, password: password})
     expect(authService.setToken).toHaveBeenCalledWith(token)
-    expect(router.navigate).toHaveBeenCalledWith(['/'])
+    expect(router.navigate).toHaveBeenCalledWith(['/home'])
   });
 
   it('should call services on failed login', () => {
