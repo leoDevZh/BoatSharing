@@ -4,6 +4,7 @@ import org.example.backend.domain.User.UserId;
 import org.example.backend.domain.boat.Boat;
 import org.example.backend.domain.boat.BoatId;
 import org.example.backend.domain.boat.spi.BoatRepository;
+import org.example.backend.domain.reservation.model.Reservation;
 import org.example.backend.domain.reservation.spi.ReservationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
