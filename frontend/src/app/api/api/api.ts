@@ -1,7 +1,11 @@
 export * from './authenticationController.service';
 import { AuthenticationControllerService } from './authenticationController.service';
+export * from './boatController.service';
+import { BoatControllerService } from './boatController.service';
+export * from './readReservationController.service';
+import { ReadReservationControllerService } from './readReservationController.service';
 export * from './reservationController.service';
 import { ReservationControllerService } from './reservationController.service';
 export * from './userController.service';
 import { UserControllerService } from './userController.service';
-export const APIS = [AuthenticationControllerService, ReservationControllerService, UserControllerService];
+export const APIS = [AuthenticationControllerService, BoatControllerService, ReadReservationControllerService, ReservationControllerService, UserControllerService];

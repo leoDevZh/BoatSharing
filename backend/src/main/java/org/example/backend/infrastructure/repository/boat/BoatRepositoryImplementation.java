@@ -18,6 +18,10 @@ public class BoatRepositoryImplementation implements BoatRepository {
         this.jpaBoatRepository = jpaBoatRepository;
     }
 
+    public Optional<BoatId> findBoatIdByUserId(UserId userId) {
+        return jpaBoatRepository.findBoatByUserIdContains(userId.value()).map(boat -> new BoatId(boat.getId()));
+    }
+
     @Override
     public Optional<Boat> findByIdWithOwners(BoatId id) {
         Optional<org.example.backend.infrastructure.repository.boat.Boat> boatOptional = jpaBoatRepository.findByIdWithOwners(id.value());
