@@ -1,0 +1,5 @@
+<div class="container">
+  <mat-icon (click)="changeMonth(-1)" class="icon" fontIcon="chevron_left"/>
+  <p>{{ `${month().monthShort}, ${month().year}` }}</p>
+  <mat-icon (click)="changeMonth(1)" class="icon" fontIcon="chevron_right"/>
+</div>
