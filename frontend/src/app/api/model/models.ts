@@ -4,5 +4,6 @@ export * from './boatId';
 export * from './createReservationDTO';
 export * from './exceptionDTO';
 export * from './reservationId';
+export * from './reservationUserDTO';
 export * from './updateEngineHoursDTO';
 export * from './userDTO';

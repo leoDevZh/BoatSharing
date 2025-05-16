@@ -5,6 +5,8 @@ api.base.service.ts
 api.module.ts
 api/api.ts
 api/authenticationController.service.ts
+api/boatController.service.ts
+api/readReservationController.service.ts
 api/reservationController.service.ts
 api/userController.service.ts
 configuration.ts
@@ -18,6 +20,7 @@ model/createReservationDTO.ts
 model/exceptionDTO.ts
 model/models.ts
 model/reservationId.ts
+model/reservationUserDTO.ts
 model/updateEngineHoursDTO.ts
 model/userDTO.ts
 param.ts
