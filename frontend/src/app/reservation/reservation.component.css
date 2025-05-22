@@ -1,0 +1,5 @@
+:host {
+  display: grid;
+  row-gap: var(--padding-m);
+  width: 100%;
+}

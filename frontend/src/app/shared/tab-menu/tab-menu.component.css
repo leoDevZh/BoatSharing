@@ -1,6 +1,12 @@
+:host {
+  display: grid;
+  grid-template-rows: 48px 1fr;
+  gap: var(--padding-m);
+  padding: 0 var(--padding-m);
+}
+
 .header {
   position: relative;
-  height: 48px;
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 150px;
@@ -8,7 +14,6 @@
   justify-items: center;
   overflow-x: scroll;
   scrollbar-width: none; /* Firefox */
-  padding: 0 var(--padding-m);
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
