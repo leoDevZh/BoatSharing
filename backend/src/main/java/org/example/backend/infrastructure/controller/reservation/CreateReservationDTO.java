@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CreateReservationDTO {
     @NotNull
-    LocalDateTime startTime;
+    LocalDateTime startDateTime;
     @NotNull
-    LocalDateTime endTime;
+    LocalDateTime endDateTime;
     @NotNull
     BoatId boatId;
 }

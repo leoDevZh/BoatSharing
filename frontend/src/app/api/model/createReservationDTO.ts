@@ -11,8 +11,8 @@ import { BoatId } from './boatId';
 
 
 export interface CreateReservationDTO { 
-    startTime: string;
-    endTime: string;
+    startDateTime: string;
+    endDateTime: string;
     boatId: BoatId;
 }
 
