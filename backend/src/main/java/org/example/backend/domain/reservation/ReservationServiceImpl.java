@@ -45,12 +45,12 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public void updateEngineHoursForReservation(UserId userId, ReservationId reservationId, int boatHoursOnStar, int boatHoursOnEnd) {
+    public void updateReservation(UserId userId, ReservationId reservationId, LocalDateTime start, LocalDateTime end, Integer boatHoursOnStar, Integer boatHoursOnEnd) {
         Reservation reservation = reservationRepository.findReservationById(reservationId).orElseThrow(() -> new InvalidReservationException("Reservation not found"));
         if (!reservation.isOwner(userId)) {
             throw new InvalidReservationException("User is not owner of reservation");
         }
-        reservation.updateBoatEngineHours(boatHoursOnStar, boatHoursOnEnd);
+        reservation.updateReservation(start, end, boatHoursOnStar, boatHoursOnEnd);
         reservationRepository.saveReservation(reservation);
     }
 
@@ -60,9 +60,7 @@ public class ReservationServiceImpl implements ReservationService {
         if (!reservation.isOwner(userId)) {
             throw new InvalidReservationException("User is not owner of reservation");
         }
-        if (!reservation.canCancelReservation()) {
-            throw new InvalidReservationException("Can not delete reservation anymore");
-        }
+        reservation.cancelReservation();
         reservationRepository.deleteReservation(reservationId);
     }
 }

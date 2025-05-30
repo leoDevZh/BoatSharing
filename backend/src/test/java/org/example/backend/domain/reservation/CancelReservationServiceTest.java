@@ -76,7 +76,7 @@ public class CancelReservationServiceTest {
 
         Exception exception = assertThrows(InvalidReservationException.class, () -> reservationService.cancelReservation(userId, reservationId));
 
-        assertEquals("Can not delete reservation anymore", exception.getMessage());
+        assertEquals("Reservation is already in past", exception.getMessage());
     }
 
     @Test

@@ -32,19 +32,19 @@ public class ReservationController {
     })
     public ResponseEntity<ExceptionDTO> create(@Valid @RequestBody CreateReservationDTO reservation) {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        reservationService.makeNewReservation(new UserId(userDetail.getId()), reservation.boatId, reservation.startTime, reservation.endTime);
+        reservationService.makeNewReservation(new UserId(userDetail.getId()), reservation.boatId, reservation.startDateTime, reservation.endDateTime);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping(value = "updateEngineHours", produces = "application/json")
+    @PostMapping(value = "updateReservation", produces = "application/json")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Reservation updated successfully, no content returned"),
             @ApiResponse(responseCode = "400", description = "Invalid reservation",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
     })
-    public ResponseEntity<ExceptionDTO> updateEngineHours(@Valid @RequestBody UpdateEngineHoursDTO reservation) {
+    public ResponseEntity<ExceptionDTO> updateReservation(@Valid @RequestBody UpdateReservationDTO reservation) {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        reservationService.updateEngineHoursForReservation(new UserId(userDetail.getId()), reservation.reservationId, reservation.boatEngineHoursOnStart, reservation.boatEngineHoursOnEnd);
+        reservationService.updateReservation(new UserId(userDetail.getId()), reservation.reservationId, reservation.startDateTime, reservation.endDateTime, reservation.boatEngineHoursOnStart, reservation.boatEngineHoursOnEnd);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

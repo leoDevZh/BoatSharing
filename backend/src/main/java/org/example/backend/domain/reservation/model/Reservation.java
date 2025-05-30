@@ -19,9 +19,7 @@ public class Reservation {
         if (reservationBuilder.userId == null || reservationBuilder.boatId == null || reservationBuilder.startDateTime == null || reservationBuilder.endDateTime == null) {
             throw new InvalidReservationException("Invalid reservation required values must not be null");
         }
-        if (!reservationBuilder.startDateTime.isBefore(reservationBuilder.endDateTime)) {
-            throw new InvalidReservationException("Start time is after end time");
-        }
+        checkEndTimeIsAfterStartTime(reservationBuilder.startDateTime, reservationBuilder.endDateTime);
         checkBoatHoursValid(reservationBuilder.boatHoursOnStart, reservationBuilder.boatHoursOnEnd);
         this.reservationId = reservationBuilder.reservationId;
         this.startDateTime = reservationBuilder.startDateTime;
@@ -32,14 +30,35 @@ public class Reservation {
         this.userId = reservationBuilder.userId;
     }
 
-    public boolean canCancelReservation() {
-        return this.startDateTime.isAfter(LocalDateTime.now());
+    public void cancelReservation() {
+        checkReservationNotInPast(this.endDateTime);
     }
 
-    public void updateBoatEngineHours(int updatedBoatHoursOnStar, int updatedBoatHoursOnEnd) {
+    public void updateReservation(LocalDateTime start, LocalDateTime end, Integer updatedBoatHoursOnStar, Integer updatedBoatHoursOnEnd) {
+        checkEndTimeIsAfterStartTime(start, end);
+        if (!(startDateTime.equals(start) && endDateTime.equals(end))) {
+            checkReservationNotInPast(end);
+        }
         checkBoatHoursValid(updatedBoatHoursOnStar, updatedBoatHoursOnEnd);
+        this.startDateTime = start;
+        this.endDateTime = end;
         this.boatHoursOnStart = updatedBoatHoursOnStar;
         this.boatHoursOnEnd = updatedBoatHoursOnEnd;
+    }
+
+    private static void checkEndTimeIsAfterStartTime(LocalDateTime start, LocalDateTime end) {
+        if (start == null || end == null) {
+            throw new InvalidReservationException("Invalid reservation required values must not be null");
+        }
+        if (!start.isBefore(end)) {
+            throw new InvalidReservationException("Start time is after end time");
+        }
+    }
+
+    private static void checkReservationNotInPast(LocalDateTime end) {
+        if (end.isBefore(LocalDateTime.now())) {
+            throw new InvalidReservationException("Reservation is already in past");
+        }
     }
 
     private static void checkBoatHoursValid(Integer updatedBoatHoursOnStar, Integer updatedBoatHoursOnEnd) {

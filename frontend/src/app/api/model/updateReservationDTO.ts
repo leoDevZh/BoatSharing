@@ -10,9 +10,11 @@
 import { ReservationId } from './reservationId';
 
 
-export interface UpdateEngineHoursDTO { 
-    boatEngineHoursOnStart: number;
-    boatEngineHoursOnEnd: number;
+export interface UpdateReservationDTO { 
+    startDateTime: string;
+    endDateTime: string;
+    boatEngineHoursOnStart?: number;
+    boatEngineHoursOnEnd?: number;
     reservationId: ReservationId;
 }
 

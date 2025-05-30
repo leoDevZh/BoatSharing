@@ -2,16 +2,26 @@ package org.example.backend.infrastructure.controller.reservation;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.example.backend.domain.reservation.model.ReservationId;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
-public class UpdateEngineHoursDTO {
+@Builder
+public class UpdateReservationDTO {
     @NotNull
+    LocalDateTime startDateTime;
+
+    @NotNull
+    LocalDateTime endDateTime;
+
     Integer boatEngineHoursOnStart;
-    @NotNull
+
     Integer boatEngineHoursOnEnd;
+
     @NotNull
     ReservationId reservationId;
 }

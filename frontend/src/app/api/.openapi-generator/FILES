@@ -21,7 +21,7 @@ model/exceptionDTO.ts
 model/models.ts
 model/reservationId.ts
 model/reservationUserDTO.ts
-model/updateEngineHoursDTO.ts
+model/updateReservationDTO.ts
 model/userDTO.ts
 model/userId.ts
 param.ts
