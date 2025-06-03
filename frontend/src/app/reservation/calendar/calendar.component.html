@@ -1,0 +1,22 @@
+@for (day of weekdays; track day) {
+  <div class="cell">
+    {{ day }}
+  </div>
+}
+@for (day of daysOfMonth(); track day.toFormat('yyyy-MM-dd')) {
+  <div class="cell"
+       [class.current-day]="isCurrentDay(day)"
+       [class.current-month]="isCurrentMonth(day)"
+       [class.selected-day]="isSelectedDay(day)"
+       (click)="selectDay(day)"
+  >
+    <div class="current-day-container">
+      <span>{{ day.day }}</span>
+    </div>
+    <div class="availability-container">
+      <span [class.reserved]="isReserved(day, ReservedTime.MORNING)"></span>
+      <span [class.reserved]="isReserved(day, ReservedTime.AFTERNOON)"></span>
+      <span [class.reserved]="isReserved(day, ReservedTime.EVENING)"></span>
+    </div>
+  </div>
+}
