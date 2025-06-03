@@ -1,0 +1,44 @@
+:host {
+  padding: var(--padding-l);
+  font-size: .8em;
+}
+
+form {
+  display: grid;
+  gap: var(--margin-m);
+}
+
+.day-container {
+  padding: var(--padding-xs);
+  font-size: 1.1em !important;
+}
+
+.time-container, .hour-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--margin-xs);
+}
+
+.button-container {
+  display: grid;
+  gap: var(--margin-xs);
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  align-items: center;
+  justify-items: center;
+}
+
+.btn-submit {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.btn-reset {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.btn-delete {
+  grid-column: 1;
+  grid-row: 1;
+}

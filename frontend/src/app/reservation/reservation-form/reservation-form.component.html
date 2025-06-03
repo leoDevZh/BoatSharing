@@ -1,0 +1,61 @@
+<h2>{{ reservationToUpdate() ? 'Update' : 'Erstelle' }} Reservation</h2>
+<form [formGroup]="form">
+  <div class="day-container">
+    <p>Tag: {{ selectedDay().weekdayShort }}, {{ selectedDay().day }} {{ selectedDay().monthShort }}</p>
+  </div>
+  <div class="time-container">
+    <mat-form-field>
+      <mat-label>Startzeit</mat-label>
+      <input matInput formControlName="startDateTime" [matTimepicker]="startTime">
+      <mat-timepicker-toggle matIconSuffix [for]="startTime"/>
+      <mat-timepicker #startTime interval="15min"/>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Endzeit</mat-label>
+      <input matInput formControlName="endDateTime" [matTimepicker]="endTime">
+      <mat-timepicker-toggle matIconSuffix [for]="endTime"/>
+      <mat-timepicker #endTime interval="15min"/>
+    </mat-form-field>
+  </div>
+  @if (reservationToUpdate()) {
+    <div class="hour-container">
+      <mat-form-field>
+        <mat-label>Motorstunden start</mat-label>
+        <input matInput type="text" formControlName="startHours">
+        @if (form.controls.startHours.invalid) {
+          <mat-error>Nur natürliche Zahlen erlaubt</mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Motorstunden ende</mat-label>
+        <input matInput type="text" formControlName="endHours">
+        @if (form.controls.endHours.invalid) {
+          <mat-error>Nur natürliche Zahlen erlaubt</mat-error>
+        }
+      </mat-form-field>
+    </div>
+  }
+  <div class="button-container">
+    <button [bsButton]="'submit'"
+            size="sm"
+            [disabled]="form.invalid"
+            (click)="onSubmit()"
+            class="btn-submit">
+      {{ reservationToUpdate() ? 'Update' : 'Reservieren' }}
+    </button>
+    @if (reservationToUpdate()) {
+      <button [bsButton]="'cancel'"
+              size="sm"
+              (click)="onDelete()"
+              class="btn-delete">
+        Löschen
+      </button>
+      <button [bsButton]="'submit'"
+              size="sm"
+              (click)="onCancel()"
+              class="btn-reset">
+        Abbrechen
+      </button>
+    }
+  </div>
+</form>
