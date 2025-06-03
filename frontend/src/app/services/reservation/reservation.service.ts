@@ -1,8 +1,17 @@
 import {computed, inject, Injectable, Signal, signal} from '@angular/core';
-import {BoatId, ReadReservationControllerService, ReservationUserDTO} from '../../api';
+import {
+  BoatId,
+  CreateReservationDTO,
+  ReadReservationControllerService,
+  ReservationControllerService,
+  ReservationId,
+  ReservationUserDTO,
+  UpdateReservationDTO
+} from '../../api';
 import {DateTime} from 'luxon';
 import {ToastyService} from '../toasty/toasty.service';
-import {catchError, map, throwError} from 'rxjs';
+import {catchError, map, Observable, throwError} from 'rxjs';
+import {ErrorInfo} from '../../model/ErrorInfo';
 
 const LOCAL_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
 const RESERVATION_CALENDAR_MAP_KEY_FORMAT = "yyyy-MM-dd"
@@ -14,6 +23,7 @@ export type ReservationCalendarMap = Map<string, ReservationUserDTO[]>;
 })
 export class ReservationService {
 
+  private writeReservationControllerService = inject(ReservationControllerService)
   private readReservationControllerService = inject(ReadReservationControllerService)
   private toastyNotification = inject(ToastyService)
 
@@ -31,8 +41,8 @@ export class ReservationService {
         reservations.forEach(reservation => this.addReservationUserDTOToMapByDay(reservation, calendarMap))
         return calendarMap
       }),
-      catchError(err => {
-        this.toastyNotification.addErrorNotification('Unerwarteter Fehler: Reservationen konnten nicht geladen werden')
+      catchError((err: ErrorInfo) => {
+        this.toastyNotification.addErrorNotification(err.msg ?? 'Unerwarteter Fehler: Reservationen konnten nicht geladen werden')
         return throwError(() => err)
       })
     ).subscribe(reservationCalendarMap => this.reservationCalendarMap.set(reservationCalendarMap))
@@ -42,6 +52,36 @@ export class ReservationService {
     return computed(() => {
       return this.reservationCalendarMap().get(day.toFormat(RESERVATION_CALENDAR_MAP_KEY_FORMAT)) ?? []
     })
+  }
+
+  deleteReservation(reservationId: ReservationId): Observable<any> {
+    return this.writeReservationControllerService.cancelReservation(reservationId.value?.toString()!)
+      .pipe(
+        catchError((err: ErrorInfo) => {
+          this.toastyNotification.addErrorNotification(err.msg ?? 'Unerwarteter Fehler: Reservation konnte nicht gelöscht werden')
+          return throwError(() => err)
+        })
+      )
+  }
+
+  createReservation(createReservationDTO: CreateReservationDTO): Observable<any> {
+    return this.writeReservationControllerService.create(createReservationDTO)
+      .pipe(
+        catchError((err: ErrorInfo) => {
+          this.toastyNotification.addErrorNotification(err.msg ?? 'Unerwarteter Fehler: Reservation konnte nicht erstellt werden')
+          return throwError(() => err)
+        })
+      )
+  }
+
+  updateReservation(updateReservationDTO: UpdateReservationDTO): Observable<any> {
+    return this.writeReservationControllerService.updateReservation(updateReservationDTO)
+      .pipe(
+        catchError((err: ErrorInfo) => {
+          this.toastyNotification.addErrorNotification(err.msg ?? 'Unerwarteter Fehler: Reservation konnte nicht updated werden')
+          return throwError(() => err)
+        })
+      )
   }
 
   private addReservationUserDTOToMapByDay(reservation: ReservationUserDTO, calendarMap: ReservationCalendarMap) {
