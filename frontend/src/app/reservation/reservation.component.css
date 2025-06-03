@@ -1,5 +1,5 @@
 :host {
   display: grid;
-  row-gap: var(--padding-m);
+  grid-template-rows: 48px 1fr;
   width: 100%;
 }
