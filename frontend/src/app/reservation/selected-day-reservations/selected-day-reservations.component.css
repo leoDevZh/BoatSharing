@@ -1,0 +1,63 @@
+:host {
+  display: grid;
+  row-gap: var(--margin-m);
+  padding: var(--padding-l);
+}
+
+.reservation-container {
+  display: grid;
+  grid-template-columns: 0.2fr 2px auto;
+  column-gap: var(--padding-xs);
+  height: 56px;
+  border-radius: 15px;
+  padding: var(--padding-xs);
+  box-shadow: 0 0 4px var(--color-status-disabled);
+  background-color: var(--color-bg-secondary);
+}
+
+.time {
+  display: grid;
+  grid-template-rows: 1fr 0.2fr 1fr;
+  align-items: center;
+  justify-items: center;
+  font-size: 0.8em;
+}
+
+.time span:nth-child(2) {
+  line-height: 0.2em;
+}
+
+.separator {
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-accent-bright);
+}
+
+.details {
+  position: relative;
+  display: grid;
+  grid-template-rows: 0.5fr 0.5fr;
+}
+
+.name {
+  font-size: .9em;
+}
+
+.motor-hours-container {
+  container-type: inline-size;
+  display: flex;
+  gap: var(--padding-m);
+}
+
+.motor-hours-container > p {
+  font-size: 5cqi;
+}
+
+.edit-icon {
+  position: absolute;
+  right: 0;
+  top: 0;
+  opacity: 0.8;
+  font-size: 1em;
+  cursor: pointer;
+}

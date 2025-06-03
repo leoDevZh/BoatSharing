@@ -1,0 +1,22 @@
+@for (reservation of reservationsForSelectedDay(); track reservation.reservationId) {
+  <div class="reservation-container">
+    <div class="time">
+      <span>{{ reservation.startDateTime | date: 'HH:mm' }}</span>
+      <span>-</span>
+      <span>{{ reservation.endDateTime | date: 'HH:mm' }}</span>
+    </div>
+    <div class="separator"></div>
+    <div class="details">
+      <div class="name-container">
+        <p class="name">{{ reservation.userDTO?.username }}</p>
+      </div>
+      <div class="motor-hours-container">
+        <p>Start: <span>{{ reservation.boatHoursOnStart ?? '-' }}</span></p>
+        <p>Ende: <span>{{ reservation.boatHoursOnEnd ?? '-' }}</span></p>
+      </div>
+      @if (reservation.userDTO?.username === loggedInUsername) {
+        <mat-icon (click)="onUpdate(reservation)" class="edit-icon" fontIcon="edit"/>
+      }
+    </div>
+  </div>
+}
