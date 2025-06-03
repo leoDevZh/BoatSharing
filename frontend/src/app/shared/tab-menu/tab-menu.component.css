@@ -1,8 +1,7 @@
 :host {
   display: grid;
   grid-template-rows: 48px 1fr;
-  gap: var(--padding-m);
-  padding: 0 var(--padding-m);
+  gap: var(--margin-xl);
 }
 
 .header {
@@ -14,6 +13,7 @@
   justify-items: center;
   overflow-x: scroll;
   scrollbar-width: none; /* Firefox */
+  padding: 0 var(--padding-m);
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

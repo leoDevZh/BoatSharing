@@ -2,12 +2,20 @@
 
 :root {
   /* COLORS */
+  // background & surface
   --color-bg-primary: #ebf7ff;
-  --color-bg-secondary: #fff;
-  --color-accent-dark: #2160c9;
+  --color-bg-secondary: #ffff;
+  // accent
   --color-accent-bright: #9fe5ff;
-  --color-accent-cancel: #c9214e;
-  --color-accent-disabled: #6d6d6d;
+  --color-accent-bright-20: rgba(159, 229, 255, 0.2);
+  --color-accent-dark: #2160c9; //TODO: Delete?
+  // font
+  --color-font-primary: #1B1B1E;
+  --color-font-secondary: #7a5c60;
+  // status
+  --color-status-error: #c9214e;
+  --color-status-disabled: #858585;
+  --color-status-success: #008636;
 
   /* MARGIN */
   --margin-xxs: 0.25rem;
@@ -38,13 +46,14 @@
   margin: 0;
   padding: 0;
   font-family: 'Delius', serif;
+  color: var(--color-font-primary);
   box-sizing: border-box;
 }
 
 body {
   width: 100vw;
   min-height: 100vh;
-  background: linear-gradient(45deg, var(--color-bg-primary), var(--color-bg-secondary));
+  background: linear-gradient(30deg, var(--color-bg-primary) 40%, var(--color-bg-secondary));
 }
 
 @font-face {
@@ -61,6 +70,18 @@ html {
         color: mat.$azure-palette,
       ),
   );
+}
+
+$compact-theme: mat.define-theme(
+    (
+      density: (
+        scale: -4
+      )
+    )
+);
+
+:root {
+  @include mat.form-field-density($compact-theme)
 }
 
 .mdc-text-field--filled:not(.mdc-text-field--disabled) {
@@ -80,11 +101,11 @@ html {
 }
 
 .btn-cancel {
-  border-color: var(--color-accent-cancel);
+  border-color: var(--color-status-error);
 }
 
 .btn-cancel::before, .btn-cancel::after {
-  background-color: var(--color-accent-cancel);
+  background-color: var(--color-status-error);
 }
 
 .btn-submit {
@@ -124,7 +145,7 @@ html {
 
 
 .bs-btn.disabled {
-  border-color: var(--color-accent-disabled) !important;
+  border-color: var(--color-status-disabled) !important;
   cursor: default;
 }
 
