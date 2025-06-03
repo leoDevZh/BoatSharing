@@ -11,7 +11,7 @@ function mapCodeToErrorInfo(statusCode: number): ErrorInfo {
     case 500:
       return {
         title: 'Allgemeiner Fehler',
-        msg: 'Prüfen Sie Ihre Eingaben'
+        msg: 'Die Anfrage kann nicht verarbeitet werden'
       }
     case 401:
     case 403:
