@@ -7,12 +7,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { BoatId } from './boatId';
 
 
-export interface CreateReservationDTO { 
-    startDateTime: string;
-    endDateTime: string;
-    boatId: BoatId;
+export interface UserId { 
+    value?: number;
 }
 

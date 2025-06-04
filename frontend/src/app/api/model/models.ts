@@ -5,5 +5,6 @@ export * from './createReservationDTO';
 export * from './exceptionDTO';
 export * from './reservationId';
 export * from './reservationUserDTO';
-export * from './updateEngineHoursDTO';
+export * from './updateReservationDTO';
 export * from './userDTO';
+export * from './userId';

@@ -1,6 +1,11 @@
+:host {
+  display: grid;
+  grid-template-rows: 48px 1fr;
+  gap: var(--margin-xl);
+}
+
 .header {
   position: relative;
-  height: 48px;
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 150px;

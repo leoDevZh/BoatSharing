@@ -7,9 +7,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { UserId } from './userId';
 
 
 export interface UserDTO { 
-    username: string;
+    userId?: UserId;
+    username?: string;
 }
 

@@ -27,7 +27,7 @@ public class BoatController {
     @GetMapping
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully found boat of logged in user",
-                    content = @Content(schema = @Schema(implementation = BoatId.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = BoatId.class))),
             @ApiResponse(responseCode = "400", description = "User not owner of boat",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
     })

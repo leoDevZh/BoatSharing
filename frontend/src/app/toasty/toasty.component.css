@@ -4,14 +4,13 @@
   right: 0;
   z-index: 10;
   width: 75%;
-  padding: var(--padding-xs) var(--padding-l);
+  padding: var(--padding-xs);
 }
 
 .toasty {
   position: relative;
   width: 100%;
   height: 68px;
-  margin: var(--margin-xs);
   padding: var(--padding-xs) var(--padding-l);
   border: 1px solid;
   border-radius: 15px;
@@ -31,12 +30,11 @@
 }
 
 .toasty-error {
-  border-color: var(--color-accent-cancel);
-  background-color: var(--color-bg-primary);
+  border-color: var(--color-status-error);
 }
 
 .toasty-error h2 {
-  color: var(--color-accent-cancel);
+  color: var(--color-status-error);
 }
 
 .toasty:hover, .toasty:active {

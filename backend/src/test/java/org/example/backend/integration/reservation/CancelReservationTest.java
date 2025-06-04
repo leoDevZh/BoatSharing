@@ -121,15 +121,15 @@ public class CancelReservationTest {
         Reservation reservation = Reservation.builder()
                 .userId(user1.getId())
                 .boatId(boat1.getId())
-                .startDateTime(LocalDateTime.now().minusHours(2))
-                .endDateTime(LocalDateTime.now().plusHours(3))
+                .startDateTime(LocalDateTime.now().minusHours(5))
+                .endDateTime(LocalDateTime.now().minusHours(2))
                 .build();
         reservationRepository.save(reservation);
 
         mockMvc.perform(delete("/api/reservation/cancel/" + reservation.getId())
                         .with(user(customUserDetail)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Can not delete reservation anymore"));
+                .andExpect(jsonPath("$.message").value("Reservation is already in past"));
         assertEquals(2, reservationRepository.findAll().size());
     }
 

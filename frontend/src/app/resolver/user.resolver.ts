@@ -3,6 +3,7 @@ import {inject} from '@angular/core';
 import {UserControllerService, UserDTO} from '../api';
 import {catchError, Observable, throwError} from 'rxjs';
 import {ToastyService} from '../services/toasty/toasty.service';
+import {ErrorInfo} from '../model/ErrorInfo';
 
 export const userResolver: ResolveFn<UserDTO> = (route, state): Observable<UserDTO> => {
   const userService = inject(UserControllerService);
@@ -11,8 +12,8 @@ export const userResolver: ResolveFn<UserDTO> = (route, state): Observable<UserD
 
   return userService.getUser()
     .pipe(
-      catchError(err => {
-        toastyService.addErrorNotification("Unerwarteter Fehler: Userdaten konnten nicht geladen werden")
+      catchError((err: ErrorInfo) => {
+        toastyService.addErrorNotification(err.msg ?? "Unerwarteter Fehler: Userdaten konnten nicht geladen werden")
         router.navigate(['/error'])
         return throwError(() => err)
       })

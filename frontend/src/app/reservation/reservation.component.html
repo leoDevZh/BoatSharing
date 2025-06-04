@@ -1,1 +1,11 @@
-<p>reservation works!</p>
+<bs-month-selector [(month)]="firstDayOfActiveMonth"/>
+<bs-calendar [daysOfMonth]="daysOfMonth()"
+             (selectedDayChanged)="onSelectedDayChanged($event)"/>
+@if (selectedDay()) {
+  <bs-reservation-form [selectedDay]="selectedDay()!"
+                       [reservationToUpdate]="reservationToUpdate()"
+                       (reloadReservations)="onReloadReservations()"/>
+
+  <bs-selected-day-reservations [selectedDay]="selectedDay()!"
+                                (reservationToUpdateEmit)="onUpdateReservation($event)"/>
+}
