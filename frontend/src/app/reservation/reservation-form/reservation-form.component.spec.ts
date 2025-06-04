@@ -8,7 +8,7 @@ import {DateTime} from 'luxon';
 import {ReservationService} from '../../services/reservation/reservation.service';
 import {ToastyService} from '../../services/toasty/toasty.service';
 
-fdescribe('ReservationFormComponent', () => {
+describe('ReservationFormComponent', () => {
   let component: ReservationFormComponent;
   let fixture: ComponentFixture<ReservationFormComponent>;
   let activatedRoute: jasmine.NonTypedSpyObj<ActivatedRoute>

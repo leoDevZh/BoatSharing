@@ -56,7 +56,7 @@ describe('CalendarComponent', () => {
     const expectedDaysOfMonth = [expectedFirstDayOfMonth, expectedFirstDayOfMonth.plus({day: 1})]
     const mockedReservationsDayOne: ReservationUserDTO[] = [{
       startDateTime: '2025-04-14T08:00:00',
-      endDateTime: '2025-04-14T13:00:00'
+      endDateTime: '2025-04-14T12:00:00'
     }]
     const mockedReservationsDayTwo: ReservationUserDTO[] = [{
       startDateTime: '2025-04-15T13:00:00',

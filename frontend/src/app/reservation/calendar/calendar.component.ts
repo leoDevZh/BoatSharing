@@ -47,8 +47,7 @@ export class CalendarComponent {
           .filter(reservationUserDTO => reservationUserDTO.startDateTime !== undefined && reservationUserDTO.endDateTime !== undefined)
           .some(reservationUserDTO => {
             const startHour = DateTime.fromISO(reservationUserDTO.startDateTime!).hour
-            const endHour = DateTime.fromISO(reservationUserDTO.endDateTime!).hour
-            return (startHour >= 7 && startHour < 13) || endHour <= 13
+            return startHour < 13
           })
       case ReservedTime.AFTERNOON:
         return this.reservationService.findReservationsForDay(day)()
@@ -56,7 +55,7 @@ export class CalendarComponent {
           .some(reservationUserDTO => {
             const startHour = DateTime.fromISO(reservationUserDTO.startDateTime!).hour
             const endHour = DateTime.fromISO(reservationUserDTO.endDateTime!).hour
-            return (startHour >= 13 && startHour < 18) || (endHour > 13 && endHour <= 18)
+            return (startHour >= 13 && startHour < 18) || (endHour >= 13 && endHour < 18) || (startHour < 13 && endHour >= 18)
           })
       case ReservedTime.EVENING:
         return this.reservationService.findReservationsForDay(day)()
@@ -64,7 +63,7 @@ export class CalendarComponent {
           .some(reservationUserDTO => {
             const startHour = DateTime.fromISO(reservationUserDTO.startDateTime!).hour
             const endHour = DateTime.fromISO(reservationUserDTO.endDateTime!).hour
-            return startHour >= 18 || endHour > 18
+            return startHour >= 18 || endHour >= 18
           })
       default:
         return false
