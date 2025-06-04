@@ -191,6 +191,42 @@ public class UpdateReservationForReservationTest {
     }
 
     @Test
+    void updateReservationForReservationOnOverlappingReservationExists() throws Exception {
+        Reservation reservationToOverlap = Reservation.builder()
+                .userId(user1.getId())
+                .boatId(boat1.getId())
+                .startDateTime(LocalDateTime.now().plusHours(12).truncatedTo(ChronoUnit.SECONDS))
+                .endDateTime(LocalDateTime.now().plusHours(15).truncatedTo(ChronoUnit.SECONDS))
+                .build();
+        reservationRepository.save(reservationToOverlap);
+        UpdateReservationDTO updateReservationDTO = new UpdateReservationDTO(
+                reservationToOverlap.getStartDateTime(),
+                reservationToOverlap.getEndDateTime(),
+                null,
+                null,
+                new ReservationId(reservation1.getId())
+        );
+        String updateEngineHoursDTOJson = objectMapper.writeValueAsString(updateReservationDTO);
+
+        mockMvc.perform(post("/api/reservation/updateReservation")
+                        .with(user(customUserDetail))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updateEngineHoursDTOJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Reservation overlap with an existing reservation"));
+        List<Reservation> reservations = reservationRepository.findAll();
+        assertEquals(2, reservations.size());
+        Reservation reservation = reservations.get(0);
+        assertEquals(reservation1.getId(), reservation.getId());
+        assertEquals(reservation1.getUserId(), reservation.getUserId());
+        assertEquals(reservation1.getBoatId(), reservation.getBoatId());
+        assertEquals(reservation1.getStartDateTime(), reservation.getStartDateTime());
+        assertEquals(reservation1.getEndDateTime(), reservation.getEndDateTime());
+        assertNull(reservation.getBoatHoursOnStart());
+        assertNull(reservation.getBoatHoursOnEnd());
+    }
+
+    @Test
     void updateReservationForReservationOnReservationNotExisting() throws Exception {
         Integer engineHoursOnStart = 200;
         Integer engineHoursOnEnd = 250;

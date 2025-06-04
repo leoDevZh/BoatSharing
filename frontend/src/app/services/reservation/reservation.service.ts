@@ -50,7 +50,7 @@ export class ReservationService {
 
   findReservationsForDay(day: DateTime): Signal<ReservationUserDTO[]> {
     return computed(() => {
-      return this.reservationCalendarMap().get(day.toFormat(RESERVATION_CALENDAR_MAP_KEY_FORMAT)) ?? []
+      return this.reservationCalendarMap().get(day.toFormat(RESERVATION_CALENDAR_MAP_KEY_FORMAT))?.sort(this.sortReservationByStartDate()) ?? []
     })
   }
 
@@ -90,5 +90,11 @@ export class ReservationService {
       calendarMap.set(date, [])
     }
     calendarMap.get(date)!.push(reservation)
+  }
+
+  private sortReservationByStartDate(): (r1: ReservationUserDTO, r2: ReservationUserDTO) => number {
+    return (r1, r2) => {
+      return DateTime.fromISO(r1.startDateTime!).toMillis() - DateTime.fromISO(r2.startDateTime!).toMillis()
+    }
   }
 }

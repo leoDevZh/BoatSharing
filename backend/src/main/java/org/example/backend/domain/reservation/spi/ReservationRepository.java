@@ -10,6 +10,8 @@ import java.util.Optional;
 public interface ReservationRepository {
     Integer countOverlappingReservations(LocalDateTime from, LocalDateTime to, BoatId boatId);
 
+    Integer countOverlappingReservationsForUpdate(LocalDateTime from, LocalDateTime to, BoatId boatId, ReservationId reservationId);
+
     void saveReservation(Reservation reservation);
 
     Optional<Reservation> findReservationById(ReservationId reservationId);
