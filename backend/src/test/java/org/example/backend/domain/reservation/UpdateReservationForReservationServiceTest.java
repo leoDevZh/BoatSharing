@@ -142,6 +142,29 @@ public class UpdateReservationForReservationServiceTest {
     }
 
     @Test
+    void shouldThrowExceptionWhenOverlappingReservationsExist() {
+        ReservationId reservationId = new ReservationId(1L);
+        UserId userId = new UserId(1L);
+        int boatHoursOnStar = 1;
+        int boatHoursOnEnd = 2;
+        Reservation reservation = Reservation.builder()
+                .reservationId(reservationId)
+                .userId(userId)
+                .boatId(new BoatId(1L))
+                .startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now().plusHours(boatHoursOnEnd))
+                .build();
+        when(reservationRepository.findReservationById(reservationId)).thenReturn(Optional.of(reservation));
+        when(reservationRepository.countOverlappingReservationsForUpdate(reservation.getStartDateTime(), reservation.getEndDateTime(), reservation.getBoatId(), reservationId)).thenReturn(1);
+
+        Exception exception = assertThrows(InvalidReservationException.class, () -> {
+            reservationService.updateReservation(userId, reservationId, reservation.getStartDateTime(), reservation.getEndDateTime(), boatHoursOnStar, boatHoursOnEnd);
+        });
+
+        assertEquals("Reservation overlap with an existing reservation", exception.getMessage());
+    }
+
+    @Test
     void shouldThrowExceptionWhenStartEngineHourGreaterEndEngineHours() {
         ReservationId reservationId = new ReservationId(1L);
         UserId userId = new UserId(1L);

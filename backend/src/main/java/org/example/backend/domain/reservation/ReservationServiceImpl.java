@@ -50,6 +50,9 @@ public class ReservationServiceImpl implements ReservationService {
         if (!reservation.isOwner(userId)) {
             throw new InvalidReservationException("User is not owner of reservation");
         }
+        if (reservationRepository.countOverlappingReservationsForUpdate(start, end, reservation.getBoatId(), reservationId) > 0) {
+            throw new InvalidReservationException("Reservation overlap with an existing reservation");
+        }
         reservation.updateReservation(start, end, boatHoursOnStar, boatHoursOnEnd);
         reservationRepository.saveReservation(reservation);
     }

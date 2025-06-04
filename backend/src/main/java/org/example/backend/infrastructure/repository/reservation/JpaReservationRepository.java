@@ -15,6 +15,12 @@ public interface JpaReservationRepository extends JpaRepository<Reservation, Lon
                                          @Param("to") LocalDateTime to,
                                          @Param("boatId") Long boatId);
 
+    @Query("SELECT COUNT(r) FROM Reservation r WHERE r.startDateTime < :to AND r.endDateTime > :from AND r.boatId = :boatId AND r.id != :reservationId")
+    Integer countOverlappingReservationsForUpdate(@Param("from") LocalDateTime from,
+                                                  @Param("to") LocalDateTime to,
+                                                  @Param("boatId") Long boatId,
+                                                  @Param("reservationId") Long reservationId);
+
     @Query("""
                 SELECT new org.example.backend.infrastructure.repository.reservation.ReservationUserDTO(
                     r.id, r.startDateTime, r.endDateTime, r.boatHoursOnStart, r.boatHoursOnEnd, r.boatId,

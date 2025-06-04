@@ -25,6 +25,11 @@ public class ReservationRepositoryImplementation implements ReservationRepositor
     }
 
     @Override
+    public Integer countOverlappingReservationsForUpdate(LocalDateTime from, LocalDateTime to, BoatId boatId, ReservationId reservationId) {
+        return jpaReservationRepository.countOverlappingReservationsForUpdate(from, to, boatId.value(), reservationId.value());
+    }
+
+    @Override
     public void saveReservation(Reservation reservation) {
         jpaReservationRepository.save(ReservationMapper.toEntity(reservation));
     }
