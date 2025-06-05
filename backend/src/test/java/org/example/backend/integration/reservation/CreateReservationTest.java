@@ -15,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -31,6 +30,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -93,8 +93,8 @@ public class CreateReservationTest {
 
     @Test
     void createReservationOnSuccess() throws Exception {
-        LocalDateTime start = LocalDateTime.of(2025, 3, 23, 10, 0);
-        LocalDateTime end = LocalDateTime.of(2025, 3, 23, 12, 0);
+        LocalDateTime start = LocalDateTime.now().plusHours(10).truncatedTo(ChronoUnit.SECONDS);
+        LocalDateTime end = LocalDateTime.now().plusHours(15).truncatedTo(ChronoUnit.SECONDS);
         CreateReservationDTO createReservationDTO = new CreateReservationDTO(
                 start,
                 end,
@@ -120,8 +120,8 @@ public class CreateReservationTest {
 
     @Test
     void createReservationOnBoatNotExisting() throws Exception {
-        LocalDateTime start = LocalDateTime.of(2025, 3, 23, 10, 0);
-        LocalDateTime end = LocalDateTime.of(2025, 3, 23, 12, 0);
+        LocalDateTime start = LocalDateTime.now().plusHours(10).truncatedTo(ChronoUnit.SECONDS);
+        LocalDateTime end = LocalDateTime.now().plusHours(15).truncatedTo(ChronoUnit.SECONDS);
         CreateReservationDTO createReservationDTO = new CreateReservationDTO(
                 start,
                 end,
@@ -140,10 +140,7 @@ public class CreateReservationTest {
     }
 
     @ParameterizedTest
-    @CsvSource({
-            "2025-03-23T10:00, 2025-03-23T09:00", // Start after end
-            "2025-03-23T10:00, 2025-03-23T10:00", // Start equals end
-    })
+    @MethodSource("provideInvalidReservationDates")
     void createReservationOnStartAfterEnd(LocalDateTime start, LocalDateTime end) throws Exception {
         CreateReservationDTO createReservationDTO = new CreateReservationDTO(
                 start,
@@ -166,8 +163,8 @@ public class CreateReservationTest {
     void createReservationOnUserIsNotOwner() throws Exception {
         Boat boat2 = Boat.builder().name("Atlantica 2").build();
         boatRepository.save(boat2);
-        LocalDateTime start = LocalDateTime.of(2025, 3, 23, 10, 0);
-        LocalDateTime end = LocalDateTime.of(2025, 3, 23, 12, 0);
+        LocalDateTime start = LocalDateTime.now().plusHours(10).truncatedTo(ChronoUnit.SECONDS);
+        LocalDateTime end = LocalDateTime.now().plusHours(15).truncatedTo(ChronoUnit.SECONDS);
         CreateReservationDTO createReservationDTO = new CreateReservationDTO(
                 start,
                 end,
@@ -193,8 +190,8 @@ public class CreateReservationTest {
                 .userId(user1.getId())
                 .build();
         reservationRepository.save(existingReservation);
-        LocalDateTime start = LocalDateTime.of(2025, 3, 23, 10, 0);
-        LocalDateTime end = LocalDateTime.of(2025, 3, 23, 12, 0);
+        LocalDateTime start = LocalDateTime.now().plusHours(10).truncatedTo(ChronoUnit.SECONDS);
+        LocalDateTime end = LocalDateTime.now().plusHours(15).truncatedTo(ChronoUnit.SECONDS);
         CreateReservationDTO createReservationDTO = new CreateReservationDTO(
                 start,
                 end,
@@ -231,8 +228,8 @@ public class CreateReservationTest {
 
     @Test
     void createReservationOnConcurrentCall() throws Exception {
-        LocalDateTime start = LocalDateTime.of(2025, 3, 23, 10, 0);
-        LocalDateTime end = LocalDateTime.of(2025, 3, 23, 12, 0);
+        LocalDateTime start = LocalDateTime.now().plusHours(10).truncatedTo(ChronoUnit.SECONDS);
+        LocalDateTime end = LocalDateTime.now().plusHours(15).truncatedTo(ChronoUnit.SECONDS);
         CreateReservationDTO createReservationDTO = new CreateReservationDTO(
                 start,
                 end,
@@ -279,21 +276,33 @@ public class CreateReservationTest {
 
     private static Stream<Arguments> provideReservationData() {
         return Stream.of(
+                // Overlapping endTime
                 Arguments.of(
                         Reservation.builder()
-                                .startDateTime(LocalDateTime.of(2025, 3, 23, 9, 0))
-                                .endDateTime(LocalDateTime.of(2025, 3, 23, 11, 0))
+                                .startDateTime(LocalDateTime.now().plusHours(9).truncatedTo(ChronoUnit.SECONDS))
+                                .endDateTime(LocalDateTime.now().plusHours(12).truncatedTo(ChronoUnit.SECONDS))
                 ),
+                // Overlapping startTime
                 Arguments.of(
                         Reservation.builder()
-                                .startDateTime(LocalDateTime.of(2025, 3, 23, 11, 0))
-                                .endDateTime(LocalDateTime.of(2025, 3, 23, 13, 0))
+                                .startDateTime(LocalDateTime.now().plusHours(12).truncatedTo(ChronoUnit.SECONDS))
+                                .endDateTime(LocalDateTime.now().plusHours(16).truncatedTo(ChronoUnit.SECONDS))
                 ),
+                // Overlapping start- and endTime
                 Arguments.of(
                         Reservation.builder()
-                                .startDateTime(LocalDateTime.of(2025, 3, 23, 10, 0))
-                                .endDateTime(LocalDateTime.of(2025, 3, 23, 12, 0))
+                                .startDateTime(LocalDateTime.now().plusHours(10).truncatedTo(ChronoUnit.SECONDS))
+                                .endDateTime(LocalDateTime.now().plusHours(15).truncatedTo(ChronoUnit.SECONDS))
                 )
+        );
+    }
+
+    private static Stream<Arguments> provideInvalidReservationDates() {
+        LocalDateTime now = LocalDateTime.now().plusDays(1);
+
+        return Stream.of(
+                Arguments.of(now.plusHours(2), now),
+                Arguments.of(now, now)
         );
     }
 }
