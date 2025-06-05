@@ -7,6 +7,7 @@ import {authInterceptor} from './interceptors/auth.interceptor';
 import {errorInterceptor} from './interceptors/error.interceptor';
 import {HAMMER_LOADER, HammerModule} from '@angular/platform-browser';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
+import {MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,6 +20,11 @@ export const appConfig: ApplicationConfig = {
         errorInterceptor
       ])
     ),
+    provideNativeDateAdapter(),
+    {
+      provide: MAT_DATE_LOCALE,
+      useValue: 'de-CH'
+    },
     {
       provide: HAMMER_LOADER,
       useValue: () => import('hammerjs')
