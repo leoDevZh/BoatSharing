@@ -1,0 +1,28 @@
+name: boatsharing
+
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - boatsharing:/var/lib/postgresql/data
+
+  backend:
+    image: ironmomo/boatsharing-api:1.0.0
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - db
+
+  web:
+    image: ironmomo/boatsharing-web:1.0.0
+    ports:
+      - "4201:80"
+
+volumes:
+  boatsharing:
