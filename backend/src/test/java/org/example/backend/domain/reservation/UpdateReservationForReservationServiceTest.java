@@ -63,6 +63,37 @@ public class UpdateReservationForReservationServiceTest {
         verify(reservationRepository, times(1)).findReservationById(reservationId);
         verify(reservationRepository, times(1)).saveReservation(reservationCaptor.capture());
         Reservation capturedReservation = reservationCaptor.getValue();
+        assertEquals(reservation.getStartDateTime(), capturedReservation.getStartDateTime());
+        assertEquals(reservation.getEndDateTime(), capturedReservation.getEndDateTime());
+        assertEquals(boatHoursOnStart, capturedReservation.getBoatHoursOnStart());
+        assertEquals(boatHoursOnEnd, capturedReservation.getBoatHoursOnEnd());
+        assertEquals(reservationId, capturedReservation.getReservationId());
+        assertEquals(userId, capturedReservation.getUserId());
+    }
+
+    @Test
+    void shouldUpdateReservationBoatHoursSuccessfullyWhenInPast() {
+        Integer boatHoursOnStart = 1;
+        Integer boatHoursOnEnd = 2;
+        ReservationId reservationId = new ReservationId(1L);
+        UserId userId = new UserId(1L);
+        Reservation reservation = Reservation.builder()
+                .reservationId(reservationId)
+                .userId(userId)
+                .boatId(new BoatId(1L))
+                .startDateTime(LocalDateTime.now().minusHours(20))
+                .endDateTime(LocalDateTime.now().minusHours(10))
+                .build();
+        when(reservationRepository.findReservationById(reservationId)).thenReturn(Optional.of(reservation));
+
+        reservationService.updateReservation(userId, reservationId, reservation.getStartDateTime(), reservation.getEndDateTime(), boatHoursOnStart, boatHoursOnEnd);
+
+        ArgumentCaptor<Reservation> reservationCaptor = ArgumentCaptor.forClass(Reservation.class);
+        verify(reservationRepository, times(1)).findReservationById(reservationId);
+        verify(reservationRepository, times(1)).saveReservation(reservationCaptor.capture());
+        Reservation capturedReservation = reservationCaptor.getValue();
+        assertEquals(reservation.getStartDateTime(), capturedReservation.getStartDateTime());
+        assertEquals(reservation.getEndDateTime(), capturedReservation.getEndDateTime());
         assertEquals(boatHoursOnStart, capturedReservation.getBoatHoursOnStart());
         assertEquals(boatHoursOnEnd, capturedReservation.getBoatHoursOnEnd());
         assertEquals(reservationId, capturedReservation.getReservationId());
@@ -88,6 +119,28 @@ public class UpdateReservationForReservationServiceTest {
         });
 
         assertEquals(exceptionMsg, exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenReservationInPastAndTryToChangeDate() {
+        LocalDateTime newStart = LocalDateTime.now().plusHours(10);
+        LocalDateTime newEnd = LocalDateTime.now().plusHours(20);
+        ReservationId reservationId = new ReservationId(1L);
+        UserId userId = new UserId(1L);
+        Reservation reservation = Reservation.builder()
+                .reservationId(reservationId)
+                .userId(userId)
+                .boatId(new BoatId(1L))
+                .startDateTime(LocalDateTime.now().minusHours(20))
+                .endDateTime(LocalDateTime.now().minusHours(10))
+                .build();
+        when(reservationRepository.findReservationById(reservationId)).thenReturn(Optional.of(reservation));
+
+        Exception exception = assertThrows(InvalidReservationException.class, () -> {
+            reservationService.updateReservation(userId, reservationId, newStart, newEnd, 1, 2);
+        });
+
+        assertEquals("Reservation is already in past", exception.getMessage());
     }
 
     @ParameterizedTest
