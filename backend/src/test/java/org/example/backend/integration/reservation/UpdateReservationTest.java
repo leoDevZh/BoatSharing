@@ -46,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(TestDBConfiguration.class)
 @Testcontainers
 @ActiveProfiles("test")
-public class UpdateReservationForReservationTest {
+public class UpdateReservationTest {
     @Autowired
     private MockMvc mockMvc;
 
