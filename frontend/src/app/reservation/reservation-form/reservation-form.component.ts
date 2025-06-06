@@ -13,7 +13,6 @@ import {provideNativeDateAdapter} from '@angular/material/core';
 import {DateTime} from 'luxon';
 import {BoatId, CreateReservationDTO, ReservationUserDTO, UpdateReservationDTO} from '../../api';
 import {MatError, MatFormField} from '@angular/material/form-field';
-import {MatTimepicker, MatTimepickerInput, MatTimepickerToggle} from '@angular/material/timepicker';
 import {MatInput, MatLabel} from '@angular/material/input';
 import {ButtonDirective} from '../../shared/button/button.directive';
 import {ReservationService} from '../../services/reservation/reservation.service';
@@ -21,8 +20,8 @@ import {ActivatedRoute} from '@angular/router';
 import {ToastyService} from '../../services/toasty/toasty.service';
 
 interface ReservationDialogForm {
-  startDateTime: FormControl<Date>
-  endDateTime: FormControl<Date>
+  startDateTime: FormControl<string | null>
+  endDateTime: FormControl<string | null>
   startHours: FormControl<number | null>
   endHours: FormControl<number | null>
 }
@@ -33,9 +32,6 @@ interface ReservationDialogForm {
   imports: [
     ReactiveFormsModule,
     MatFormField,
-    MatTimepickerToggle,
-    MatTimepicker,
-    MatTimepickerInput,
     MatInput,
     MatLabel,
     ButtonDirective,
@@ -60,8 +56,8 @@ export class ReservationFormComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     const toUpdate = this.reservationToUpdate()
     this.form = this.fb.group<ReservationDialogForm>({
-      startDateTime: this.fb.control(toUpdate ? new Date(toUpdate.startDateTime!) : this.selectedDay().toJSDate(), Validators.required),
-      endDateTime: this.fb.control(toUpdate ? new Date(toUpdate.endDateTime!) : this.selectedDay().toJSDate(), Validators.required),
+      startDateTime: this.fb.control(toUpdate ? DateTime.fromISO(toUpdate.startDateTime!).toFormat("HH:mm") : null, Validators.required),
+      endDateTime: this.fb.control(toUpdate ? DateTime.fromISO(toUpdate.endDateTime!).toFormat("HH:mm") : null, Validators.required),
       startHours: this.fb.control(toUpdate?.boatHoursOnStart ? toUpdate.boatHoursOnStart : null, [Validators.min(0), this.createNumbersOnlyValidator()]),
       endHours: this.fb.control(toUpdate?.boatHoursOnEnd ? toUpdate.boatHoursOnEnd : null, [Validators.min(0)])
     })
@@ -75,21 +71,17 @@ export class ReservationFormComponent implements OnInit, OnChanges {
     if (changes['reservationToUpdate'] && !changes['reservationToUpdate'].isFirstChange()) {
       const toUpdate = changes['reservationToUpdate'].currentValue
       if (toUpdate === undefined) {
-        this.onCancel()
+        this.clearForm()
       } else {
         this.initFormWithReservationToUpdate(toUpdate);
       }
     }
-    if (changes['selectedDay'] && !changes['selectedDay'].isFirstChange()) {
-      const updatedDay = changes['selectedDay'].currentValue as DateTime
-      const currentFormValues = this.form.getRawValue()
-
-      this.form.controls.startDateTime.reset(this.changeDateKeepTime(currentFormValues.startDateTime, updatedDay.toJSDate()))
-      this.form.controls.endDateTime.reset(this.changeDateKeepTime(currentFormValues.endDateTime, updatedDay.toJSDate()))
-    }
   }
 
   onSubmit() {
+    if (!this.form.valid) {
+      return
+    }
     if (this.reservationToUpdate() === undefined) {
       const createReservationDTO = this.formToCreateReservationDTO()
       this.reservationService.createReservation(createReservationDTO)
@@ -125,24 +117,18 @@ export class ReservationFormComponent implements OnInit, OnChanges {
 
   private initFormWithReservationToUpdate(toUpdate: ReservationUserDTO) {
     this.form.reset({
-      startDateTime: new Date(toUpdate.startDateTime!),
-      endDateTime: new Date(toUpdate.endDateTime!),
+      startDateTime: DateTime.fromISO(toUpdate.startDateTime!).toFormat("HH:mm"),
+      endDateTime: DateTime.fromISO(toUpdate.endDateTime!).toFormat("HH:mm"),
       startHours: toUpdate?.boatHoursOnStart ? toUpdate.boatHoursOnStart : null,
       endHours: toUpdate?.boatHoursOnEnd ? toUpdate.boatHoursOnEnd : null
     })
   }
 
-  private changeDateKeepTime(originalDate: Date, newDate: Date): Date {
-    const updated = new Date(newDate)
-    updated.setHours(originalDate.getHours(), originalDate.getMinutes())
-    return updated
-  }
-
   private clearForm() {
     this.reservationToUpdate.set(undefined)
     this.form.reset({
-      startDateTime: new Date(this.selectedDay().toJSDate()),
-      endDateTime: new Date(this.selectedDay().toJSDate()),
+      startDateTime: null,
+      endDateTime: null,
       startHours: null,
       endHours: null
     })
@@ -170,31 +156,29 @@ export class ReservationFormComponent implements OnInit, OnChanges {
 
     return {
       boatId: this.reservationToUpdate() ? this.reservationToUpdate()?.boatId! : this.boatId,
-      startDateTime: this.formatDateToLocalISOString(rawValues.startDateTime),
-      endDateTime: this.formatDateToLocalISOString(rawValues.endDateTime)
+      startDateTime: this.applyTimeToDate(rawValues.startDateTime!),
+      endDateTime: this.applyTimeToDate(rawValues.endDateTime!)
     }
-  }
-
-  private formatDateToLocalISOString(date: Date) {
-    const pad = (n: number) => n.toString().padStart(2, '0')
-
-    const year = date.getFullYear()
-    const month = pad(date.getMonth() + 1)
-    const day = pad(date.getDate())
-    const hours = pad(date.getHours())
-    const minutes = pad(date.getMinutes())
-
-    return `${year}-${month}-${day}T${hours}:${minutes}`
   }
 
   private formToUpdateReservationDTO(): UpdateReservationDTO {
     const rawValues = this.form.getRawValue()
     return {
       reservationId: this.reservationToUpdate()?.reservationId!,
-      startDateTime: this.formatDateToLocalISOString(rawValues.startDateTime),
-      endDateTime: this.formatDateToLocalISOString(rawValues.endDateTime),
+      startDateTime: this.applyTimeToDate(rawValues.startDateTime!),
+      endDateTime: this.applyTimeToDate(rawValues.endDateTime!),
       boatEngineHoursOnStart: rawValues.startHours ?? undefined,
       boatEngineHoursOnEnd: rawValues.endHours ?? undefined
     }
+  }
+
+  private applyTimeToDate(timeStr: string): string {
+    let dateString = this.selectedDay().toFormat('yyyy-MM-dd')
+    dateString += `T${timeStr}`
+    return dateString
+  }
+
+  submitButtonDisabled() {
+    return !this.form.valid;
   }
 }

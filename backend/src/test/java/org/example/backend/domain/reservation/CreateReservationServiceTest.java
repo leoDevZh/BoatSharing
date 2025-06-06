@@ -40,8 +40,8 @@ public class CreateReservationServiceTest {
         BoatId boatId = new BoatId(1L);
         UserId userId = new UserId(2L);
         Boat boat = mock(Boat.class);
-        LocalDateTime start = LocalDateTime.of(2025, 4, 1, 0, 0);
-        LocalDateTime end = LocalDateTime.of(2025, 4, 1, 1, 30);
+        LocalDateTime start = LocalDateTime.now().plusHours(10);
+        LocalDateTime end = LocalDateTime.now().plusHours(15);
         when(boatRepository.findByIdWithOwners(boatId)).thenReturn(Optional.of(boat));
         when(boat.isCoOwner(userId)).thenReturn(true);
         when(reservationRepository.countOverlappingReservations(start, end, boatId)).thenReturn(0);
@@ -60,8 +60,8 @@ public class CreateReservationServiceTest {
     void shouldThrowExceptionWhenBoatNotFound() {
         BoatId boatId = new BoatId(1L);
         UserId userId = new UserId(2L);
-        LocalDateTime start = LocalDateTime.of(2025, 4, 1, 0, 0);
-        LocalDateTime end = LocalDateTime.of(2025, 4, 1, 1, 30);
+        LocalDateTime start = LocalDateTime.now().plusHours(10);
+        LocalDateTime end = LocalDateTime.now().plusHours(15);
         when(boatRepository.findByIdWithOwners(boatId)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(InvalidReservationException.class, () ->
@@ -75,8 +75,8 @@ public class CreateReservationServiceTest {
         BoatId boatId = new BoatId(1L);
         Boat boat = mock(Boat.class);
         UserId userId = new UserId(2L);
-        LocalDateTime start = LocalDateTime.of(2025, 4, 1, 0, 0);
-        LocalDateTime end = LocalDateTime.of(2025, 4, 1, 1, 30);
+        LocalDateTime start = LocalDateTime.now().plusHours(10);
+        LocalDateTime end = LocalDateTime.now().plusHours(15);
         when(boatRepository.findByIdWithOwners(boatId)).thenReturn(Optional.of(boat));
         when(boat.isCoOwner(userId)).thenReturn(false);
 
@@ -91,8 +91,8 @@ public class CreateReservationServiceTest {
         BoatId boatId = new BoatId(1L);
         Boat boat = mock(Boat.class);
         UserId userId = new UserId(2L);
-        LocalDateTime start = LocalDateTime.of(2025, 4, 1, 0, 0);
-        LocalDateTime end = LocalDateTime.of(2025, 4, 1, 1, 30);
+        LocalDateTime start = LocalDateTime.now().plusHours(10);
+        LocalDateTime end = LocalDateTime.now().plusHours(15);
         when(boatRepository.findByIdWithOwners(boatId)).thenReturn(Optional.of(boat));
         when(boat.isCoOwner(userId)).thenReturn(true);
         when(reservationRepository.countOverlappingReservations(start, end, boatId)).thenReturn(1);
@@ -101,5 +101,22 @@ public class CreateReservationServiceTest {
                 reservationService.makeNewReservation(userId, boatId, start, end));
 
         assertEquals("Reservation overlap with an existing reservation", exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenReservationInPast() {
+        BoatId boatId = new BoatId(1L);
+        Boat boat = mock(Boat.class);
+        UserId userId = new UserId(2L);
+        LocalDateTime start = LocalDateTime.now().minusHours(10);
+        LocalDateTime end = LocalDateTime.now().minusHours(5);
+        when(boatRepository.findByIdWithOwners(boatId)).thenReturn(Optional.of(boat));
+        when(boat.isCoOwner(userId)).thenReturn(true);
+        when(reservationRepository.countOverlappingReservations(start, end, boatId)).thenReturn(0);
+
+        Exception exception = assertThrows(InvalidReservationException.class, () ->
+                reservationService.makeNewReservation(userId, boatId, start, end));
+
+        assertEquals("New Reservation can not be in the past", exception.getMessage());
     }
 }

@@ -17,6 +17,13 @@ form {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--margin-xs);
+  align-items: center;
+  justify-items: center;
+}
+
+.startBoatHour, .endBoatHour {
+  width: 100%;
+  height: 100%;
 }
 
 .button-container {
@@ -41,4 +48,30 @@ form {
 .btn-delete {
   grid-column: 1;
   grid-row: 1;
+}
+
+.time-input-container {
+  width: fit-content;
+  min-width: 74px;
+  height: 100%;
+  position: relative;
+}
+
+.time-input-container > input {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  border: 1px solid var(--color-status-disabled);
+  border-radius: 10px;
+  font-size: 1.4em;
+  padding: var(--padding-xxs);
+  text-align: center;
+}
+
+.time-input-container > label {
+  position: absolute;
+  transform: translateY(-50%);
+  left: 20%;
+  background-color: var(--color-bg-primary);
+  padding: 0 var(--padding-xxs);
 }

@@ -31,13 +31,14 @@ public class Reservation {
     }
 
     public void cancelReservation() {
-        checkReservationNotInPast(this.endDateTime);
+        checkDateInPast(endDateTime);
     }
 
     public void updateReservation(LocalDateTime start, LocalDateTime end, Integer updatedBoatHoursOnStar, Integer updatedBoatHoursOnEnd) {
         checkEndTimeIsAfterStartTime(start, end);
         if (!(startDateTime.equals(start) && endDateTime.equals(end))) {
-            checkReservationNotInPast(end);
+            checkDateInPast(endDateTime);
+            checkDateInPast(end);
         }
         checkBoatHoursValid(updatedBoatHoursOnStar, updatedBoatHoursOnEnd);
         this.startDateTime = start;
@@ -55,9 +56,9 @@ public class Reservation {
         }
     }
 
-    private static void checkReservationNotInPast(LocalDateTime end) {
-        if (end.isBefore(LocalDateTime.now())) {
-            throw new InvalidReservationException("Reservation is already in past");
+    private void checkDateInPast(LocalDateTime dateTime) {
+        if (dateTime.isBefore(LocalDateTime.now())) {
+            throw new InvalidReservationException("Reservation update not possible in past");
         }
     }
 

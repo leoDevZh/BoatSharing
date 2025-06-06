@@ -46,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(TestDBConfiguration.class)
 @Testcontainers
 @ActiveProfiles("test")
-public class UpdateReservationForReservationTest {
+public class UpdateReservationTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -122,6 +122,44 @@ public class UpdateReservationForReservationTest {
         assertEquals(reservation1.getBoatId(), reservation.getBoatId());
         assertEquals(reservation1.getStartDateTime(), reservation.getStartDateTime());
         assertEquals(reservation1.getEndDateTime(), reservation.getEndDateTime());
+        assertEquals(engineHoursOnStart, reservation.getBoatHoursOnStart());
+        assertEquals(engineHoursOnEnd, reservation.getBoatHoursOnEnd());
+    }
+
+    @Test
+    void updateEngineHoursForReservationInPastOnSuccess() throws Exception {
+        reservationRepository.deleteAll();
+        Reservation reservationToUpdate = Reservation.builder()
+                .userId(user1.getId())
+                .boatId(boat1.getId())
+                .startDateTime(LocalDateTime.now().minusHours(15).truncatedTo(ChronoUnit.SECONDS))
+                .endDateTime(LocalDateTime.now().minusHours(10).truncatedTo(ChronoUnit.SECONDS))
+                .build();
+        reservationRepository.save(reservationToUpdate);
+        Integer engineHoursOnStart = 200;
+        Integer engineHoursOnEnd = 250;
+        UpdateReservationDTO updateReservationDTO = new UpdateReservationDTO(
+                reservationToUpdate.getStartDateTime(),
+                reservationToUpdate.getEndDateTime(),
+                engineHoursOnStart,
+                engineHoursOnEnd,
+                new ReservationId(reservationToUpdate.getId())
+        );
+        String updateEngineHoursDTOJson = objectMapper.writeValueAsString(updateReservationDTO);
+
+        mockMvc.perform(post("/api/reservation/updateReservation")
+                        .with(user(customUserDetail))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updateEngineHoursDTOJson))
+                .andExpect(status().isOk());
+        List<Reservation> reservations = reservationRepository.findAll();
+        assertEquals(1, reservations.size());
+        Reservation reservation = reservations.get(0);
+        assertEquals(reservationToUpdate.getId(), reservation.getId());
+        assertEquals(reservationToUpdate.getUserId(), reservation.getUserId());
+        assertEquals(reservationToUpdate.getBoatId(), reservation.getBoatId());
+        assertEquals(reservationToUpdate.getStartDateTime(), reservation.getStartDateTime());
+        assertEquals(reservationToUpdate.getEndDateTime(), reservation.getEndDateTime());
         assertEquals(engineHoursOnStart, reservation.getBoatHoursOnStart());
         assertEquals(engineHoursOnEnd, reservation.getBoatHoursOnEnd());
     }

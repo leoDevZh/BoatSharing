@@ -35,6 +35,9 @@ public class ReservationServiceImpl implements ReservationService {
         if (reservationRepository.countOverlappingReservations(start, end, boatId) > 0) {
             throw new InvalidReservationException("Reservation overlap with an existing reservation");
         }
+        if (LocalDateTime.now().isAfter(end)) {
+            throw new InvalidReservationException("New Reservation can not be in the past");
+        }
         Reservation newReservation = Reservation.builder()
                 .userId(userId)
                 .boatId(boatId)

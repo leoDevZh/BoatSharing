@@ -4,29 +4,25 @@
     <p>Tag: {{ selectedDay().weekdayShort }}, {{ selectedDay().day }} {{ selectedDay().monthShort }}</p>
   </div>
   <div class="time-container">
-    <mat-form-field>
-      <mat-label>Startzeit</mat-label>
-      <input matInput formControlName="startDateTime" [matTimepicker]="startTime">
-      <mat-timepicker-toggle matIconSuffix [for]="startTime"/>
-      <mat-timepicker #startTime interval="15min"/>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Endzeit</mat-label>
-      <input matInput formControlName="endDateTime" [matTimepicker]="endTime">
-      <mat-timepicker-toggle matIconSuffix [for]="endTime"/>
-      <mat-timepicker #endTime interval="15min"/>
-    </mat-form-field>
+    <div class="time-input-container">
+      <label>Von</label>
+      <input type="time" formControlName="startDateTime">
+    </div>
+    <div class="time-input-container">
+      <label>Bis</label>
+      <input type="time" formControlName="endDateTime">
+    </div>
   </div>
   @if (reservationToUpdate()) {
     <div class="hour-container">
-      <mat-form-field>
+      <mat-form-field class="startBoatHour">
         <mat-label>Motorstunden start</mat-label>
         <input matInput type="text" formControlName="startHours">
         @if (form.controls.startHours.invalid) {
           <mat-error>Nur natürliche Zahlen erlaubt</mat-error>
         }
       </mat-form-field>
-      <mat-form-field>
+      <mat-form-field class="endBoatHour">
         <mat-label>Motorstunden ende</mat-label>
         <input matInput type="text" formControlName="endHours">
         @if (form.controls.endHours.invalid) {
@@ -40,7 +36,8 @@
             size="sm"
             [disabled]="form.invalid"
             (click)="onSubmit()"
-            class="btn-submit">
+            class="btn-submit"
+            [disabled]="submitButtonDisabled()">
       {{ reservationToUpdate() ? 'Update' : 'Reservieren' }}
     </button>
     @if (reservationToUpdate()) {
