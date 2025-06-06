@@ -2,6 +2,7 @@ package org.example.backend.infrastructure.security.jwt;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -9,7 +10,18 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-    private final static String SECRET_KEY = "your-256-bit-secret-your-256-bit-secret";
+
+    private static String SECRET_KEY;
+
+    @Value("${jwt.secret}")
+    public void setSecretKey(String secretKey) {
+        SECRET_KEY = secretKey;
+    }
+
+    public static String getSecretKey() {
+        return SECRET_KEY;
+    }
+
     private final static long EXPIRATION_TIME = 86400000; // 1 day
 
     public static String generateToken(String username) {
@@ -45,6 +57,6 @@ public class JwtUtil {
     }
 
     private static SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        return Keys.hmacShaKeyFor(getSecretKey().getBytes());
     }
 }
