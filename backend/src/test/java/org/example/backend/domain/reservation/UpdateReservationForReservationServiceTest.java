@@ -140,7 +140,7 @@ public class UpdateReservationForReservationServiceTest {
             reservationService.updateReservation(userId, reservationId, newStart, newEnd, 1, 2);
         });
 
-        assertEquals("Reservation is already in past", exception.getMessage());
+        assertEquals("Reservation update not possible in past", exception.getMessage());
     }
 
     @ParameterizedTest
@@ -272,7 +272,7 @@ public class UpdateReservationForReservationServiceTest {
                 Arguments.of(
                         now.minusHours(15),
                         now.minusHours(10),
-                        "Reservation is already in past"
+                        "Reservation update not possible in past"
                 )
         );
     }

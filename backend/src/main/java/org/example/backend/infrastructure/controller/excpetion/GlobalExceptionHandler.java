@@ -1,5 +1,6 @@
 package org.example.backend.infrastructure.controller.excpetion;
 
+import org.example.backend.domain.payment.InvalidPaymentException;
 import org.example.backend.domain.reservation.InvalidReservationException;
 import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<ExceptionDTO> handleInvalidReservationException(InvalidReservationException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionDTO.builder().httpStatus(HttpStatus.BAD_REQUEST).message(ex.getMessage()).build());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ExceptionDTO> handleInvalidPaymentException(InvalidPaymentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionDTO.builder().httpStatus(HttpStatus.BAD_REQUEST).message(ex.getMessage()).build());
     }
 
