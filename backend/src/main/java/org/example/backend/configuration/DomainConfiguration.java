@@ -7,7 +7,7 @@ import org.springframework.context.annotation.FilterType;
 
 @Configuration
 @ComponentScan(
-        basePackages = "org.example.backend.domain.reservation",
+        basePackages = "org.example.backend.domain",
         includeFilters = {@ComponentScan.Filter(type = FilterType.ANNOTATION, classes = {DomainService.class})}
 )
 public class DomainConfiguration {
