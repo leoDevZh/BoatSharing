@@ -129,7 +129,7 @@ public class CancelReservationTest {
         mockMvc.perform(delete("/api/reservation/cancel/" + reservation.getId())
                         .with(user(customUserDetail)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Reservation is already in past"));
+                .andExpect(jsonPath("$.message").value("Reservation update not possible in past"));
         assertEquals(2, reservationRepository.findAll().size());
     }
 
