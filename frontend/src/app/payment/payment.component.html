@@ -1,0 +1,37 @@
+@if (openPaymentsTotalNumber !== null && paybacksToCheckTotalNumber !== null) {
+  <div class="container" [class.slide]="displaySideContainer">
+    <div class="left">
+      <div class="tab" (click)="setActivePaymentComponent('ZAHLUNG')">
+        <span class="title">Zahlungen</span>
+        <mat-icon class="icon" fontIcon="chevron_right"/>
+      </div>
+      <div class="tab" (click)="setActivePaymentComponent('OFFENE')">
+        <span class="title">
+          Offene Rechnungen
+          @if (openPaymentsTotalNumber! > 0) {
+            <span class="label"
+                  style="background-color: var(--color-status-error)">{{ openPaymentsTotalNumber }}</span>
+          }
+        </span>
+        <mat-icon class="icon" fontIcon="chevron_right"/>
+      </div>
+      <div class="tab" (click)="setActivePaymentComponent('RUECK')">
+        <span class="title">
+          Rückzahlungen
+          @if (paybacksToCheckTotalNumber! > 0) {
+            <span class="label"
+                  style="background-color: var(--color-status-success)">{{ paybacksToCheckTotalNumber }}
+            </span>
+          }
+        </span>
+        <mat-icon class="icon" fontIcon="chevron_right"/>
+      </div>
+    </div>
+    <div class="right">
+      <mat-icon (click)="slideBack()" class="icon" fontIcon="chevron_left"/>
+      <ng-container *ngComponentOutlet="activeComponent"/>
+    </div>
+  </div>
+} @else {
+  <mat-spinner class="spinner"/>
+}
