@@ -1,4 +1,4 @@
-package org.example.backend.domain.User;
+package org.example.backend.domain.User.model;
 
 public record UserDTO(
         UserId userId,

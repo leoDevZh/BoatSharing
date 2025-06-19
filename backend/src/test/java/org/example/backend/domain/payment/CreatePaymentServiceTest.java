@@ -1,6 +1,6 @@
 package org.example.backend.domain.payment;
 
-import org.example.backend.domain.User.UserId;
+import org.example.backend.domain.User.model.UserId;
 import org.example.backend.domain.User.spi.UserRepository;
 import org.example.backend.domain.payment.model.*;
 import org.example.backend.domain.payment.spi.DebtRepository;

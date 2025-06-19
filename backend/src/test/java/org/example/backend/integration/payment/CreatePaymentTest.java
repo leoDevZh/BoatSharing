@@ -2,7 +2,7 @@ package org.example.backend.integration.payment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.backend.TestDBConfiguration;
-import org.example.backend.domain.User.UserId;
+import org.example.backend.domain.User.model.UserId;
 import org.example.backend.domain.payment.model.DebtStatus;
 import org.example.backend.domain.payment.model.PaymentStatus;
 import org.example.backend.infrastructure.controller.payment.model.CreateDebtDTO;

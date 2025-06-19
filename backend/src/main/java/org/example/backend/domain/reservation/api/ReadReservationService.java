@@ -1,6 +1,6 @@
 package org.example.backend.domain.reservation.api;
 
-import org.example.backend.domain.User.UserId;
+import org.example.backend.domain.User.model.UserId;
 import org.example.backend.domain.boat.BoatId;
 import org.example.backend.domain.reservation.model.ReservationUserDTO;
 

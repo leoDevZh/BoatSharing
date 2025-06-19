@@ -1,6 +1,6 @@
 package org.example.backend.infrastructure.repository.payment;
 
-import org.example.backend.domain.User.UserId;
+import org.example.backend.domain.User.model.UserId;
 import org.example.backend.domain.payment.model.Payment;
 import org.example.backend.domain.payment.model.PaymentId;
 
