@@ -1,5 +1,6 @@
 package org.example.backend.infrastructure.repository.debt;
 
+import org.example.backend.domain.User.model.UserDTO;
 import org.example.backend.domain.User.model.UserId;
 import org.example.backend.domain.payment.model.DebtId;
 import org.example.backend.domain.payment.model.PaymentId;
@@ -25,5 +26,17 @@ public class DebtMapper {
                 .paymentId(new PaymentId(debt.getPaymentId()))
                 .userId(new UserId(debt.getUserId()))
                 .build();
+    }
+
+    static org.example.backend.domain.payment.model.DebtUserDTO toDebtUserDTODomain(DebtUserDTO dto) {
+        return new org.example.backend.domain.payment.model.DebtUserDTO(
+                new DebtId(dto.debtId()),
+                dto.amount(),
+                dto.debtStatus(),
+                new UserDTO(
+                        new UserId(dto.userId()),
+                        dto.username()
+                )
+        );
     }
 }
