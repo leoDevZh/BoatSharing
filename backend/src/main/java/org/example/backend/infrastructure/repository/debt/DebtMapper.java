@@ -39,4 +39,22 @@ public class DebtMapper {
                 )
         );
     }
+
+    static org.example.backend.domain.payment.model.DebtPaymentDTO toDebtPaymentDTODomain(DebtPaymentDTO dto) {
+        return new org.example.backend.domain.payment.model.DebtPaymentDTO(
+                new PaymentId(dto.paymentId()),
+                dto.payedAt(),
+                dto.reason(),
+                new UserDTO(new UserId(dto.creditorId()), dto.creditorUsername()),
+                new org.example.backend.domain.payment.model.DebtUserDTO(
+                        new DebtId(dto.debtId()),
+                        dto.amount(),
+                        dto.debtStatus(),
+                        new UserDTO(
+                                new UserId(dto.debitorUserId()),
+                                dto.debitorUsername()
+                        )
+                )
+        );
+    }
 }

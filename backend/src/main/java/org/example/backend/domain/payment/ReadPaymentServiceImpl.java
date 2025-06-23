@@ -3,10 +3,7 @@ package org.example.backend.domain.payment;
 import org.example.backend.domain.DomainService;
 import org.example.backend.domain.User.model.UserDTO;
 import org.example.backend.domain.payment.api.ReadPaymentService;
-import org.example.backend.domain.payment.model.DebtUserDTO;
-import org.example.backend.domain.payment.model.Payment;
-import org.example.backend.domain.payment.model.PaymentUserDTO;
-import org.example.backend.domain.payment.model.PaymentWithUsername;
+import org.example.backend.domain.payment.model.*;
 import org.example.backend.domain.payment.spi.ReadDebtRepository;
 import org.example.backend.domain.payment.spi.ReadPaymentRepository;
 import org.example.backend.domain.shared.model.PagedResult;
@@ -72,5 +69,10 @@ public class ReadPaymentServiceImpl implements ReadPaymentService {
                 payments.hasNext(),
                 payments.totalNumber()
         );
+    }
+
+    @Override
+    public PagedResult<List<DebtPaymentDTO>> getOpenDebtsFromLoggedInUser(UserDTO user, int page) {
+        return readDebtRepository.getOpenDebtsFromLoggedInUser(user.userId(), page, PAGE_SIZE);
     }
 }

@@ -1,5 +1,7 @@
 package org.example.backend.infrastructure.repository.debt;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,4 +25,27 @@ public interface JpaDebtRepository extends JpaRepository<Debt, Long> {
                     WHERE d.paymentId = :paymentId
             """)
     List<DebtUserDTO> findDebtsByPaymentId(@Param("paymentId") Long paymentId);
+
+    @Query("""
+                    SELECT new org.example.backend.infrastructure.repository.debt.DebtPaymentDTO(
+                        p.id,
+                        p.paymentDate,
+                        p.reason,
+                        up.id,
+                        up.username,
+                        d.id,
+                        d.amount,
+                        d.status,
+                        ud.id,
+                        ud.username
+                    )
+                    FROM Debt d
+                    JOIN Payment p ON d.paymentId = p.id
+                    JOIN User ud ON d.userId = ud.id
+                    JOIN User up ON p.userId = up.id
+                    WHERE d.userId = :debitorId
+                    AND d.status = 'OPEN'
+                    ORDER BY p.paymentDate DESC
+            """)
+    Page<DebtPaymentDTO> findOpenDebtsByUsedId(@Param("debitorId") Long debitorId, Pageable pageable);
 }

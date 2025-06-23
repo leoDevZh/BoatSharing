@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.example.backend.domain.User.model.UserDTO;
 import org.example.backend.domain.User.model.UserId;
 import org.example.backend.domain.payment.api.ReadPaymentService;
+import org.example.backend.domain.payment.model.DebtPaymentDTO;
 import org.example.backend.domain.payment.model.PaymentUserDTO;
 import org.example.backend.domain.shared.model.PagedResult;
 import org.example.backend.infrastructure.controller.excpetion.ExceptionDTO;
@@ -32,7 +33,7 @@ public class ReadPaymentController {
     @GetMapping(value = "all-from-logged-user", produces = "application/json")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Get all payments from logged in user paged"),
-            @ApiResponse(responseCode = "400", description = "Invalid reservation",
+            @ApiResponse(responseCode = "400", description = "Invalid request",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
     })
     public ResponseEntity<PagedResult<List<PaymentUserDTO>>> getPaymentsFromLoggedInUser(@RequestParam int page) {
@@ -44,11 +45,23 @@ public class ReadPaymentController {
     @GetMapping(value = "all", produces = "application/json")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Get all payments paged"),
-            @ApiResponse(responseCode = "400", description = "Invalid reservation",
+            @ApiResponse(responseCode = "400", description = "Invalid request",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
     })
     public ResponseEntity<PagedResult<List<PaymentUserDTO>>> getAllPayments(@RequestParam int page) {
         PagedResult<List<PaymentUserDTO>> data = readPaymentService.getAllPayments(page);
+        return ResponseEntity.status(HttpStatus.OK).body(data);
+    }
+
+    @GetMapping(value = "open-debts", produces = "application/json")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Get all payments paged"),
+            @ApiResponse(responseCode = "400", description = "Invalid reservation",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
+    })
+    public ResponseEntity<PagedResult<List<DebtPaymentDTO>>> getAllOpenDebtsFromLoggedInUser(@RequestParam int page) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        PagedResult<List<DebtPaymentDTO>> data = readPaymentService.getOpenDebtsFromLoggedInUser(new UserDTO(new UserId(userDetail.getId()), userDetail.getUsername()), page);
         return ResponseEntity.status(HttpStatus.OK).body(data);
     }
 }
