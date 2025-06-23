@@ -63,7 +63,7 @@ public class ReadPaymentServiceTest {
                     loggedInUser,
                     List.of(debtUserDTO)
             );
-            when(readPaymentRepository.getPaymentsFromLoggedInUser(loggedInUser.userId(), page, 30)).thenReturn(new PagedResult<>(List.of(payment), true));
+            when(readPaymentRepository.getPaymentsFromLoggedInUser(loggedInUser.userId(), page, 30)).thenReturn(new PagedResult<>(List.of(payment), true, 1));
             when(readDebtRepository.getDebtsByPaymentId(payment.getPaymentId())).thenReturn(List.of(debtUserDTO));
 
             PagedResult<List<PaymentUserDTO>> actual = readPaymentService.getPaymentsFromLoggedInUser(loggedInUser, page);
@@ -100,7 +100,7 @@ public class ReadPaymentServiceTest {
                     user,
                     List.of(debtUserDTO)
             );
-            when(readPaymentRepository.getAllPayments(page, 30)).thenReturn(new PagedResult<>(List.of(payment), true));
+            when(readPaymentRepository.getAllPayments(page, 30)).thenReturn(new PagedResult<>(List.of(payment), true, 1));
             when(readDebtRepository.getDebtsByPaymentId(payment.paymentId())).thenReturn(List.of(debtUserDTO));
 
             PagedResult<List<PaymentUserDTO>> actual = readPaymentService.getAllPayments(page);

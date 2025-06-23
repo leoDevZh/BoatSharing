@@ -45,7 +45,8 @@ public class ReadPaymentServiceImpl implements ReadPaymentService {
                                     debts
                             );
                         }).toList(),
-                payments.hasNext()
+                payments.hasNext(),
+                payments.totalNumber()
         );
     }
 
@@ -68,7 +69,8 @@ public class ReadPaymentServiceImpl implements ReadPaymentService {
                                     debts
                             );
                         }).toList(),
-                payments.hasNext()
+                payments.hasNext(),
+                payments.totalNumber()
         );
     }
 }
