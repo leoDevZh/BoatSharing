@@ -75,4 +75,9 @@ public class ReadPaymentServiceImpl implements ReadPaymentService {
     public PagedResult<List<DebtPaymentDTO>> getOpenDebtsFromLoggedInUser(UserDTO user, int page) {
         return readDebtRepository.getOpenDebtsFromLoggedInUser(user.userId(), page, PAGE_SIZE);
     }
+
+    @Override
+    public PagedResult<List<DebtPaymentDTO>> getDebtsToCheck(UserDTO user, int page) {
+        return readDebtRepository.getDebtsToCheck(user.userId(), page, PAGE_SIZE);
+    }
 }

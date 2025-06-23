@@ -48,4 +48,27 @@ public interface JpaDebtRepository extends JpaRepository<Debt, Long> {
                     ORDER BY p.paymentDate DESC
             """)
     Page<DebtPaymentDTO> findOpenDebtsByUsedId(@Param("debitorId") Long debitorId, Pageable pageable);
+
+    @Query("""
+                    SELECT new org.example.backend.infrastructure.repository.debt.DebtPaymentDTO(
+                        p.id,
+                        p.paymentDate,
+                        p.reason,
+                        up.id,
+                        up.username,
+                        d.id,
+                        d.amount,
+                        d.status,
+                        ud.id,
+                        ud.username
+                    )
+                    FROM Debt d
+                    JOIN Payment p ON d.paymentId = p.id
+                    JOIN User ud ON d.userId = ud.id
+                    JOIN User up ON p.userId = up.id
+                    WHERE p.userId = :creditorId
+                    AND d.status = 'PAYED'
+                    ORDER BY p.paymentDate DESC
+            """)
+    Page<DebtPaymentDTO> findDebtsToCheckByUsedId(@Param("creditorId") Long creditorId, Pageable pageable);
 }

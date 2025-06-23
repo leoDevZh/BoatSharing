@@ -13,4 +13,6 @@ public interface ReadPaymentService {
     PagedResult<List<PaymentUserDTO>> getAllPayments(int page);
 
     PagedResult<List<DebtPaymentDTO>> getOpenDebtsFromLoggedInUser(UserDTO user, int page);
+
+    PagedResult<List<DebtPaymentDTO>> getDebtsToCheck(UserDTO user, int page);
 }

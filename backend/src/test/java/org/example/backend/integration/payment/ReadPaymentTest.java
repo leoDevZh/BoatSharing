@@ -281,7 +281,7 @@ public class ReadPaymentTest {
                     .andExpect(jsonPath("$.result[1].creditor.username").value(user2.getUsername()))
                     .andExpect(jsonPath("$.result[1].debtUserDTO.debtId.value").value(debt2.getId()))
                     .andExpect(jsonPath("$.result[1].debtUserDTO.amount").value(debt2.getAmount()))
-                    .andExpect(jsonPath("$.result[1].debtUserDTO.debtStatus").value(debt2.getStatus().toString()))
+                    .andExpect(jsonPath("$.result[1].debtUserDTO.debtStatus").value(DebtStatus.OPEN.toString()))
                     .andExpect(jsonPath("$.result[1].debtUserDTO.debitor.userId.value").value(user1.getId()))
                     .andExpect(jsonPath("$.result[1].debtUserDTO.debitor.username").value(user1.getUsername()))
 
@@ -292,7 +292,7 @@ public class ReadPaymentTest {
                     .andExpect(jsonPath("$.result[0].creditor.username").value(user1.getUsername()))
                     .andExpect(jsonPath("$.result[0].debtUserDTO.debtId.value").value(debt4.getId()))
                     .andExpect(jsonPath("$.result[0].debtUserDTO.amount").value(debt4.getAmount()))
-                    .andExpect(jsonPath("$.result[0].debtUserDTO.debtStatus").value(debt4.getStatus().toString()))
+                    .andExpect(jsonPath("$.result[0].debtUserDTO.debtStatus").value(DebtStatus.OPEN.toString()))
                     .andExpect(jsonPath("$.result[0].debtUserDTO.debitor.userId.value").value(user1.getId()))
                     .andExpect(jsonPath("$.result[0].debtUserDTO.debitor.username").value(user1.getUsername()));
         }
@@ -325,6 +325,104 @@ public class ReadPaymentTest {
         @Test
         void getAllPaymentsNotAuthenticated() throws Exception {
             mockMvc.perform(get("/api/read-payment/open-debts")
+                            .param("page", "1"))
+                    .andExpect(status().isForbidden());
+        }
+    }
+
+    @Nested
+    class GetAllDebtsToCheck {
+        @Test
+        void getAllDebtsToCheckOnSuccess() throws Exception {
+            Payment payment3 = Payment.builder()
+                    .paymentDate(LocalDateTime.now().truncatedTo(SECONDS))
+                    .amount(10.)
+                    .status(OPEN)
+                    .reason("reason3")
+                    .isFuelPayment(false)
+                    .userId(user1.getId())
+                    .build();
+            paymentRepository.save(payment3);
+            Debt debt3 = Debt.builder()
+                    .amount(31.)
+                    .status(DebtStatus.PAYED)
+                    .paymentId(payment2.getId())
+                    .userId(user2.getId())
+                    .build();
+            Debt debt4 = Debt.builder()
+                    .amount(41.)
+                    .status(DebtStatus.PAYED)
+                    .paymentId(payment1.getId())
+                    .userId(user2.getId())
+                    .build();
+            Debt debt5 = Debt.builder()
+                    .amount(51.)
+                    .status(DebtStatus.PAYED)
+                    .paymentId(payment3.getId())
+                    .userId(user2.getId())
+                    .build();
+            debtRepository.save(debt3);
+            debtRepository.save(debt4);
+            debtRepository.save(debt5);
+
+            mockMvc.perform(get("/api/read-payment/debts-to-check")
+                            .param("page", "0")
+                            .with(user(customUserDetail)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.result.length()").value(2))
+                    .andExpect(jsonPath("$.hasNext").value(false))
+                    .andExpect(jsonPath("$.totalNumber").value(2))
+                    .andExpect(jsonPath("$.result[0].paymentId.value").value(payment1.getId()))
+                    .andExpect(jsonPath("$.result[0].payedAt").value(payment1.getPaymentDate().toString()))
+                    .andExpect(jsonPath("$.result[0].reason").value(payment1.getReason()))
+                    .andExpect(jsonPath("$.result[0].creditor.userId.value").value(user1.getId()))
+                    .andExpect(jsonPath("$.result[0].creditor.username").value(user1.getUsername()))
+                    .andExpect(jsonPath("$.result[0].debtUserDTO.debtId.value").value(debt4.getId()))
+                    .andExpect(jsonPath("$.result[0].debtUserDTO.amount").value(debt4.getAmount()))
+                    .andExpect(jsonPath("$.result[0].debtUserDTO.debtStatus").value(DebtStatus.PAYED.toString()))
+                    .andExpect(jsonPath("$.result[0].debtUserDTO.debitor.userId.value").value(user2.getId()))
+                    .andExpect(jsonPath("$.result[0].debtUserDTO.debitor.username").value(user2.getUsername()))
+
+                    .andExpect(jsonPath("$.result[1].paymentId.value").value(payment3.getId()))
+                    .andExpect(jsonPath("$.result[1].payedAt").value(payment3.getPaymentDate().toString()))
+                    .andExpect(jsonPath("$.result[1].reason").value(payment3.getReason()))
+                    .andExpect(jsonPath("$.result[1].creditor.userId.value").value(user1.getId()))
+                    .andExpect(jsonPath("$.result[1].creditor.username").value(user1.getUsername()))
+                    .andExpect(jsonPath("$.result[1].debtUserDTO.debtId.value").value(debt5.getId()))
+                    .andExpect(jsonPath("$.result[1].debtUserDTO.amount").value(debt5.getAmount()))
+                    .andExpect(jsonPath("$.result[1].debtUserDTO.debtStatus").value(DebtStatus.PAYED.toString()))
+                    .andExpect(jsonPath("$.result[1].debtUserDTO.debitor.userId.value").value(user2.getId()))
+                    .andExpect(jsonPath("$.result[1].debtUserDTO.debitor.username").value(user2.getUsername()));
+        }
+
+        @Test
+        void getAllDebtsToCheckOnPageToBig() throws Exception {
+            mockMvc.perform(get("/api/read-payment/debts-to-check")
+                            .param("page", "1")
+                            .with(user(customUserDetail)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.result.length()").value(0));
+        }
+
+        @Test
+        void getAllDebtsToCheckOnPageInvalid() throws Exception {
+            mockMvc.perform(get("/api/read-payment/debts-to-check")
+                            .param("page", "a")
+                            .with(user(customUserDetail)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.message").value("Provide a valid Variable"));
+        }
+
+        @Test
+        void getAllDebtsToCheckOnPageMissing() throws Exception {
+            mockMvc.perform(get("/api/read-payment/debts-to-check")
+                            .with(user(customUserDetail)))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        void getAllDebtsToCheckNotAuthenticated() throws Exception {
+            mockMvc.perform(get("/api/read-payment/debts-to-check")
                             .param("page", "1"))
                     .andExpect(status().isForbidden());
         }

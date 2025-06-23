@@ -39,4 +39,16 @@ public class ReadDebtRepositoryImpl implements ReadDebtRepository {
                 debts.getTotalElements()
         );
     }
+
+    @Override
+    public PagedResult<List<DebtPaymentDTO>> getDebtsToCheck(UserId creditorId, int page, int size) {
+        Page<org.example.backend.infrastructure.repository.debt.DebtPaymentDTO> debts = jpaDebtRepository.findDebtsToCheckByUsedId(creditorId.value(), PageRequest.of(page, size));
+        return new PagedResult<>(
+                debts.get().map(
+                        DebtMapper::toDebtPaymentDTODomain
+                ).toList(),
+                debts.getTotalPages() != (page + 1),
+                debts.getTotalElements()
+        );
+    }
 }

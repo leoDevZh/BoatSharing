@@ -55,13 +55,25 @@ public class ReadPaymentController {
 
     @GetMapping(value = "open-debts", produces = "application/json")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Get all payments paged"),
+            @ApiResponse(responseCode = "200", description = "Get all open debts from logged in user paged"),
             @ApiResponse(responseCode = "400", description = "Invalid reservation",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
     })
     public ResponseEntity<PagedResult<List<DebtPaymentDTO>>> getAllOpenDebtsFromLoggedInUser(@RequestParam int page) {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         PagedResult<List<DebtPaymentDTO>> data = readPaymentService.getOpenDebtsFromLoggedInUser(new UserDTO(new UserId(userDetail.getId()), userDetail.getUsername()), page);
+        return ResponseEntity.status(HttpStatus.OK).body(data);
+    }
+
+    @GetMapping(value = "debts-to-check", produces = "application/json")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Get all debts to check for payments of logged in user paged"),
+            @ApiResponse(responseCode = "400", description = "Invalid reservation",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
+    })
+    public ResponseEntity<PagedResult<List<DebtPaymentDTO>>> getAllDebtsToCheck(@RequestParam int page) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        PagedResult<List<DebtPaymentDTO>> data = readPaymentService.getDebtsToCheck(new UserDTO(new UserId(userDetail.getId()), userDetail.getUsername()), page);
         return ResponseEntity.status(HttpStatus.OK).body(data);
     }
 }

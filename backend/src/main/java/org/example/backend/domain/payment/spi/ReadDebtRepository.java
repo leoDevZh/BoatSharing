@@ -12,5 +12,7 @@ public interface ReadDebtRepository {
 
     List<DebtUserDTO> getDebtsByPaymentId(PaymentId paymentId);
 
-    PagedResult<List<DebtPaymentDTO>> getOpenDebtsFromLoggedInUser(UserId userId, int page, int size);
+    PagedResult<List<DebtPaymentDTO>> getOpenDebtsFromLoggedInUser(UserId debitorId, int page, int size);
+
+    PagedResult<List<DebtPaymentDTO>> getDebtsToCheck(UserId creditorId, int page, int size);
 }
