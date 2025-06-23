@@ -6,6 +6,7 @@ import org.example.backend.domain.payment.api.ReadPaymentService;
 import org.example.backend.domain.payment.model.DebtUserDTO;
 import org.example.backend.domain.payment.model.Payment;
 import org.example.backend.domain.payment.model.PaymentUserDTO;
+import org.example.backend.domain.payment.model.PaymentWithUsername;
 import org.example.backend.domain.payment.spi.ReadDebtRepository;
 import org.example.backend.domain.payment.spi.ReadPaymentRepository;
 import org.example.backend.domain.shared.model.PagedResult;
@@ -41,6 +42,29 @@ public class ReadPaymentServiceImpl implements ReadPaymentService {
                                     payment.isFuelPayment(),
                                     payment.getStatus(),
                                     user,
+                                    debts
+                            );
+                        }).toList(),
+                payments.hasNext()
+        );
+    }
+
+    @Override
+    public PagedResult<List<PaymentUserDTO>> getAllPayments(int page) {
+        PagedResult<List<PaymentWithUsername>> payments = readPaymentRepository.getAllPayments(page, PAGE_SIZE);
+
+        return new PagedResult<>(
+                payments.result().stream()
+                        .map(payment -> {
+                            List<DebtUserDTO> debts = readDebtRepository.getDebtsByPaymentId(payment.paymentId());
+                            return new PaymentUserDTO(
+                                    payment.paymentId(),
+                                    payment.payedAt(),
+                                    payment.amount(),
+                                    payment.reason(),
+                                    payment.isFuelPayment(),
+                                    payment.paymentStatus(),
+                                    payment.creditor(),
                                     debts
                             );
                         }).toList(),

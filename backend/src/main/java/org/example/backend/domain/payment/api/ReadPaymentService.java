@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface ReadPaymentService {
     PagedResult<List<PaymentUserDTO>> getPaymentsFromLoggedInUser(UserDTO user, int page);
+
+    PagedResult<List<PaymentUserDTO>> getAllPayments(int page);
 }

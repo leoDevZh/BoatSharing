@@ -31,13 +31,24 @@ public class ReadPaymentController {
 
     @GetMapping(value = "all-from-logged-user", produces = "application/json")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Get all payments from logged in user. Paged"),
+            @ApiResponse(responseCode = "200", description = "Get all payments from logged in user paged"),
             @ApiResponse(responseCode = "400", description = "Invalid reservation",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
     })
-    public ResponseEntity<PagedResult<List<PaymentUserDTO>>> getpPaymentsFromLoggedInUser(@RequestParam int page) {
+    public ResponseEntity<PagedResult<List<PaymentUserDTO>>> getPaymentsFromLoggedInUser(@RequestParam int page) {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         PagedResult<List<PaymentUserDTO>> data = readPaymentService.getPaymentsFromLoggedInUser(new UserDTO(new UserId(userDetail.getId()), userDetail.getUsername()), page);
+        return ResponseEntity.status(HttpStatus.OK).body(data);
+    }
+
+    @GetMapping(value = "all", produces = "application/json")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Get all payments paged"),
+            @ApiResponse(responseCode = "400", description = "Invalid reservation",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
+    })
+    public ResponseEntity<PagedResult<List<PaymentUserDTO>>> getAllPayments(@RequestParam int page) {
+        PagedResult<List<PaymentUserDTO>> data = readPaymentService.getAllPayments(page);
         return ResponseEntity.status(HttpStatus.OK).body(data);
     }
 }
