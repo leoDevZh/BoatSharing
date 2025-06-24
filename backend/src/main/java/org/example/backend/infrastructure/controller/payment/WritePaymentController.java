@@ -50,4 +50,16 @@ public class WritePaymentController {
         writePaymentService.setDebtToPayed(new UserId(userDetail.getId()), debtId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+    @PostMapping(value = "debt-to-closed/{debtId}", produces = "application/json")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Set debt status to closed"),
+            @ApiResponse(responseCode = "400", description = "Invalid debt",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
+    })
+    public ResponseEntity<ExceptionDTO> setDebtToClosed(@PathVariable(value = "debtId") DebtId debtId) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        writePaymentService.setDebtToClosed(new UserId(userDetail.getId()), debtId);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 }

@@ -8,4 +8,6 @@ public interface WritePaymentService {
     void createPayment(CreatePayment createPayment);
 
     void setDebtToPayed(UserId loggedInUser, DebtId debtId);
+
+    void setDebtToClosed(UserId loggedInUser, DebtId debtId);
 }

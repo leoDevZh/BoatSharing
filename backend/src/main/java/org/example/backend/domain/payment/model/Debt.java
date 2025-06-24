@@ -56,6 +56,10 @@ public class Debt {
         this.status = DebtStatus.PAYED;
     }
 
+    public void setClosed() {
+        this.status = DebtStatus.CLOSED;
+    }
+
     public static class DebtBuilder {
         DebtId debtId;
         double amount;

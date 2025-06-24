@@ -59,6 +59,14 @@ public class Payment {
         return isFuelPayment;
     }
 
+    public boolean isOwner(UserId loggedInUser) {
+        return this.getUserId().equals(loggedInUser);
+    }
+
+    public void setClosed() {
+        this.status = PaymentStatus.CLOSED;
+    }
+
     public static class PaymentBuilder {
         PaymentId paymentId;
         LocalDateTime payedAt;

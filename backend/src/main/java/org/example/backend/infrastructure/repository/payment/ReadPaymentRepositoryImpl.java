@@ -2,6 +2,7 @@ package org.example.backend.infrastructure.repository.payment;
 
 import org.example.backend.domain.User.model.UserId;
 import org.example.backend.domain.payment.model.Payment;
+import org.example.backend.domain.payment.model.PaymentId;
 import org.example.backend.domain.payment.model.PaymentWithUsername;
 import org.example.backend.domain.payment.spi.ReadPaymentRepository;
 import org.example.backend.domain.shared.model.PagedResult;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -46,5 +48,10 @@ public class ReadPaymentRepositoryImpl implements ReadPaymentRepository {
                 payments.getTotalPages() != (page + 1),
                 payments.getTotalElements()
         );
+    }
+
+    @Override
+    public Optional<Payment> getPaymentById(PaymentId paymentId) {
+        return jpaPaymentRepository.findById(paymentId.value()).map(PaymentMapper::toDomain);
     }
 }
