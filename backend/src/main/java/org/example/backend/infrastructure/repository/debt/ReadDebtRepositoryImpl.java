@@ -1,9 +1,10 @@
 package org.example.backend.infrastructure.repository.debt;
 
 import org.example.backend.domain.User.model.UserId;
+import org.example.backend.domain.payment.model.*;
+import org.example.backend.domain.payment.model.Debt;
 import org.example.backend.domain.payment.model.DebtPaymentDTO;
 import org.example.backend.domain.payment.model.DebtUserDTO;
-import org.example.backend.domain.payment.model.PaymentId;
 import org.example.backend.domain.payment.spi.ReadDebtRepository;
 import org.example.backend.domain.shared.model.PagedResult;
 import org.springframework.data.domain.Page;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ReadDebtRepositoryImpl implements ReadDebtRepository {
@@ -50,5 +52,10 @@ public class ReadDebtRepositoryImpl implements ReadDebtRepository {
                 debts.getTotalPages() != (page + 1),
                 debts.getTotalElements()
         );
+    }
+
+    @Override
+    public Optional<Debt> getDebtById(DebtId debtId) {
+        return jpaDebtRepository.findById(debtId.value()).map(DebtMapper::toDomain);
     }
 }

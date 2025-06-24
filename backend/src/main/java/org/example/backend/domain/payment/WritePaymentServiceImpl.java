@@ -7,6 +7,7 @@ import org.example.backend.domain.payment.api.WritePaymentService;
 import org.example.backend.domain.payment.model.*;
 import org.example.backend.domain.payment.spi.DebtRepository;
 import org.example.backend.domain.payment.spi.PaymentRepository;
+import org.example.backend.domain.payment.spi.ReadDebtRepository;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -20,11 +21,13 @@ public class WritePaymentServiceImpl implements WritePaymentService {
     private PaymentRepository paymentRepository;
     private DebtRepository debtRepository;
     private UserRepository userRepository;
+    private ReadDebtRepository readDebtRepository;
 
-    public WritePaymentServiceImpl(PaymentRepository paymentRepository, DebtRepository debtRepository, UserRepository userRepository) {
+    public WritePaymentServiceImpl(PaymentRepository paymentRepository, DebtRepository debtRepository, UserRepository userRepository, ReadDebtRepository readDebtRepository) {
         this.paymentRepository = paymentRepository;
         this.debtRepository = debtRepository;
         this.userRepository = userRepository;
+        this.readDebtRepository = readDebtRepository;
     }
 
     @Override
@@ -59,5 +62,15 @@ public class WritePaymentServiceImpl implements WritePaymentService {
                     .toList();
             debtRepository.saveDebts(debts);
         }
+    }
+
+    @Override
+    public void setDebtToPayed(UserId loggedInUser, DebtId debtId) {
+        Debt debt = readDebtRepository.getDebtById(debtId).orElseThrow(() -> new InvalidPaymentException("Debt not found"));
+        if (!debt.isOwner(loggedInUser)) {
+            throw new InvalidPaymentException("Debt does not belong to User");
+        }
+        debt.setPayed();
+        debtRepository.saveDebts(List.of(debt));
     }
 }

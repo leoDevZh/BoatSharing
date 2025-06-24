@@ -45,6 +45,17 @@ public class Debt {
         return status;
     }
 
+    public boolean isOwner(UserId loggedInUser) {
+        return this.userId.equals(loggedInUser);
+    }
+
+    public void setPayed() {
+        if (this.status != DebtStatus.OPEN) {
+            throw new InvalidPaymentException("Debt is in wrong status");
+        }
+        this.status = DebtStatus.PAYED;
+    }
+
     public static class DebtBuilder {
         DebtId debtId;
         double amount;
