@@ -3,6 +3,7 @@ package org.example.backend.domain.payment.api;
 import org.example.backend.domain.User.model.UserId;
 import org.example.backend.domain.payment.model.CreatePayment;
 import org.example.backend.domain.payment.model.DebtId;
+import org.example.backend.domain.payment.model.PaymentId;
 
 public interface WritePaymentService {
     void createPayment(CreatePayment createPayment);
@@ -10,4 +11,6 @@ public interface WritePaymentService {
     void setDebtToPayed(UserId loggedInUser, DebtId debtId);
 
     void setDebtToClosed(UserId loggedInUser, DebtId debtId);
+
+    void deletePayment(UserId loggedInUser, PaymentId paymentId);
 }

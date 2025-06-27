@@ -9,6 +9,7 @@ import org.example.backend.domain.User.model.UserId;
 import org.example.backend.domain.payment.api.WritePaymentService;
 import org.example.backend.domain.payment.model.CreatePayment;
 import org.example.backend.domain.payment.model.DebtId;
+import org.example.backend.domain.payment.model.PaymentId;
 import org.example.backend.infrastructure.controller.excpetion.ExceptionDTO;
 import org.example.backend.infrastructure.controller.payment.model.CreatePaymentDTO;
 import org.example.backend.infrastructure.controller.payment.model.CreatePaymentMapper;
@@ -61,5 +62,17 @@ public class WritePaymentController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         writePaymentService.setDebtToClosed(new UserId(userDetail.getId()), debtId);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @DeleteMapping(value = "delete/{paymentId}", produces = "application/json")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Delete payment"),
+            @ApiResponse(responseCode = "400", description = "Invalid payment",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
+    })
+    public ResponseEntity<ExceptionDTO> deletePayment(@PathVariable(value = "paymentId") PaymentId paymentId) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        writePaymentService.deletePayment(new UserId(userDetail.getId()), paymentId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

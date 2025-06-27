@@ -60,5 +60,5 @@ CREATE TABLE IF NOT EXISTS debts
     payment_ID INTEGER NOT NULL,
     user_id    INTEGER NOT NULL,
     CONSTRAINT fk_debt_user FOREIGN KEY (user_id) REFERENCES users (id),
-    CONSTRAINT fk_debt_payment FOREIGN KEY (payment_ID) REFERENCES payments (id)
+    CONSTRAINT fk_debt_payment FOREIGN KEY (payment_ID) REFERENCES payments (id) ON DELETE CASCADE
 );

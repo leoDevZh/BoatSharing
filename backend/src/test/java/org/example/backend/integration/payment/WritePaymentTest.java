@@ -39,6 +39,7 @@ import static org.example.backend.domain.payment.model.DebtStatus.PAYED;
 import static org.example.backend.domain.payment.model.PaymentStatus.OPEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -286,7 +287,7 @@ public class WritePaymentTest {
     }
 
     @Nested
-    class SetDebtToPayed {
+    class SetDebtToPayedTest {
         Payment payment;
         Debt debt;
         Debt debt2;
@@ -361,6 +362,73 @@ public class WritePaymentTest {
                     .andExpect(jsonPath("$.message").value("Debt is in wrong status"));
             Debt actualDebt = debtRepository.findById(debt3.getId()).get();
             assertEquals(DebtStatus.CLOSED, actualDebt.getStatus());
+        }
+    }
+
+    @Nested
+    class DeletePaymentTest {
+        Payment payment;
+        Payment payment2;
+        Debt debt;
+
+        @BeforeEach
+        void setup() throws Exception {
+            payment = Payment.builder()
+                    .paymentDate(LocalDateTime.now().plusDays(1).truncatedTo(SECONDS))
+                    .amount(10.)
+                    .status(OPEN)
+                    .reason("reason1")
+                    .isFuelPayment(false)
+                    .userId(user1.getId())
+                    .build();
+            payment2 = Payment.builder()
+                    .paymentDate(LocalDateTime.now().plusDays(1).truncatedTo(SECONDS))
+                    .amount(10.)
+                    .status(OPEN)
+                    .reason("reason1")
+                    .isFuelPayment(false)
+                    .userId(user2.getId())
+                    .build();
+            paymentRepository.save(payment);
+            paymentRepository.save(payment2);
+            debt = Debt.builder()
+                    .amount(11.)
+                    .status(DebtStatus.OPEN)
+                    .paymentId(payment.getId())
+                    .userId(user1.getId())
+                    .build();
+            debtRepository.save(debt);
+        }
+
+        @Test
+        void deletePaymentOnSuccess() throws Exception {
+            mockMvc.perform(delete("/api/payment/delete/" + payment.getId())
+                            .with(user(customUserDetail)))
+                    .andExpect(status().isNoContent());
+
+            List<Payment> payments = paymentRepository.findAll();
+            List<Debt> debts = debtRepository.findAll();
+            assertEquals(1, payments.size());
+            assertEquals(0, debts.size());
+        }
+
+        @Test
+        void deletePaymentOnUserNotOwner() throws Exception {
+            mockMvc.perform(delete("/api/payment/delete/" + payment2.getId())
+                            .with(user(customUserDetail)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.message").value("Payment does not belong to User"));
+
+            List<Payment> payments = paymentRepository.findAll();
+            List<Debt> debts = debtRepository.findAll();
+            assertEquals(2, payments.size());
+            assertEquals(1, debts.size());
+        }
+
+        @Test
+        void deletePaymentOnNotAuthorized() throws Exception {
+            mockMvc.perform(delete("/api/payment/delete/" + payment.getId()))
+                    .andExpect(status().isForbidden());
         }
     }
 }

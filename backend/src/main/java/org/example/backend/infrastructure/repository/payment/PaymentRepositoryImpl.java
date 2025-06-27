@@ -20,4 +20,9 @@ public class PaymentRepositoryImpl implements PaymentRepository {
         Long createdPayment = jpaPaymentRepository.save(toSave).getId();
         return new PaymentId(createdPayment);
     }
+
+    @Override
+    public void deletePayment(PaymentId paymentId) {
+        this.jpaPaymentRepository.deleteById(paymentId.value());
+    }
 }

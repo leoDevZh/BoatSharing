@@ -89,7 +89,7 @@ public class WritePaymentServiceImpl implements WritePaymentService {
         }
         debt.setClosed();
         debtRepository.saveDebts(List.of(debt));
-        
+
         boolean updatePayment = true;
         for (DebtUserDTO debtUserDTO : debts) {
             if (debtUserDTO.debtId().equals(debtId)) {
@@ -103,5 +103,14 @@ public class WritePaymentServiceImpl implements WritePaymentService {
             payment.setClosed();
             paymentRepository.savePayment(payment);
         }
+    }
+
+    @Override
+    public void deletePayment(UserId loggedInUser, PaymentId paymentId) {
+        Payment payment = readPaymentRepository.getPaymentById(paymentId).orElseThrow(() -> new InvalidPaymentException("Payment not found"));
+        if (!payment.isOwner(loggedInUser)) {
+            throw new InvalidPaymentException("Payment does not belong to User");
+        }
+        paymentRepository.deletePayment(paymentId);
     }
 }
