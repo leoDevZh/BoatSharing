@@ -37,7 +37,7 @@ public class ReadDebtRepositoryImpl implements ReadDebtRepository {
                 debts.get().map(
                         DebtMapper::toDebtPaymentDTODomain
                 ).toList(),
-                debts.getTotalPages() != (page + 1),
+                debts.getTotalPages() != (page + 1) && debts.getTotalPages() > 1,
                 debts.getTotalElements()
         );
     }
@@ -49,7 +49,7 @@ public class ReadDebtRepositoryImpl implements ReadDebtRepository {
                 debts.get().map(
                         DebtMapper::toDebtPaymentDTODomain
                 ).toList(),
-                debts.getTotalPages() != (page + 1),
+                debts.getTotalPages() != (page + 1) && debts.getTotalPages() > 1,
                 debts.getTotalElements()
         );
     }
