@@ -1,7 +1,7 @@
 package org.example.backend.infrastructure.repository.reservation;
 
-import org.example.backend.domain.User.UserDTO;
-import org.example.backend.domain.User.UserId;
+import org.example.backend.domain.User.model.UserDTO;
+import org.example.backend.domain.User.model.UserId;
 import org.example.backend.domain.boat.BoatId;
 import org.example.backend.domain.reservation.model.ReservationId;
 import org.example.backend.domain.reservation.model.ReservationUserDTO;

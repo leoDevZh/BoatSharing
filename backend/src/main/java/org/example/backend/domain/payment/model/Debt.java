@@ -1,6 +1,6 @@
 package org.example.backend.domain.payment.model;
 
-import org.example.backend.domain.User.UserId;
+import org.example.backend.domain.User.model.UserId;
 import org.example.backend.domain.payment.InvalidPaymentException;
 
 public class Debt {
@@ -43,6 +43,21 @@ public class Debt {
 
     public DebtStatus getStatus() {
         return status;
+    }
+
+    public boolean isOwner(UserId loggedInUser) {
+        return this.userId.equals(loggedInUser);
+    }
+
+    public void setPayed() {
+        if (this.status != DebtStatus.OPEN) {
+            throw new InvalidPaymentException("Debt is in wrong status");
+        }
+        this.status = DebtStatus.PAYED;
+    }
+
+    public void setClosed() {
+        this.status = DebtStatus.CLOSED;
     }
 
     public static class DebtBuilder {

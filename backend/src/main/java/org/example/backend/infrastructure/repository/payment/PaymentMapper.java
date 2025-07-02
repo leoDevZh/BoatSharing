@@ -1,8 +1,10 @@
 package org.example.backend.infrastructure.repository.payment;
 
-import org.example.backend.domain.User.UserId;
+import org.example.backend.domain.User.model.UserDTO;
+import org.example.backend.domain.User.model.UserId;
 import org.example.backend.domain.payment.model.Payment;
 import org.example.backend.domain.payment.model.PaymentId;
+import org.example.backend.domain.payment.model.PaymentWithUsername;
 
 public class PaymentMapper {
 
@@ -29,5 +31,20 @@ public class PaymentMapper {
                 .fuelPayment(payment.getIsFuelPayment())
                 .userId(new UserId(payment.getUserId()))
                 .build();
+    }
+
+    static PaymentWithUsername toDomain(org.example.backend.infrastructure.repository.payment.model.PaymentWithUsername payment) {
+        return new PaymentWithUsername(
+                new PaymentId(payment.paymentId()),
+                payment.payedAt(),
+                payment.amount(),
+                payment.reason(),
+                payment.isFuelPayment(),
+                payment.paymentStatus(),
+                new UserDTO(
+                        new UserId(payment.creditorId()),
+                        payment.creditorUsername()
+                )
+        );
     }
 }

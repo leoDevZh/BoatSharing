@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.example.backend.domain.User.UserId;
+import org.example.backend.domain.User.model.UserId;
 import org.example.backend.domain.boat.BoatId;
 import org.example.backend.domain.boat.spi.BoatRepository;
 import org.example.backend.infrastructure.controller.excpetion.ExceptionDTO;

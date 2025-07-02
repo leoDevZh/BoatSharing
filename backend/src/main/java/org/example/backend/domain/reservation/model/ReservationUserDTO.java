@@ -1,6 +1,6 @@
 package org.example.backend.domain.reservation.model;
 
-import org.example.backend.domain.User.UserDTO;
+import org.example.backend.domain.User.model.UserDTO;
 import org.example.backend.domain.boat.BoatId;
 
 import java.time.LocalDateTime;

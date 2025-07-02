@@ -3,7 +3,7 @@ package org.example.backend.infrastructure.controller.payment.model;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.example.backend.domain.User.UserId;
+import org.example.backend.domain.User.model.UserId;
 
 @Data
 @AllArgsConstructor

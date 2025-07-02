@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
-import org.example.backend.domain.User.UserId;
+import org.example.backend.domain.User.model.UserId;
 import org.example.backend.domain.reservation.api.ReservationService;
 import org.example.backend.domain.reservation.model.ReservationId;
 import org.example.backend.infrastructure.controller.excpetion.ExceptionDTO;

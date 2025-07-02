@@ -1,6 +1,6 @@
 package org.example.backend.infrastructure.controller.payment.model;
 
-import org.example.backend.domain.User.UserId;
+import org.example.backend.domain.User.model.UserId;
 import org.example.backend.domain.payment.model.CreateDebt;
 import org.example.backend.domain.payment.model.CreatePayment;
 

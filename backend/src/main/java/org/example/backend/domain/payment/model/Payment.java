@@ -1,6 +1,6 @@
 package org.example.backend.domain.payment.model;
 
-import org.example.backend.domain.User.UserId;
+import org.example.backend.domain.User.model.UserId;
 import org.example.backend.domain.payment.InvalidPaymentException;
 
 import java.time.LocalDateTime;
@@ -57,6 +57,14 @@ public class Payment {
 
     public boolean isFuelPayment() {
         return isFuelPayment;
+    }
+
+    public boolean isOwner(UserId loggedInUser) {
+        return this.getUserId().equals(loggedInUser);
+    }
+
+    public void setClosed() {
+        this.status = PaymentStatus.CLOSED;
     }
 
     public static class PaymentBuilder {

@@ -6,4 +6,6 @@ import org.example.backend.domain.payment.model.PaymentId;
 public interface PaymentRepository {
 
     PaymentId savePayment(Payment payment);
+
+    void deletePayment(PaymentId paymentId);
 }
