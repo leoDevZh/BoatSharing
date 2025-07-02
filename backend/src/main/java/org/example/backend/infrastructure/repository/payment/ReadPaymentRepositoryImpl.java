@@ -33,7 +33,7 @@ public class ReadPaymentRepositoryImpl implements ReadPaymentRepository {
                 payments.get()
                         .map(PaymentMapper::toDomain)
                         .toList(),
-                payments.getTotalPages() != (page + 1),
+                payments.getTotalPages() != (page + 1) && payments.getTotalPages() > 1,
                 payments.getTotalElements()
         );
     }
@@ -45,7 +45,7 @@ public class ReadPaymentRepositoryImpl implements ReadPaymentRepository {
                 payments.get()
                         .map(PaymentMapper::toDomain)
                         .toList(),
-                payments.getTotalPages() != (page + 1),
+                payments.getTotalPages() != (page + 1) && payments.getTotalPages() > 1,
                 payments.getTotalElements()
         );
     }

@@ -23,7 +23,7 @@
 }
 
 .current-day {
-  border: 1px solid var(--color-accent-bright);
+  border: 2px solid var(--color-accent-dark);
   font-weight: 600 !important;
 }
 
@@ -32,7 +32,11 @@
 }
 
 .selected-day {
-  background-color: var(--color-accent-bright) !important;
+  background-color: var(--color-accent-dark) !important;
+}
+
+.selected-day span {
+  color: var(--color-font-secondary) !important;
 }
 
 .cell:nth-child(-n+7) {
@@ -57,11 +61,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -25%);
-  color: var(--color-font-secondary);
-}
-
-.current-month .current-day-container span {
-  color: var(--color-font-primary) !important;
+  color: var(--color-font-primary);
 }
 
 .availability-container {

@@ -1,0 +1,93 @@
+:host {
+  width: 100%;
+  display: grid;
+  justify-items: center;
+  padding: var(--padding-xs) var(--padding-m);
+}
+
+.payment-container {
+  width: 100%;
+  min-height: 88px;
+  padding: var(--padding-m);
+  display: grid;
+  grid-template-columns: .5fr 2.5fr 0.8fr 0.2fr;
+  grid-template-areas:
+    "date detail amount status"
+    "x debitor debitor debitor";
+  font-size: .8rem;
+  align-items: center;
+}
+
+.date-container {
+  grid-area: date;
+  align-content: center;
+  height: 100%;
+  border-right: 1px solid var(--color-accent-bright);
+}
+
+.detail-container {
+  grid-area: detail;
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-xs);
+  padding: 0 var(--padding-xs);
+}
+
+.detail-container > span:nth-child(2) {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.amount-container {
+  grid-area: amount;
+}
+
+.status-container {
+  grid-area: status;
+}
+
+.status {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-accent-dark);
+}
+
+.status.open {
+  background-color: var(--color-status-error);
+}
+
+.status.charged {
+  background-color: var(--color-status-warning);
+}
+
+.status.closed {
+  background-color: var(--color-status-success);
+}
+
+.debitor-container {
+  grid-area: debitor;
+  display: none;
+}
+
+.debitor-container.open {
+  display: block;
+  height: fit-content;
+  padding: var(--padding-xs);
+}
+
+li {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--padding-xs);
+}
+
+.form {
+  border-bottom: 1px solid var(--color-status-disabled);
+  padding-bottom: var(--padding-xl);
+}

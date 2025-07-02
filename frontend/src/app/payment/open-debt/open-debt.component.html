@@ -1,0 +1,19 @@
+@if (openDebts !== null) {
+  @for (debt of openDebts.result; track debt.debtUserDTO!.debtId) {
+    <div class="debt">
+      <div class="info">
+        <span>{{ debt.creditor!.username }}</span>
+        <span>{{ debt.reason }}</span>
+      </div>
+      <div class="amount">
+        <span>{{ debt.debtUserDTO?.amount }}</span>
+      </div>
+      <div class="btn-container">
+        <mat-icon class="paid-btn" (click)="setDebtToPaid(debt.debtUserDTO?.debtId!)" fontIcon="price_check"/>
+      </div>
+    </div>
+  }
+}
+@if (openDebts !== null && openDebts.hasNext) {
+  <mat-icon (click)="loadMore()" class="icon load-btn" fontIcon="add"/>
+}

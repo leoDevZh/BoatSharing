@@ -1,4 +1,6 @@
 :host {
+  --tab-width: 110px;
+
   display: grid;
   grid-template-rows: 48px 1fr;
   gap: var(--margin-xl);
@@ -8,12 +10,12 @@
   position: relative;
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 150px;
+  grid-auto-columns: var(--tab-width);
   gap: var(--margin-m);
   justify-items: center;
   overflow-x: scroll;
   scrollbar-width: none; /* Firefox */
-  padding: 0 var(--padding-m);
+  margin: 0 var(--margin-m);
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -24,9 +26,9 @@
 .underline {
   position: absolute;
   bottom: 0;
-  left: calc((150px + var(--margin-m)) * var(--active-tab) + var(--margin-m));
+  left: calc((var(--tab-width) + var(--margin-m)) * var(--active-tab) + var(--margin-m));
   content: '';
-  width: 150px;
+  width: var(--tab-width);
   height: 2px;
   background-color: var(--color-accent-bright);
   transition: all 0.2s linear;

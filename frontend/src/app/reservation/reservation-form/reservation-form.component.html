@@ -36,8 +36,7 @@
             size="sm"
             [disabled]="form.invalid"
             (click)="onSubmit()"
-            class="btn-submit"
-            [disabled]="submitButtonDisabled()">
+            class="btn-submit">
       {{ reservationToUpdate() ? 'Update' : 'Reservieren' }}
     </button>
     @if (reservationToUpdate()) {

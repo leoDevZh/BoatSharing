@@ -1,0 +1,36 @@
+<bs-payment-form class="form" (createPayment)="reloadPayments()"/>
+@if (paymentUserDTOs !== null) {
+  @for (paymentUserDTO of paymentUserDTOs.result; track paymentUserDTO.paymentId; let i = $index) {
+    <div class="payment-container" (click)="openIdx(i)">
+      <div class="date-container">
+        <span>{{ DateTime.fromISO(paymentUserDTO.payedAt!).day }}
+          {{ DateTime.fromISO(paymentUserDTO.payedAt!).monthShort }}
+        </span>
+      </div>
+      <div class="detail-container">
+        <span>{{ paymentUserDTO.creditor?.username }}</span>
+        <span>{{ paymentUserDTO.reason }}</span>
+      </div>
+      <div class="amount-container">
+        <span>{{ paymentUserDTO.amount }}</span>
+      </div>
+      <div class="status-container">
+        <span [class]="getStatusClass(paymentUserDTO.paymentStatus!)"></span>
+      </div>
+
+      <ul class="debitor-container" [class.open]="extendIdx === i">
+        @for (debitor of paymentUserDTO.debitors; track debitor.debtId) {
+          <li>
+            <span>{{ debitor.debitor?.username }}</span>
+            <span>{{ debitor.amount }}</span>
+            <span [class]="getDebtStatusClass(debitor.debtStatus!)"></span>
+          </li>
+        }
+      </ul>
+    </div>
+  }
+  @if (paymentUserDTOs.hasNext) {
+    <mat-icon (click)="loadMore()" class="icon load-btn" fontIcon="add"/>
+  }
+}
+

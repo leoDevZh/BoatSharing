@@ -1,0 +1,47 @@
+<form [formGroup]="form">
+  <div class="payment-details">
+    <div class="input-container amount-container">
+      <label>Betrag</label>
+      <input type="text" formControlName="amount">
+    </div>
+    <div class="input-container">
+      <label>Grund</label>
+      <input type="text" formControlName="reason">
+    </div>
+  </div>
+  <div class="fuel-container">
+    <label>Benzinzahlung</label>
+    <input type="checkbox" (change)="onFuelPaymentChange()" formControlName="isFuelPayment">
+  </div>
+  @if (form.controls.debts.length > 0) {
+    <div formArrayName="debts" class="debts-container">
+      @for (debt of debts.controls; track $index; let i = $index) {
+
+        <div class="debt-container" [formGroupName]="i">
+          <div class="input-container amount-container">
+            <label>Schuldbetrag</label>
+            <input type="text" formControlName="amount">
+          </div>
+
+          <select formControlName="userId">
+            <option [ngValue]="null" disabled selected>Benutzer auswählen</option>
+            @for (user of users; track user.userId) {
+              <option [ngValue]="user.userId">{{ user.username }}</option>
+            }
+          </select>
+        </div>
+      }
+    </div>
+  }
+  @if (!form.controls.isFuelPayment.getRawValue().valueOf()) {
+    <mat-icon (click)="addDebt()" class="add-debt" fontIcon="add_circle"/>
+  }
+
+  <button [bsButton]="'submit'"
+          size="sm"
+          [disabled]="form.invalid"
+          (click)="onSubmit()"
+          class="btn-submit">
+    Verrechnen
+  </button>
+</form>

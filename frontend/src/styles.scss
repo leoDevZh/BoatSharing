@@ -8,14 +8,15 @@
   // accent
   --color-accent-bright: #9fe5ff;
   --color-accent-bright-20: rgba(159, 229, 255, 0.2);
-  --color-accent-dark: #2160c9; //TODO: Delete?
+  --color-accent-dark: #1f2330; //TODO: Delete?
   // font
   --color-font-primary: #1B1B1E;
-  --color-font-secondary: #7a5c60;
+  --color-font-secondary: #ffff;
   // status
-  --color-status-error: #c9214e;
+  --color-status-error: #c82b30;
   --color-status-disabled: #858585;
-  --color-status-success: #008636;
+  --color-status-success: #43c188;
+  --color-status-warning: #ff8000;
 
   /* MARGIN */
   --margin-xxs: 0.25rem;
@@ -40,6 +41,10 @@
 
   /* HEADER */
   --header-height: 64px;
+
+  @include mat.progress-spinner-overrides((
+    active-indicator-color: var(--color-accent-bright),
+  ));
 }
 
 * {
@@ -112,6 +117,10 @@ $compact-theme: mat.define-theme(
   border-color: var(--color-accent-dark);
 }
 
+.btn-submit:hover {
+  color: var(--color-font-secondary);
+}
+
 .btn-submit::before, .btn-submit::after {
   background-color: var(--color-accent-dark);
 }
@@ -142,7 +151,6 @@ $compact-theme: mat.define-theme(
   height: 410px;
   width: 410px;
 }
-
 
 .bs-btn.disabled {
   border-color: var(--color-status-disabled) !important;
