@@ -59,7 +59,7 @@ export class ReservationFormComponent implements OnInit, OnChanges {
       startDateTime: this.fb.control(toUpdate ? DateTime.fromISO(toUpdate.startDateTime!).toFormat("HH:mm") : null, Validators.required),
       endDateTime: this.fb.control(toUpdate ? DateTime.fromISO(toUpdate.endDateTime!).toFormat("HH:mm") : null, Validators.required),
       startHours: this.fb.control(toUpdate?.boatHoursOnStart ? toUpdate.boatHoursOnStart : null, [Validators.min(0), this.createNumbersOnlyValidator()]),
-      endHours: this.fb.control(toUpdate?.boatHoursOnEnd ? toUpdate.boatHoursOnEnd : null, [Validators.min(0)])
+      endHours: this.fb.control(toUpdate?.boatHoursOnEnd ? toUpdate.boatHoursOnEnd : null, [Validators.min(0), this.createNumbersOnlyValidator()])
     })
 
     this.activatedRoute.data.subscribe(({boatId}) => {

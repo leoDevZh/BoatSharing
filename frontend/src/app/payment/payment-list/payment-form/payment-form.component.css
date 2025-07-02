@@ -1,0 +1,79 @@
+:host {
+  padding: var(--padding-m);
+}
+
+form {
+  display: grid;
+
+  row-gap: var(--margin-xl);
+}
+
+.input-container {
+  position: relative;
+  width: fit-content;
+  height: 32px;
+}
+
+.input-container > input {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: 1px solid var(--color-accent-dark);
+  border-radius: 15px;
+  padding: var(--padding-m);
+  font-size: 1.1rem;
+}
+
+.input-container > label {
+  position: absolute;
+  top: 0;
+  left: 10%;
+  transform: translateY(-50%);
+  font-size: .8rem;
+  background-color: var(--color-bg-primary);
+}
+
+.amount-container {
+  width: 112px;
+}
+
+.amount-container > input {
+  text-align: right;
+}
+
+.payment-details, .debt-container {
+  display: grid;
+  grid-template-columns: .33fr 1fr;
+  column-gap: var(--margin-m);
+  align-items: center;
+}
+
+.fuel-container {
+  font-size: .9rem;
+  display: flex;
+  align-items: center;
+  gap: var(--margin-m);
+}
+
+.debt-container {
+  width: 90%;
+  position: relative;
+  left: var(--margin-m);
+}
+
+.debt-container > select {
+  background-color: transparent;
+  border: 1px var(--color-accent-dark) solid;
+  border-radius: 15px;
+  padding: var(--padding-m);
+  font-size: .8rem;
+}
+
+.add-debt {
+  position: relative;
+  left: var(--margin-m);
+}
+
+.btn-submit {
+  justify-self: right;
+}
