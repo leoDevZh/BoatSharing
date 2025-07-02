@@ -1,13 +1,16 @@
 INSERT INTO users(username, password)
 VALUES ('testUser', '$2a$12$GbqlJ0fs.00G5MLiCA9AZuA0QF000rXCrkQ0sP5EkGbwsOb.KmlEm'),
-       ('testUser2', '$2a$12$GbqlJ0fs.00G5MLiCA9AZuA0QF000rXCrkQ0sP5EkGbwsOb.KmlEm');/*password123*/
+       ('testUser2', '$2a$12$GbqlJ0fs.00G5MLiCA9AZuA0QF000rXCrkQ0sP5EkGbwsOb.KmlEm'),
+       ('testUser3', '$2a$12$GbqlJ0fs.00G5MLiCA9AZuA0QF000rXCrkQ0sP5EkGbwsOb.KmlEm');/*password123*/
+
 
 INSERT INTO boats(name)
 VALUES ('MS Schissschüssle');
 
 INSERT INTO users_boats(user_id, boat_id)
 VALUES (1, 1),
-       (2, 1);
+       (2, 1),
+       (3, 1);
 
 INSERT INTO reservations (start_date, end_date, boat_hours_on_start, boat_hours_on_end, boat_id, user_id)
 VALUES ('2025-05-01 08:00:00', '2025-05-01 12:00:00', 100, 104, 1, 1),

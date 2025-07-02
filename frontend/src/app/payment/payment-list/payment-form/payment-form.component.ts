@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, output} from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -54,6 +54,7 @@ export class PaymentFormComponent {
 
   private boatId!: BoatId
   protected users!: UserDTO[]
+  createPayment = output<void>()
 
   constructor() {
     this.form = this.fb.group<PaymentForm>({
@@ -94,6 +95,7 @@ export class PaymentFormComponent {
       .subscribe(res => {
         this.toastyService.addInfoNotification('Zahlung erstellt')
         this.clearForm()
+        this.createPayment.emit()
       })
   }
 
