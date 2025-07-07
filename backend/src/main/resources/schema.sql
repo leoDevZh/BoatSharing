@@ -63,3 +63,12 @@ CREATE TABLE IF NOT EXISTS debts
     CONSTRAINT fk_debt_user FOREIGN KEY (user_id) REFERENCES users (id),
     CONSTRAINT fk_debt_payment FOREIGN KEY (payment_ID) REFERENCES payments (id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS invoices
+(
+    id         SERIAL PRIMARY KEY,
+    start_date TIMESTAMP NOT NULL,
+    end_date   TIMESTAMP NOT NULL,
+    boat_id    INTEGER   NOT NULL,
+    CONSTRAINT fk_boat_id FOREIGN KEY (boat_id) REFERENCES boats (id)
+);

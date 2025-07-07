@@ -2,8 +2,12 @@ package org.example.backend.integration.payment;
 
 import org.example.backend.TestDBConfiguration;
 import org.example.backend.domain.payment.model.DebtStatus;
+import org.example.backend.infrastructure.repository.boat.Boat;
+import org.example.backend.infrastructure.repository.boat.JpaBoatRepository;
 import org.example.backend.infrastructure.repository.debt.Debt;
 import org.example.backend.infrastructure.repository.debt.JpaDebtRepository;
+import org.example.backend.infrastructure.repository.invoice.Invoice;
+import org.example.backend.infrastructure.repository.invoice.JpaInvoiceRepository;
 import org.example.backend.infrastructure.repository.payment.JpaPaymentRepository;
 import org.example.backend.infrastructure.repository.payment.Payment;
 import org.example.backend.infrastructure.repository.user.JpaUserRepository;
@@ -23,6 +27,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Set;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.example.backend.domain.payment.model.PaymentStatus.OPEN;
@@ -52,6 +59,12 @@ public class ReadPaymentTest {
     @Autowired
     private JpaUserRepository userRepository;
 
+    @Autowired
+    private JpaBoatRepository boatRepository;
+
+    @Autowired
+    private JpaInvoiceRepository invoiceRepository;
+
     private User user1;
     private User user2;
     private CustomUserDetail customUserDetail;
@@ -59,12 +72,17 @@ public class ReadPaymentTest {
     private Payment payment2;
     private Debt debt1;
     private Debt debt2;
+    private Invoice invoice1;
+    private Invoice invoice2;
+    private Boat boat1;
 
     @BeforeEach
     void setup() {
         debtRepository.deleteAll();
         paymentRepository.deleteAll();
         userRepository.deleteAll();
+        invoiceRepository.deleteAll();
+        boatRepository.deleteAll();
         user1 = User.builder()
                 .username("Captain")
                 .password("pwd")
@@ -112,6 +130,23 @@ public class ReadPaymentTest {
                 .userId(user1.getId())
                 .build();
         debtRepository.save(debt2);
+        boat1 = Boat.builder()
+                .name("Boat")
+                .userIds(Set.of(user1.getId()))
+                .build();
+        boatRepository.save(boat1);
+        invoice1 = Invoice.builder()
+                .startDate(LocalDateTime.of(2025, 4, 14, 0, 0))
+                .endDate(LocalDateTime.of(2025, 4, 18, 23, 59))
+                .boatId(boat1.getId())
+                .build();
+        invoiceRepository.save(invoice1);
+        invoice2 = Invoice.builder()
+                .startDate(LocalDateTime.of(2025, 4, 19, 0, 0))
+                .endDate(LocalDateTime.of(2025, 4, 22, 23, 59))
+                .boatId(boat1.getId())
+                .build();
+        invoiceRepository.save(invoice2);
     }
 
     @Nested
@@ -424,6 +459,62 @@ public class ReadPaymentTest {
         void getAllDebtsToCheckNotAuthenticated() throws Exception {
             mockMvc.perform(get("/api/read-payment/debts-to-check")
                             .param("page", "1"))
+                    .andExpect(status().isForbidden());
+        }
+    }
+
+    @Nested
+    class GetNextFuelPeriod {
+        @Test
+        void shouldGetNextFuelPaymentPeriodOnExisting() throws Exception {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+            String expectedStartDate = invoice2.getEndDate()
+                    .plusDays(1)
+                    .with(LocalTime.MIN)
+                    .format(formatter);
+            String expectedEndDate = LocalDateTime.now()
+                    .minusDays(1)
+                    .with(LocalTime.MAX)
+                    .format(formatter);
+
+            mockMvc.perform(get("/api/read-payment/next-invoice-period")
+                            .param("boatId", boat1.getId().toString())
+                            .with(user(customUserDetail)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.startDate").value(expectedStartDate))
+                    .andExpect(jsonPath("$.endDate").value(expectedEndDate));
+        }
+
+        @Test
+        void shouldGetNextFuelPaymentPeriodOnNonExisting() throws Exception {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+            String expectedStartDate = LocalDateTime.of(2025, 1, 1, 0, 0)
+                    .format(formatter);
+            String expectedEndDate = LocalDateTime.now()
+                    .minusDays(1)
+                    .with(LocalTime.MAX)
+                    .format(formatter);
+            invoiceRepository.deleteAll();
+
+            mockMvc.perform(get("/api/read-payment/next-invoice-period")
+                            .param("boatId", boat1.getId().toString())
+                            .with(user(customUserDetail)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.startDate").value(expectedStartDate))
+                    .andExpect(jsonPath("$.endDate").value(expectedEndDate));
+        }
+
+        @Test
+        void shouldGetNextFuelPaymentOnBoatIdMissing() throws Exception {
+            mockMvc.perform(get("/api/read-payment/next-invoice-period")
+                            .with(user(customUserDetail)))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        void shouldGetNextFuelPaymentPeriodOnNotAuthenticated() throws Exception {
+            mockMvc.perform(get("/api/read-payment/next-invoice-period")
+                            .param("boatId", boat1.getId().toString()))
                     .andExpect(status().isForbidden());
         }
     }
