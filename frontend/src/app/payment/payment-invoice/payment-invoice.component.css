@@ -1,0 +1,22 @@
+:host {
+  display: grid;
+  justify-items: center;
+  row-gap: var(--margin-m);
+}
+
+h1 {
+  font-size: 1rem;
+}
+
+.fuel-invoice-details {
+  margin-top: var(--margin-m);
+  display: grid;
+  justify-items: center;
+  row-gap: var(--margin-m);
+  padding: var(--padding-xs);
+}
+
+.fuel-invoice-details, h2 {
+  font-size: 1rem;
+  margin-bottom: var(--margin-xs);
+}

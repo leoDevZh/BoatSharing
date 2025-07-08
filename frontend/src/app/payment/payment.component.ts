@@ -9,8 +9,9 @@ import {OpenDebtComponent} from './open-debt/open-debt.component';
 import {PaybackCheckComponent} from './payback-check/payback-check.component';
 import {NgComponentOutlet} from '@angular/common';
 import {PaymentListComponent} from './payment-list/payment-list.component';
+import {PaymentInvoiceComponent} from './payment-invoice/payment-invoice.component';
 
-export type PaymentSideComponent = 'ZAHLUNG' | 'OFFENE' | 'RUECK'
+export type PaymentSideComponent = 'ZAHLUNG' | 'OFFENE' | 'RUECK' | 'INVOICE'
 
 @Component({
   selector: 'bs-payment',
@@ -64,6 +65,8 @@ export class PaymentComponent implements OnInit {
         return OpenDebtComponent
       case "RUECK":
         return PaybackCheckComponent
+      case 'INVOICE':
+        return PaymentInvoiceComponent
       default:
         return
     }
