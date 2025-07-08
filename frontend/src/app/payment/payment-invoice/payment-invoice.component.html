@@ -1,0 +1,25 @@
+<h1>Benzinabrechnung</h1>
+@if (from != null && to != null) {
+  <p>{{ from.day }} {{ from.monthShort }} {{ from.year }} bis {{ to.day }} {{ to.monthShort }} {{ to.year }}</p>
+  @if (fuelInvoiceDTO === null) {
+    <button [bsButton]="'submit'" size="sm" (click)="createInvoice()">Erstellen</button>
+  } @else {
+    <div class="fuel-invoice-details">
+      <div>
+        <h2>Stunden</h2>
+        <p>Total Stunden: {{ fuelInvoiceDTO.totalHours }}</p>
+        @for (userTotalHour of fuelInvoiceDTO.userTotalHoursDTOs; track userTotalHour.userDTO?.userId) {
+          <p>{{ userTotalHour.userDTO?.username }}: {{ userTotalHour.totalHours }}</p>
+        }
+      </div>
+      <div>
+        <h2>Zahlungen</h2>
+        <p>Total Zahlungen: {{ fuelInvoiceDTO.totalPayed }}</p>
+        @for (userTotalPayed of fuelInvoiceDTO.userTotalPayedDTOs; track userTotalPayed.userDTO?.userId) {
+          <p>{{ userTotalPayed.userDTO?.username }}: {{ userTotalPayed.totalPayed }}</p>
+        }
+      </div>
+      <p>Diese Daten sind anschliessend nicht mehr abrufbar.<br> Mache zur Kontrolle einen Screenshot.</p>
+    </div>
+  }
+}

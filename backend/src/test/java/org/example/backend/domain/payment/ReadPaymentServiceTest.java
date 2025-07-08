@@ -2,8 +2,10 @@ package org.example.backend.domain.payment;
 
 import org.example.backend.domain.User.model.UserDTO;
 import org.example.backend.domain.User.model.UserId;
+import org.example.backend.domain.boat.BoatId;
 import org.example.backend.domain.payment.model.*;
 import org.example.backend.domain.payment.spi.ReadDebtRepository;
+import org.example.backend.domain.payment.spi.ReadInvoiceRepository;
 import org.example.backend.domain.payment.spi.ReadPaymentRepository;
 import org.example.backend.domain.shared.model.PagedResult;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +16,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.example.backend.domain.payment.model.PaymentStatus.OPEN;
@@ -28,6 +32,9 @@ public class ReadPaymentServiceTest {
 
     @Mock
     private ReadDebtRepository readDebtRepository;
+
+    @Mock
+    private ReadInvoiceRepository readInvoiceRepository;
 
     @InjectMocks
     private ReadPaymentServiceImpl readPaymentService;
@@ -108,6 +115,35 @@ public class ReadPaymentServiceTest {
             assertTrue(actual.hasNext());
             assertEquals(1, actual.result().size());
             assertEquals(expected, actual.result().get(0));
+        }
+    }
+
+    @Nested
+    class GetNextInvoicePeriod {
+
+        @Test
+        void shouldGetNextFuelPaymentPeriodOnNonExisting() {
+            BoatId boatId = new BoatId(1L);
+            LocalDateTime expectedStart = LocalDateTime.of(2025, 1, 1, 0, 0).truncatedTo(ChronoUnit.SECONDS);
+            LocalDateTime expectedEnd = LocalDateTime.now().minusDays(1).with(LocalTime.MAX).truncatedTo(ChronoUnit.SECONDS);
+            when(readInvoiceRepository.getEndOfLastFuelPaymentPeriod(boatId)).thenReturn(null);
+            FuelPaymentPeriodDTO actual = readPaymentService.getNextFuelPaymentPeriod(boatId);
+
+            assertEquals(expectedStart, actual.startDate());
+            assertEquals(expectedEnd, actual.endDate());
+        }
+
+        @Test
+        void shouldGetNextFuelPaymentPeriodOnExisting() {
+            BoatId boatId = new BoatId(1L);
+            LocalDateTime existingEnd = LocalDateTime.of(2025, 4, 14, 23, 59).truncatedTo(ChronoUnit.SECONDS);
+            LocalDateTime expectedStart = existingEnd.plusDays(1).with(LocalTime.MIN).truncatedTo(ChronoUnit.SECONDS);
+            LocalDateTime expectedEnd = LocalDateTime.now().minusDays(1).with(LocalTime.MAX).truncatedTo(ChronoUnit.SECONDS);
+            when(readInvoiceRepository.getEndOfLastFuelPaymentPeriod(boatId)).thenReturn(existingEnd);
+            FuelPaymentPeriodDTO actual = readPaymentService.getNextFuelPaymentPeriod(boatId);
+
+            assertEquals(expectedStart, actual.startDate());
+            assertEquals(expectedEnd, actual.endDate());
         }
     }
 }

@@ -18,9 +18,9 @@ public class UpdateReservationDTO {
     @NotNull
     LocalDateTime endDateTime;
 
-    Integer boatEngineHoursOnStart;
+    Double boatEngineHoursOnStart;
 
-    Integer boatEngineHoursOnEnd;
+    Double boatEngineHoursOnEnd;
 
     @NotNull
     ReservationId reservationId;

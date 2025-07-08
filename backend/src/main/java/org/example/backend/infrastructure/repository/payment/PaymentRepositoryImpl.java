@@ -25,4 +25,9 @@ public class PaymentRepositoryImpl implements PaymentRepository {
     public void deletePayment(PaymentId paymentId) {
         this.jpaPaymentRepository.deleteById(paymentId.value());
     }
+
+    @Override
+    public void setPaymentToClosed(PaymentId paymentId) {
+        this.jpaPaymentRepository.setPaymentToClosed(paymentId.value());
+    }
 }

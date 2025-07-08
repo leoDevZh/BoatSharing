@@ -6,6 +6,7 @@ import org.example.backend.domain.payment.model.PaymentId;
 import org.example.backend.domain.payment.model.PaymentWithUsername;
 import org.example.backend.domain.shared.model.PagedResult;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,4 +17,6 @@ public interface ReadPaymentRepository {
     PagedResult<List<PaymentWithUsername>> getAllPayments(int page, int size);
 
     Optional<Payment> getPaymentById(PaymentId paymentId);
+
+    List<PaymentWithUsername> getFuelPaymentsForPeriod(LocalDateTime start, LocalDateTime end);
 }

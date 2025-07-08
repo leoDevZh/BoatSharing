@@ -2,12 +2,17 @@ package org.example.backend.domain.payment;
 
 import org.example.backend.domain.DomainService;
 import org.example.backend.domain.User.model.UserDTO;
+import org.example.backend.domain.boat.BoatId;
 import org.example.backend.domain.payment.api.ReadPaymentService;
 import org.example.backend.domain.payment.model.*;
 import org.example.backend.domain.payment.spi.ReadDebtRepository;
+import org.example.backend.domain.payment.spi.ReadInvoiceRepository;
 import org.example.backend.domain.payment.spi.ReadPaymentRepository;
 import org.example.backend.domain.shared.model.PagedResult;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @DomainService
@@ -15,12 +20,14 @@ public class ReadPaymentServiceImpl implements ReadPaymentService {
 
     private final int PAGE_SIZE = 30;
 
-    private ReadPaymentRepository readPaymentRepository;
-    private ReadDebtRepository readDebtRepository;
+    private final ReadPaymentRepository readPaymentRepository;
+    private final ReadDebtRepository readDebtRepository;
+    private final ReadInvoiceRepository readInvoiceRepository;
 
-    public ReadPaymentServiceImpl(ReadPaymentRepository readPaymentRepository, ReadDebtRepository readDebtRepository) {
+    public ReadPaymentServiceImpl(ReadPaymentRepository readPaymentRepository, ReadDebtRepository readDebtRepository, ReadInvoiceRepository readInvoiceRepository) {
         this.readPaymentRepository = readPaymentRepository;
         this.readDebtRepository = readDebtRepository;
+        this.readInvoiceRepository = readInvoiceRepository;
     }
 
     @Override
@@ -79,5 +86,16 @@ public class ReadPaymentServiceImpl implements ReadPaymentService {
     @Override
     public PagedResult<List<DebtPaymentDTO>> getDebtsToCheck(UserDTO user, int page) {
         return readDebtRepository.getDebtsToCheck(user.userId(), page, PAGE_SIZE);
+    }
+
+    @Override
+    public FuelPaymentPeriodDTO getNextFuelPaymentPeriod(BoatId boatId) {
+        LocalDateTime lastEnd = this.readInvoiceRepository.getEndOfLastFuelPaymentPeriod(boatId);
+        LocalDateTime nextStart = LocalDateTime.of(2025, 1, 1, 0, 0);
+        if (lastEnd != null) {
+            nextStart = lastEnd.plusDays(1).with(LocalTime.MIN);
+        }
+        LocalDateTime nextEnd = LocalDateTime.now().minusDays(1).with(LocalTime.MAX).truncatedTo(ChronoUnit.SECONDS);
+        return new FuelPaymentPeriodDTO(nextStart, nextEnd);
     }
 }

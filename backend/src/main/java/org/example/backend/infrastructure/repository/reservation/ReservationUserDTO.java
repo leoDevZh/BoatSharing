@@ -6,8 +6,8 @@ public record ReservationUserDTO(
         Long reservationId,
         LocalDateTime startDateTime,
         LocalDateTime endDateTime,
-        Integer boatHoursOnStart,
-        Integer boatHoursOnEnd,
+        Double boatHoursOnStart,
+        Double boatHoursOnEnd,
         Long boatId,
         Long userId,
         String username

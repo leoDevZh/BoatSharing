@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,5 +54,12 @@ public class ReadPaymentRepositoryImpl implements ReadPaymentRepository {
     @Override
     public Optional<Payment> getPaymentById(PaymentId paymentId) {
         return jpaPaymentRepository.findById(paymentId.value()).map(PaymentMapper::toDomain);
+    }
+
+    @Override
+    public List<PaymentWithUsername> getFuelPaymentsForPeriod(LocalDateTime start, LocalDateTime end) {
+        return jpaPaymentRepository.findFuelPaymentsForPeriod(start, end).stream()
+                .map(PaymentMapper::toDomain)
+                .toList();
     }
 }

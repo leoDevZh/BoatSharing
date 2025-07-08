@@ -6,11 +6,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.example.backend.domain.User.model.UserDTO;
 import org.example.backend.domain.User.model.UserId;
+import org.example.backend.domain.boat.BoatId;
 import org.example.backend.domain.payment.api.ReadPaymentService;
 import org.example.backend.domain.payment.model.DebtPaymentDTO;
 import org.example.backend.domain.payment.model.PaymentUserDTO;
 import org.example.backend.domain.shared.model.PagedResult;
 import org.example.backend.infrastructure.controller.excpetion.ExceptionDTO;
+import org.example.backend.infrastructure.controller.payment.model.FuelPaymentPeriodDTO;
 import org.example.backend.infrastructure.security.user.CustomUserDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -75,5 +77,16 @@ public class ReadPaymentController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         PagedResult<List<DebtPaymentDTO>> data = readPaymentService.getDebtsToCheck(new UserDTO(new UserId(userDetail.getId()), userDetail.getUsername()), page);
         return ResponseEntity.status(HttpStatus.OK).body(data);
+    }
+
+    @GetMapping(value = "next-invoice-period", produces = "application/json")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Get next invoice period"),
+            @ApiResponse(responseCode = "400", description = "Invalid boat id",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
+    })
+    public ResponseEntity<FuelPaymentPeriodDTO> getNextInvoicePeriod(@RequestParam BoatId boatId) {
+        org.example.backend.domain.payment.model.FuelPaymentPeriodDTO data = readPaymentService.getNextFuelPaymentPeriod(boatId);
+        return ResponseEntity.status(HttpStatus.OK).body(new FuelPaymentPeriodDTO(data.startDate(), data.endDate()));
     }
 }

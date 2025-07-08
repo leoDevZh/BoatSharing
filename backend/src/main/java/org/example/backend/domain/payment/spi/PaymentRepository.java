@@ -8,4 +8,6 @@ public interface PaymentRepository {
     PaymentId savePayment(Payment payment);
 
     void deletePayment(PaymentId paymentId);
+
+    void setPaymentToClosed(PaymentId paymentId);
 }

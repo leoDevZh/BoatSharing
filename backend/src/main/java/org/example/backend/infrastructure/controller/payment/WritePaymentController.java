@@ -6,9 +6,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.example.backend.domain.User.model.UserId;
+import org.example.backend.domain.boat.BoatId;
 import org.example.backend.domain.payment.api.WritePaymentService;
 import org.example.backend.domain.payment.model.CreatePayment;
 import org.example.backend.domain.payment.model.DebtId;
+import org.example.backend.domain.payment.model.FuelInvoiceDTO;
 import org.example.backend.domain.payment.model.PaymentId;
 import org.example.backend.infrastructure.controller.excpetion.ExceptionDTO;
 import org.example.backend.infrastructure.controller.payment.model.CreatePaymentDTO;
@@ -74,5 +76,17 @@ public class WritePaymentController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         writePaymentService.deletePayment(new UserId(userDetail.getId()), paymentId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PostMapping(value = "create-invoice", produces = "application/json")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Create Invoice"),
+            @ApiResponse(responseCode = "400", description = "Error on creating invoice",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
+    })
+    public ResponseEntity<FuelInvoiceDTO> createInvoice(@RequestParam BoatId boatId) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        org.example.backend.domain.payment.model.FuelInvoiceDTO data = writePaymentService.createInvoice(boatId, new UserId(userDetail.getId()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(data);
     }
 }

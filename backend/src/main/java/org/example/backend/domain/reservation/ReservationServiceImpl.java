@@ -48,7 +48,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public void updateReservation(UserId userId, ReservationId reservationId, LocalDateTime start, LocalDateTime end, Integer boatHoursOnStar, Integer boatHoursOnEnd) {
+    public void updateReservation(UserId userId, ReservationId reservationId, LocalDateTime start, LocalDateTime end, Double boatHoursOnStar, Double boatHoursOnEnd) {
         Reservation reservation = reservationRepository.findReservationById(reservationId).orElseThrow(() -> new InvalidReservationException("Reservation not found"));
         if (!reservation.isOwner(userId)) {
             throw new InvalidReservationException("User is not owner of reservation");
