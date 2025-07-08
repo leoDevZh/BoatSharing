@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS reservations CASCADE;
 DROP TABLE IF EXISTS payments CASCADE;
 DROP TYPE IF EXISTS PAYMENT_STATUS CASCADE;
 DROP TABLE IF EXISTS debts CASCADE;
+DROP TABLE IF EXISTS invoices CASCADE;
 
 CREATE TABLE IF NOT EXISTS users
 (
@@ -33,8 +34,8 @@ CREATE TABLE IF NOT EXISTS reservations
     id                  SERIAL PRIMARY KEY,
     start_date          TIMESTAMP NOT NULL,
     end_date            TIMESTAMP NOT NULL,
-    boat_hours_on_start INTEGER,
-    boat_hours_on_end   INTEGER,
+    boat_hours_on_start DECIMAL,
+    boat_hours_on_end   DECIMAL,
     boat_id             SERIAL    NOT NULL,
     user_id             SERIAL    NOT NULL,
     CONSTRAINT fk_reservations_boat FOREIGN KEY (boat_id) REFERENCES boats (id),

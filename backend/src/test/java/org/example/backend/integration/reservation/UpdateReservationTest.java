@@ -98,8 +98,8 @@ public class UpdateReservationTest {
 
     @Test
     void updateEngineHoursForReservationOnSuccess() throws Exception {
-        Integer engineHoursOnStart = 200;
-        Integer engineHoursOnEnd = 250;
+        double engineHoursOnStart = 200;
+        double engineHoursOnEnd = 250;
         UpdateReservationDTO updateReservationDTO = new UpdateReservationDTO(
                 reservation1.getStartDateTime(),
                 reservation1.getEndDateTime(),
@@ -136,8 +136,8 @@ public class UpdateReservationTest {
                 .endDateTime(LocalDateTime.now().minusHours(10).truncatedTo(ChronoUnit.SECONDS))
                 .build();
         reservationRepository.save(reservationToUpdate);
-        Integer engineHoursOnStart = 200;
-        Integer engineHoursOnEnd = 250;
+        double engineHoursOnStart = 200;
+        double engineHoursOnEnd = 250;
         UpdateReservationDTO updateReservationDTO = new UpdateReservationDTO(
                 reservationToUpdate.getStartDateTime(),
                 reservationToUpdate.getEndDateTime(),
@@ -194,8 +194,8 @@ public class UpdateReservationTest {
 
     @Test
     void updateReservationForReservationOnUserNotOwner() throws Exception {
-        Integer engineHoursOnStart = 200;
-        Integer engineHoursOnEnd = 250;
+        double engineHoursOnStart = 200;
+        double engineHoursOnEnd = 250;
         UpdateReservationDTO updateReservationDTO = new UpdateReservationDTO(
                 reservation1.getStartDateTime(),
                 reservation1.getEndDateTime(),
@@ -266,8 +266,8 @@ public class UpdateReservationTest {
 
     @Test
     void updateReservationForReservationOnReservationNotExisting() throws Exception {
-        Integer engineHoursOnStart = 200;
-        Integer engineHoursOnEnd = 250;
+        double engineHoursOnStart = 200;
+        double engineHoursOnEnd = 250;
         UpdateReservationDTO updateReservationDTO = new UpdateReservationDTO(
                 reservation1.getStartDateTime(),
                 reservation1.getEndDateTime(),
@@ -297,8 +297,8 @@ public class UpdateReservationTest {
 
     @Test
     void updateReservationForReservationOnEnginHoursStartGreaterThenEnd() throws Exception {
-        Integer engineHoursOnStart = 200;
-        Integer engineHoursOnEnd = 150;
+        double engineHoursOnStart = 200;
+        double engineHoursOnEnd = 150;
         UpdateReservationDTO updateReservationDTO = new UpdateReservationDTO(
                 reservation1.getStartDateTime(),
                 reservation1.getEndDateTime(),

@@ -10,8 +10,8 @@ public class Reservation {
     private ReservationId reservationId;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
-    private Integer boatHoursOnStart;
-    private Integer boatHoursOnEnd;
+    private Double boatHoursOnStart;
+    private Double boatHoursOnEnd;
     private BoatId boatId;
     private UserId userId;
 
@@ -34,7 +34,7 @@ public class Reservation {
         checkDateInPast(endDateTime);
     }
 
-    public void updateReservation(LocalDateTime start, LocalDateTime end, Integer updatedBoatHoursOnStar, Integer updatedBoatHoursOnEnd) {
+    public void updateReservation(LocalDateTime start, LocalDateTime end, Double updatedBoatHoursOnStar, Double updatedBoatHoursOnEnd) {
         checkEndTimeIsAfterStartTime(start, end);
         if (!(startDateTime.equals(start) && endDateTime.equals(end))) {
             checkDateInPast(endDateTime);
@@ -62,7 +62,7 @@ public class Reservation {
         }
     }
 
-    private static void checkBoatHoursValid(Integer updatedBoatHoursOnStar, Integer updatedBoatHoursOnEnd) {
+    private static void checkBoatHoursValid(Double updatedBoatHoursOnStar, Double updatedBoatHoursOnEnd) {
         if (updatedBoatHoursOnStar == null || updatedBoatHoursOnEnd == null) {
             return;
         }
@@ -87,7 +87,7 @@ public class Reservation {
         return endDateTime;
     }
 
-    public Integer getBoatHoursOnEnd() {
+    public Double getBoatHoursOnEnd() {
         return boatHoursOnEnd;
     }
 
@@ -99,7 +99,7 @@ public class Reservation {
         return boatId;
     }
 
-    public Integer getBoatHoursOnStart() {
+    public Double getBoatHoursOnStart() {
         return boatHoursOnStart;
     }
 
@@ -111,8 +111,8 @@ public class Reservation {
         ReservationId reservationId;
         LocalDateTime startDateTime;
         LocalDateTime endDateTime;
-        Integer boatHoursOnStart;
-        Integer boatHoursOnEnd;
+        Double boatHoursOnStart;
+        Double boatHoursOnEnd;
         BoatId boatId;
         UserId userId;
 
@@ -134,12 +134,12 @@ public class Reservation {
             return this;
         }
 
-        public ReservationBuilder boatHoursOnStart(Integer boatHoursOnStart) {
+        public ReservationBuilder boatHoursOnStart(Double boatHoursOnStart) {
             this.boatHoursOnStart = boatHoursOnStart;
             return this;
         }
 
-        public ReservationBuilder boatHoursOnEnd(Integer boatHoursOnEnd) {
+        public ReservationBuilder boatHoursOnEnd(Double boatHoursOnEnd) {
             this.boatHoursOnEnd = boatHoursOnEnd;
             return this;
         }

@@ -24,10 +24,10 @@ public class Reservation {
     private LocalDateTime endDateTime;
 
     @Column(name = "boat_hours_on_start")
-    private Integer boatHoursOnStart;
+    private Double boatHoursOnStart;
 
     @Column(name = "boat_hours_on_end")
-    private Integer boatHoursOnEnd;
+    private Double boatHoursOnEnd;
 
     @Column(name = "boat_id", nullable = false)
     private Long boatId;

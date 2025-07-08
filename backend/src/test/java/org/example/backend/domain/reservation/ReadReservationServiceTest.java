@@ -46,7 +46,7 @@ public class ReadReservationServiceTest {
         LocalDateTime start = LocalDateTime.of(2025, 4, 1, 0, 0);
         LocalDateTime end = LocalDateTime.of(2025, 4, 1, 1, 30);
         List<ReservationUserDTO> expectedReservations = List.of(
-                new ReservationUserDTO(new ReservationId(1L), start, end, 10, 20, boatId, new UserDTO(userId, "username"))
+                new ReservationUserDTO(new ReservationId(1L), start, end, 10., 20., boatId, new UserDTO(userId, "username"))
         );
         when(boatRepository.findByIdWithOwners(boatId)).thenReturn(Optional.of(boat));
         when(boat.isCoOwner(userId)).thenReturn(true);

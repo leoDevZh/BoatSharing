@@ -9,8 +9,8 @@ public record ReservationUserDTO(
         ReservationId reservationId,
         LocalDateTime startDateTime,
         LocalDateTime endDateTime,
-        Integer boatHoursOnStart,
-        Integer boatHoursOnEnd,
+        Double boatHoursOnStart,
+        Double boatHoursOnEnd,
         BoatId boatId,
         UserDTO userDTO
 ) {

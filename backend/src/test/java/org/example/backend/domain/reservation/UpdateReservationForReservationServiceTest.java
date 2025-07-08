@@ -44,8 +44,8 @@ public class UpdateReservationForReservationServiceTest {
             "null, 4"
     })
     void shouldUpdateReservationSuccessfully(String startStr, String endStr) {
-        Integer boatHoursOnStart = "null".equals(startStr) ? null : Integer.valueOf(startStr);
-        Integer boatHoursOnEnd = "null".equals(endStr) ? null : Integer.valueOf(endStr);
+        Double boatHoursOnStart = "null".equals(startStr) ? null : Double.valueOf(startStr);
+        Double boatHoursOnEnd = "null".equals(endStr) ? null : Double.valueOf(endStr);
         ReservationId reservationId = new ReservationId(1L);
         UserId userId = new UserId(1L);
         Reservation reservation = Reservation.builder()
@@ -73,8 +73,8 @@ public class UpdateReservationForReservationServiceTest {
 
     @Test
     void shouldUpdateReservationBoatHoursSuccessfullyWhenInPast() {
-        Integer boatHoursOnStart = 1;
-        Integer boatHoursOnEnd = 2;
+        Double boatHoursOnStart = 1.;
+        Double boatHoursOnEnd = 2.;
         ReservationId reservationId = new ReservationId(1L);
         UserId userId = new UserId(1L);
         Reservation reservation = Reservation.builder()
@@ -115,7 +115,7 @@ public class UpdateReservationForReservationServiceTest {
         when(reservationRepository.findReservationById(reservationId)).thenReturn(Optional.of(reservation));
 
         Exception exception = assertThrows(InvalidReservationException.class, () -> {
-            reservationService.updateReservation(userId, reservationId, startDate, endDate, 1, 2);
+            reservationService.updateReservation(userId, reservationId, startDate, endDate, 1., 2.);
         });
 
         assertEquals(exceptionMsg, exception.getMessage());
@@ -137,7 +137,7 @@ public class UpdateReservationForReservationServiceTest {
         when(reservationRepository.findReservationById(reservationId)).thenReturn(Optional.of(reservation));
 
         Exception exception = assertThrows(InvalidReservationException.class, () -> {
-            reservationService.updateReservation(userId, reservationId, newStart, newEnd, 1, 2);
+            reservationService.updateReservation(userId, reservationId, newStart, newEnd, 1., 2.);
         });
 
         assertEquals("Reservation update not possible in past", exception.getMessage());
@@ -153,14 +153,14 @@ public class UpdateReservationForReservationServiceTest {
         LocalDateTime endDateTime = endStr.equals("null") ? null : LocalDateTime.parse(endStr);
         ReservationId reservationId = new ReservationId(1L);
         UserId userId = new UserId(1L);
-        int boatHoursOnStar = 2;
-        int boatHoursOnEnd = 1;
+        double boatHoursOnStar = 2;
+        double boatHoursOnEnd = 1;
         Reservation reservation = Reservation.builder()
                 .reservationId(reservationId)
                 .userId(userId)
                 .boatId(new BoatId(1L))
                 .startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now().plusHours(boatHoursOnEnd))
+                .endDateTime(LocalDateTime.now().plusHours((long) boatHoursOnEnd))
                 .build();
         when(reservationRepository.findReservationById(reservationId)).thenReturn(Optional.of(reservation));
 
@@ -176,14 +176,14 @@ public class UpdateReservationForReservationServiceTest {
         ReservationId reservationId = new ReservationId(1L);
         UserId userId = new UserId(1L);
         UserId reservationUserId = new UserId(2L);
-        int boatHoursOnStar = 1;
-        int boatHoursOnEnd = 2;
+        double boatHoursOnStar = 1;
+        double boatHoursOnEnd = 2;
         Reservation reservation = Reservation.builder()
                 .reservationId(reservationId)
                 .userId(reservationUserId)
                 .boatId(new BoatId(1L))
                 .startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now().plusHours(boatHoursOnEnd))
+                .endDateTime(LocalDateTime.now().plusHours((long) boatHoursOnEnd))
                 .build();
         when(reservationRepository.findReservationById(reservationId)).thenReturn(Optional.of(reservation));
 
@@ -198,14 +198,14 @@ public class UpdateReservationForReservationServiceTest {
     void shouldThrowExceptionWhenOverlappingReservationsExist() {
         ReservationId reservationId = new ReservationId(1L);
         UserId userId = new UserId(1L);
-        int boatHoursOnStar = 1;
-        int boatHoursOnEnd = 2;
+        double boatHoursOnStar = 1;
+        double boatHoursOnEnd = 2;
         Reservation reservation = Reservation.builder()
                 .reservationId(reservationId)
                 .userId(userId)
                 .boatId(new BoatId(1L))
                 .startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now().plusHours(boatHoursOnEnd))
+                .endDateTime(LocalDateTime.now().plusHours((long) boatHoursOnEnd))
                 .build();
         when(reservationRepository.findReservationById(reservationId)).thenReturn(Optional.of(reservation));
         when(reservationRepository.countOverlappingReservationsForUpdate(reservation.getStartDateTime(), reservation.getEndDateTime(), reservation.getBoatId(), reservationId)).thenReturn(1);
@@ -221,14 +221,14 @@ public class UpdateReservationForReservationServiceTest {
     void shouldThrowExceptionWhenStartEngineHourGreaterEndEngineHours() {
         ReservationId reservationId = new ReservationId(1L);
         UserId userId = new UserId(1L);
-        int boatHoursOnStar = 2;
-        int boatHoursOnEnd = 1;
+        double boatHoursOnStar = 2;
+        double boatHoursOnEnd = 1;
         Reservation reservation = Reservation.builder()
                 .reservationId(reservationId)
                 .userId(userId)
                 .boatId(new BoatId(1L))
                 .startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now().plusHours(boatHoursOnEnd))
+                .endDateTime(LocalDateTime.now().plusHours((long) boatHoursOnEnd))
                 .build();
         when(reservationRepository.findReservationById(reservationId)).thenReturn(Optional.of(reservation));
 
@@ -245,8 +245,8 @@ public class UpdateReservationForReservationServiceTest {
         UserId userId = new UserId(1L);
         LocalDateTime start = LocalDateTime.now().plusHours(1);
         LocalDateTime end = LocalDateTime.now().plusHours(10);
-        int boatHoursOnStar = 1;
-        int boatHoursOnEnd = 2;
+        double boatHoursOnStar = 1;
+        double boatHoursOnEnd = 2;
         when(reservationRepository.findReservationById(reservationId)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(InvalidReservationException.class, () -> {

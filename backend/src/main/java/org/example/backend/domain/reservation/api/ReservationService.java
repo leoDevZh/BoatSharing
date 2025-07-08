@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public interface ReservationService {
     void makeNewReservation(UserId userId, BoatId boatId, LocalDateTime start, LocalDateTime end) throws InvalidReservationException;
 
-    void updateReservation(UserId userId, ReservationId reservationId, LocalDateTime start, LocalDateTime end, Integer boatHoursOnStar, Integer boatHoursOnEnd);
+    void updateReservation(UserId userId, ReservationId reservationId, LocalDateTime start, LocalDateTime end, Double boatHoursOnStar, Double boatHoursOnEnd);
 
     void cancelReservation(UserId userId, ReservationId reservationId);
 }
