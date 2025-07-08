@@ -25,6 +25,8 @@ model/debtId.ts
 model/debtPaymentDTO.ts
 model/debtUserDTO.ts
 model/exceptionDTO.ts
+model/fuelInvoiceDTO.ts
+model/fuelPaymentPeriodDTO.ts
 model/models.ts
 model/pagedResultListDebtPaymentDTO.ts
 model/pagedResultListPaymentUserDTO.ts
@@ -35,5 +37,7 @@ model/reservationUserDTO.ts
 model/updateReservationDTO.ts
 model/userDTO.ts
 model/userId.ts
+model/userTotalHoursDTO.ts
+model/userTotalPayedDTO.ts
 param.ts
 variables.ts
