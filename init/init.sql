@@ -66,13 +66,13 @@ CREATE TABLE IF NOT EXISTS invoices
 );
 
 INSERT INTO users(username, password)
-VALUES ('Andrin', '$2a$12$KxfRSOY/O.wgR3jjWcYaw.8bRQpeM5dZGjSi7LkKC5VU7MlXnnnGm'),
-       ('Rik', '$2a$12$kqWCRoPudviEfNkRyOMh6O/6DBx2c5tlpX6sbh/ykP9JAHZo.bg7q'),
-       ('Tim', '$2a$12$0EdfETB93wdhLBSaz/398.mGJKHGSLBsZ2INRUWB8EpTZEvBULKem');
+VALUES ('testUser', '$2a$12$GZ.66p7Q8jSIDE5F/gK0iuxDxvN9HDQOBH1Ho9Dz5L7z6hx1WW1BW'),
+       ('testUser2', '$2a$12$GZ.66p7Q8jSIDE5F/gK0iuxDxvN9HDQOBH1Ho9Dz5L7z6hx1WW1BW'),
+       ('testUser3', '$2a$12$GZ.66p7Q8jSIDE5F/gK0iuxDxvN9HDQOBH1Ho9Dz5L7z6hx1WW1BW'); --password123
 
 
 INSERT INTO boats(name)
-VALUES ('MS Schissschüssle');
+VALUES ('Seaquel');
 
 INSERT INTO users_boats(user_id, boat_id)
 VALUES (1, 1),

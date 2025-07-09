@@ -22,7 +22,7 @@ services:
       - db
 
   web:
-    image: ironmomo/boatsharing-web:1.0.0
+    image: ironmomo/boatsharing-web:1.0.1
     ports:
       - "4201:80"
 
