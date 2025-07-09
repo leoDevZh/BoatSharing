@@ -17,7 +17,6 @@
       <div class="status-container">
         <span [class]="getStatusClass(paymentUserDTO.paymentStatus!)"></span>
       </div>
-
       <ul class="debitor-container" [class.open]="extendIdx === i">
         @for (debitor of paymentUserDTO.debitors; track debitor.debtId) {
           <li>
@@ -27,6 +26,9 @@
           </li>
         }
       </ul>
+      @if (paymentUserDTO.creditor?.userId?.value === this.loggedInUserId.value) {
+        <mat-icon (click)="deletePayment(paymentUserDTO.paymentId!)" class="icon delete-btn" fontIcon="delete"/>
+      }
     </div>
   }
   @if (paymentUserDTOs.hasNext) {

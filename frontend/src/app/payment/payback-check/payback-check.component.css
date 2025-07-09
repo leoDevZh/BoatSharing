@@ -4,12 +4,17 @@
   justify-items: center;
 }
 
+h1 {
+  font-size: 1rem;
+}
+
 .debt {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  height: fit-content;
   border-bottom: 1px solid var(--color-status-disabled);
   padding: var(--padding-xs) var(--padding-m);
 }
