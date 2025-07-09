@@ -116,8 +116,6 @@ export class PaymentFormComponent {
     if (this.form.controls.isFuelPayment.getRawValue().valueOf()) {
       this.form.controls.debts.clear()
       this.form.controls.reason.setValue('Benzin')
-    } else {
-      this.form.controls.reason.setValue(null)
     }
   }
 
