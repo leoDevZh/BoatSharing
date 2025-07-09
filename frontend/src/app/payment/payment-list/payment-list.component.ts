@@ -1,11 +1,20 @@
-import {Component, inject} from '@angular/core';
-import {DebtUserDTO, PagedResultListPaymentUserDTO, PaymentUserDTO, ReadPaymentControllerService} from '../../api';
+import {Component, inject, OnInit} from '@angular/core';
+import {
+  DebtUserDTO,
+  PagedResultListPaymentUserDTO,
+  PaymentId,
+  PaymentUserDTO,
+  ReadPaymentControllerService,
+  UserId,
+  WritePaymentControllerService
+} from '../../api';
 import {catchError, throwError} from 'rxjs';
 import {ErrorInfo} from '../../model/ErrorInfo';
 import {ToastyService} from '../../services/toasty/toasty.service';
 import {MatIcon} from '@angular/material/icon';
 import {DateTime} from 'luxon';
 import {PaymentFormComponent} from './payment-form/payment-form.component';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'bs-payment-list',
@@ -16,17 +25,26 @@ import {PaymentFormComponent} from './payment-form/payment-form.component';
   templateUrl: './payment-list.component.html',
   styleUrl: './payment-list.component.css'
 })
-export class PaymentListComponent {
+export class PaymentListComponent implements OnInit {
   protected readonly DateTime = DateTime;
   private readPaymentService = inject(ReadPaymentControllerService)
   private toastyService = inject(ToastyService)
+  private writePaymentService = inject(WritePaymentControllerService)
+  private activatedRoute = inject(ActivatedRoute);
 
   private currentPage = 0
   protected paymentUserDTOs: PagedResultListPaymentUserDTO | null = null
   protected extendIdx: number | null = null
+  protected loggedInUserId!: UserId
 
   constructor() {
     this.loadData();
+  }
+
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({user}) => {
+      this.loggedInUserId = user.userId
+    })
   }
 
   loadMore() {
@@ -74,5 +92,17 @@ export class PaymentListComponent {
   reloadPayments() {
     this.currentPage = 0
     this.loadData()
+  }
+
+  deletePayment(paymentId: PaymentId): void {
+    this.writePaymentService.deletePayment(paymentId.value?.toString()!)
+      .pipe(catchError((err: ErrorInfo) => {
+        this.toastyService.addErrorNotification(`Fehler beim löschen der Zahlung: ${err.msg}`)
+        return throwError(() => err)
+      }))
+      .subscribe(res => {
+        this.toastyService.addInfoNotification('Zahlung erfolgreich gelöscht')
+        this.loadData()
+      })
   }
 }
