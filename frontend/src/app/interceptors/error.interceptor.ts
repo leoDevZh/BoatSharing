@@ -49,6 +49,9 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       if ((errorResponse.status === 401 || errorResponse.status === 403) && !req.url.includes('/api/auth/login')) {
         router.navigate(['/login'])
       }
+      if (errorResponse.status >= 500) {
+        router.navigate(['/error'])
+      }
       return throwError(() => errorInfo)
     })
   );
