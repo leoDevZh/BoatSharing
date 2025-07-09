@@ -1,3 +1,4 @@
+<h1>Offene Rechnungen</h1>
 @if (openDebts !== null) {
   @for (debt of openDebts.result; track debt.debtUserDTO!.debtId) {
     <div class="debt">
