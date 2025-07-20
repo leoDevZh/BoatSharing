@@ -88,9 +88,9 @@ Schutz vor Man in the Middle basierten Angriffen wie das Auslesen von Nutzerdate
 | Asset | Beschreibung | Speicherort | Bedrohungen | Schutzmassnahmen | 
 | -------- | -------- | -------- | -------- | -------- |
 | User Passwort | Passwort zur User authentifizierung | Datenbank | Brute force, Datenbank Zugriff | Bcrypt hashing |
-| JWT Token | Token zur Authentifizierung von API abfragen | Localstorage | Diebstahl, Replay-Angriffe | Gültigkeitsdauer, CSRF-Schutz mittels Localstorage |
-| Userspezifische Daten | Manipulation durch dritte | Datenbank | Unauthorisierter Zugriffe | Authorisierungsmechanismen |
-| API Schnittstellen | HTTP Endpunkte | Spring Boot | Unauthorisierter Zugriffe, Input Manipulationen | Authentifizierung und Authorisierung, Bereinigung der Inputdaten |
+| JWT Token | Token zur Authentifizierung von API abfragen | Localstorage | Diebstahl, Replay-Angriff, CSRF-Angriff | Gültigkeitsdauer, CSRF-Schutz mittels Localstorage |
+| Userspezifische Daten | Manipulation durch dritte | Datenbank | Unauthorisierter Zugriff | Authorisierungsmechanismen |
+| API Schnittstellen | HTTP Endpunkte | Spring Boot | Unauthorisierter Zugriff, Input Manipulationen | Authentifizierung und Authorisierung, Bereinigung der Inputdaten |
 | Datenbank Zugriff | Zugangsdaten und Schnittstellen zu Datenbank | .env Datei | Zugriff durch Angreifer von Aussen | Zugriff auf Docker-Netzwerk einschränken | 
 
 #### Authentifizierung & Authorisierung
@@ -98,7 +98,19 @@ Zur Authentifizierung werden Username und Passwort verlangt. Aus Gründen der Us
 Die Authoriserung und authentifizierung von eingeloggten Usern wird mit JWT Tokens umgesetzt. Dies ermöglicht eine bessere Skalierung und da keine Sessionbasierten Daten Serverseitig gespeichert werden müssen. Ebenfalls bieten JWT Tokens impliziten Schutz vor CSRF Angriffen.
 
 #### Backend
-Das Sicherheitskonzept wird mit Spring Security implementiert. Hierzu wurden nach den best practice Vorgaben von Spring Security zusätzliche Filter, Provider und Authentification-Tokens implementiert und in der [SecurityConfiguration](backend/src/main/java/org/example/backend/infrastructure/security/SecurityConfiguration.java) registriert.
+Das Sicherheitskonzept wird mit Spring Security implementiert. Hierzu wurden nach den best practice Vorgaben von Spring Security zusätzliche [Filter](backend/src/main/java/org/example/backend/infrastructure/security/jwt/JwtFilter.java), [Provider](backend/src/main/java/org/example/backend/infrastructure/security/jwt/JwtAuthenticationProvider.java) und [Authentification-Tokens](backend/src/main/java/org/example/backend/infrastructure/security/jwt/JwtAuthenticationToken.java) implementiert und in der [SecurityConfiguration](backend/src/main/java/org/example/backend/infrastructure/security/SecurityConfiguration.java) registriert.
+
+##### XSS
+Keine Security In-Depth Massnahmen umgesetzt, da API nur von Angular-Frontend verwendet und somit Userinhalt bereits bereinigt. Zusätzlich gelten User als Vertrauenswürdig.
+
+##### CORS
+Keine Einschränkung obwohl API nur von Angular-Frontend verwendet.
+
+##### CSRF
+Schutz mittels Localstorage. Keine Security In-Depth durch beispielsweise CORS.
+
+##### SQL Injection
+DataJPA verwendet hierzu prepared Queries. Weitere Schadenminderungsmassnahmen wie DB-Rechte spezifizieren wurden nicht implementiert.
 
 #### Frontend
 
