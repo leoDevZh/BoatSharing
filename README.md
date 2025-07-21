@@ -98,7 +98,7 @@ Zur Authentifizierung werden Username und Passwort verlangt. Aus Gründen der Us
 Die Authoriserung und authentifizierung von eingeloggten Usern wird mit JWT Tokens umgesetzt. Dies ermöglicht eine bessere Skalierung und da keine Sessionbasierten Daten Serverseitig gespeichert werden müssen. Ebenfalls bieten JWT Tokens impliziten Schutz vor CSRF Angriffen.
 
 #### Backend
-Das Sicherheitskonzept wird mit Spring Security implementiert. Hierzu wurden nach den best practice Vorgaben von Spring Security zusätzliche [Filter](backend/src/main/java/org/example/backend/infrastructure/security/jwt/JwtFilter.java), [Provider](backend/src/main/java/org/example/backend/infrastructure/security/jwt/JwtAuthenticationProvider.java) und [Authentification-Tokens](backend/src/main/java/org/example/backend/infrastructure/security/jwt/JwtAuthenticationToken.java) implementiert und in der [SecurityConfiguration](backend/src/main/java/org/example/backend/infrastructure/security/SecurityConfiguration.java) registriert.
+Das Sicherheitskonzept wird mit Spring Security implementiert. Hierzu wurden nach den best practice Vorgaben von Spring Security zusätzliche [Filter](backend/src/main/java/org/example/backend/infrastructure/security/jwt/JwtFilter.java), [Provider](backend/src/main/java/org/example/backend/infrastructure/security/jwt/JwtAuthenticationProvider.java) und [Authentification-Tokens](backend/src/main/java/org/example/backend/infrastructure/security/jwt/JwtAuthenticationToken.java) implementiert unddoku in der [SecurityConfiguration](backend/src/main/java/org/example/backend/infrastructure/security/SecurityConfiguration.java) registriert.
 
 ##### XSS
 Keine Security In-Depth Massnahmen umgesetzt, da API nur von Angular-Frontend verwendet und somit Userinhalt bereits bereinigt. Zusätzlich gelten User als Vertrauenswürdig.
@@ -113,4 +113,6 @@ Schutz mittels Localstorage. Keine Security In-Depth durch beispielsweise CORS.
 DataJPA verwendet hierzu prepared Queries. Weitere Schadenminderungsmassnahmen wie DB-Rechte spezifizieren wurden nicht implementiert.
 
 #### Frontend
+Nutzt Angulars build-in protection (e.g. AOT-Compiler).
+
 
