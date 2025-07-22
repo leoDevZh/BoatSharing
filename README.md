@@ -115,4 +115,17 @@ DataJPA verwendet hierzu prepared Queries. Weitere Schadenminderungsmassnahmen w
 #### Frontend
 Nutzt Angulars build-in protection (e.g. AOT-Compiler).
 
-
+### Features
+| Feature | Beschreibung | Besonderheiten | Implementation |
+| ------- | ------- | ------- | ------ |
+| Reservation erstellen | Erstellt eine neu Reservation für den eingeloggten User | Mögliche Racecondition da Domainservice prüft ob bereits eine Reservation zur selben Zeit vorhanden ist  | Höchstes Isolationslevel notwendig um Phantom Reads zu verhindern. Daher wurde Funktion auf Domainservice Level entsprechend annotiert. Getestet wird in Integrationstest mit async requests |
+| Reservation update | Eine bestehende Reservation wird upgedated | Domain Logik muss erfüllt sein  | Domain Logik in Entityklasse ausgelagert. Somit bleibt Domainservice übersichtlich (DDD) |
+| Reservation löschen | Eine bestehende Reservation wird gelöscht | Domain Logik muss erfüllt sein | Domain Logik in Entityklasse ausgelagert. Somit bleibt Domainservice übersichtlich (DDD) |
+| Lese Reservationen | Reservationen welche in Zeitfenster sind werden gelesen | Data Join notwendig | Da JPA Entity Relationen nicht über Listen abbildet um mögliche n+1 Performanceprobleme vorzubeugen wird auf Repository Level Custom Query verwendet |
+| Zahlung erstellen | Erstellt eine neue Zahlung | Mehrere Schreibzugriffe können bei Fehler zu invalidem Zustand führen | Entsprechende Annotation auf Domainservice Level |
+| Schuldstatus ändern | Ändert den Status der Schulde entsprechend | | |
+| Zahlung löschen | Löscht eine bestehende Zahlung | Verknüpfte Datenbank Einträge sollten gelöscht werden | Auf DB-Schema Level wurde entsprechend delete on cascade eingeführt |
+| Benzinabrechnung erstellen | Erstellt eine neue Benzinabrechnung | Mehrere Schreibzugriffe können bei Fehler zu invalidem Zustand führen | Entsprechende Annotation auf Domainservice Level |
+| Lese Userdetails | Alle User die zu entsprechendem Boot gehören werden gelesen | | |
+| Authentifizieren | Username und Passwort Kombination authentifizieren |  |  |
+| Refresh | Neues JWT-Token wird erstellt | | |
