@@ -1,13 +1,21 @@
 # Boatsharing Application
 ## Inhaltsverzeichnis
 
-- [Domain](#domain)
-
 - [Einleitung](#einleitung)
 
+- [Domain](#domain)
+  - [Reservation](#reservation)
+  - [Zahlung](#zahlung)
+
 - [Installation](#installation)
+  - [Download](#download)
+  - [Run](#run)
+  - [Clean up](#clean-up)
 
 - [Architektur](#architektur)
+  - [Systemarchitektur](#systemarchitektur)
+  - [Security Konzept](#security-konzept)
+  - [Features](#features)
 
 ## Einleitung
 Die Boatsharing Application enstand aus dem Bedürfniss, Rechnungen und Reservationen eines mit Freunden gemeinsam genutzten Boot zu verwalten. 
@@ -29,7 +37,7 @@ Allfällige Anpassungen wie anpassen des Zeitfensters oder das Löschen der Rese
 Eine Ausnahme gilt für das Update der Bootstunden, heisst ein Nutzer kann nachträglich die effektiven Motorstunden die während einer Ausfahrt angefallen sind zu dokumentieren.
 Es ist einem Nutzer nur erlaubt persönliche Reservationen zu buchen. Ebenfalls ist das Löschen und Updaten der Reservationen nur für persönliche Reservationen möglich.
 
-### Zahlungen
+### Zahlung
 Allfallende Kosten am Boot werden transparent und fair strukturiert. Die Applikation ermöglicht hierzu eine Dokumentation von anfallenden Kosten welche ein Nutzer tätigt.
 Tätigt ein Nutzer eine Zahlung kann dieser die Kosten in der Applikation dokumentieren und entsprechende Zahlungsaufforderungen an die Mitnutzer stellen.
 Das Löschen einer Zahlung ist nur für persönliche Zahlungen möglich.
@@ -38,7 +46,7 @@ Eine Zahlung gilt als abgeschlossen, wenn alle Zahlungsaufforderungen durchd en 
 Der Umgang mit Benzinkosten werden spezifisch behandelt. Der Nutzer hat die Möglichkeit eine Zahlung als Benzinzahlung zu markieren. Es werden zu diesem Zeitpunkt keine Zahlungsaufforderungen an die anderen Nutzer definiert. 
 Zu einem geignenten Zeitpunkt kann von jedem Nutzer eine Benzinabrechnung durchgeführt werden. Dies hat zur Folge, dass die angefallenen Benzinkosten proportional zur Nutzungsdauer des Bootes verrechnet werden. Die Ausgleichszahlungen folgen der Logik der üblichen Zahlungen.
 
-## Installation
+## Deployment
 Um die Applikation mit geringem Aufwand zu deployen und Systemkonfigurationen minimal zu halten, habe ich mich dafür entschieden, Frontend, Backend und Datenbank über Docker Container zur verfügung zu stellen. 
 Ebenfalls bieten Container Vorteile bezüglich Skalierung, Ressourcennutzung und Isolation von anderen Prozessen. 
 
