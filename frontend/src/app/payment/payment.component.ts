@@ -1,6 +1,6 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {ReadPaymentControllerService} from '../api';
-import {catchError, Observable, throwError} from 'rxjs';
+import {ReadPaymentControllerService, UserDTO} from '../api';
+import {catchError, finalize, forkJoin, Observable, throwError} from 'rxjs';
 import {ToastyService} from '../services/toasty/toasty.service';
 import {ErrorInfo} from '../model/ErrorInfo';
 import {MatIcon} from '@angular/material/icon';
@@ -10,6 +10,7 @@ import {PaybackCheckComponent} from './payback-check/payback-check.component';
 import {NgComponentOutlet} from '@angular/common';
 import {PaymentListComponent} from './payment-list/payment-list.component';
 import {PaymentInvoiceComponent} from './payment-invoice/payment-invoice.component';
+import {ActivatedRoute} from '@angular/router';
 
 export type PaymentSideComponent = 'ZAHLUNG' | 'OFFENE' | 'RUECK' | 'INVOICE'
 
@@ -29,22 +30,39 @@ export class PaymentComponent implements OnInit {
   protected displaySideContainer: boolean = false
   protected paybacksToCheckTotalNumber: number | null = null
   protected openPaymentsTotalNumber: number | null = null
+  protected isLoading: boolean = false
 
   private readPaymentService = inject(ReadPaymentControllerService)
   private toastyService = inject(ToastyService)
+  private activatedRoute = inject(ActivatedRoute);
+
+  user!: UserDTO;
 
   ngOnInit(): void {
-    this.loadData();
+    this.activatedRoute.data.subscribe(({user}) => {
+      this.user = user
+      this.loadData();
+    })
   }
 
   private loadData() {
-    this.readPaymentService.getAllDebtsToCheck(0)
-      .pipe(catchError(this.handleError))
-      .subscribe(response => this.paybacksToCheckTotalNumber = response.totalNumber!)
+    console.log(this.user)
+    if (this.user?.username !== 'Harry') {
+      this.isLoading = true
+      forkJoin({
+        paybacks: this.readPaymentService.getAllDebtsToCheck(0),
+        openPayments: this.readPaymentService.getAllOpenDebtsFromLoggedInUser(0)
+      })
+        .pipe(
+          catchError(this.handleError),
+          finalize(() => this.isLoading = false)
+        )
+        .subscribe(({ paybacks, openPayments }) => {
+          this.paybacksToCheckTotalNumber = paybacks.totalNumber!;
+          this.openPaymentsTotalNumber = openPayments.totalNumber!;
+        });
 
-    this.readPaymentService.getAllOpenDebtsFromLoggedInUser(0)
-      .pipe(catchError(this.handleError))
-      .subscribe(response => this.openPaymentsTotalNumber = response.totalNumber!)
+    }
   }
 
   slideBack(): void {
