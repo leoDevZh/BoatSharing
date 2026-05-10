@@ -67,7 +67,9 @@ public class ReadPaymentTest {
 
     private User user1;
     private User user2;
+    private User harry;
     private CustomUserDetail customUserDetail;
+    private CustomUserDetail harryUserDetail;
     private Payment payment1;
     private Payment payment2;
     private Debt debt1;
@@ -93,17 +95,27 @@ public class ReadPaymentTest {
                 .password("pwd")
                 .build();
         userRepository.save(user2);
+        harry = User.builder()
+                .username("Harry")
+                .password("pwd")
+                .build();
+        userRepository.save(harry);
         customUserDetail = CustomUserDetail.builder()
                 .id(user1.getId())
                 .username(user1.getUsername())
                 .password(user1.getPassword())
+                .build();
+        harryUserDetail = CustomUserDetail.builder()
+                .id(harry.getId())
+                .username(harry.getUsername())
+                .password(harry.getPassword())
                 .build();
         payment1 = Payment.builder()
                 .paymentDate(LocalDateTime.now().plusDays(1).truncatedTo(SECONDS))
                 .amount(10.)
                 .status(OPEN)
                 .reason("reason1")
-                .isFuelPayment(false)
+                .isFuelPayment(true)
                 .userId(user1.getId())
                 .build();
         paymentRepository.save(payment1);
@@ -132,7 +144,7 @@ public class ReadPaymentTest {
         debtRepository.save(debt2);
         boat1 = Boat.builder()
                 .name("Boat")
-                .userIds(Set.of(user1.getId()))
+                .userIds(Set.of(user1.getId(), harry.getId()))
                 .build();
         boatRepository.save(boat1);
         invoice1 = Invoice.builder()
@@ -281,6 +293,30 @@ public class ReadPaymentTest {
                             .param("page", "1"))
                     .andExpect(status().isForbidden());
         }
+
+        @Test
+        void getAllPaymentsOnUserIsHarry() throws Exception {
+            mockMvc.perform(get("/api/read-payment/all")
+                            .param("page", "0")
+                            .with(user(harryUserDetail)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.result.length()").value(1))
+                    .andExpect(jsonPath("$.hasNext").value(false))
+                    .andExpect(jsonPath("$.totalNumber").value(2))
+                    .andExpect(jsonPath("$.result[0].paymentId.value").value(payment1.getId()))
+                    .andExpect(jsonPath("$.result[0].payedAt").value(payment1.getPaymentDate().toString()))
+                    .andExpect(jsonPath("$.result[0].amount").value(payment1.getAmount()))
+                    .andExpect(jsonPath("$.result[0].reason").value(payment1.getReason()))
+                    .andExpect(jsonPath("$.result[0].isFuelPayment").value(payment1.getIsFuelPayment()))
+                    .andExpect(jsonPath("$.result[0].paymentStatus").value(payment1.getStatus().toString()))
+                    .andExpect(jsonPath("$.result[0].creditor.userId.value").value(user1.getId()))
+                    .andExpect(jsonPath("$.result[0].creditor.username").value(user1.getUsername()))
+                    .andExpect(jsonPath("$.result[0].debitors.length()").value(1))
+                    .andExpect(jsonPath("$.result[0].debitors[0].debtId.value").value(debt1.getId()))
+                    .andExpect(jsonPath("$.result[0].debitors[0].amount").value(debt1.getAmount()))
+                    .andExpect(jsonPath("$.result[0].debitors[0].debtStatus").value(debt1.getStatus().toString()))
+                    .andExpect(jsonPath("$.result[0].debitors[0].debitor.userId.value").value(debt1.getUserId()))
+                    .andExpect(jsonPath("$.result[0].debitors[0].debitor.username").value(user2.getUsername()));        }
     }
 
     @Nested

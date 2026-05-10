@@ -13,6 +13,7 @@ import org.example.backend.domain.payment.model.PaymentUserDTO;
 import org.example.backend.domain.shared.model.PagedResult;
 import org.example.backend.infrastructure.controller.excpetion.ExceptionDTO;
 import org.example.backend.infrastructure.controller.payment.model.FuelPaymentPeriodDTO;
+import org.example.backend.infrastructure.controller.util.DenyHarry;
 import org.example.backend.infrastructure.security.user.CustomUserDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,7 +52,8 @@ public class ReadPaymentController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
     })
     public ResponseEntity<PagedResult<List<PaymentUserDTO>>> getAllPayments(@RequestParam int page) {
-        PagedResult<List<PaymentUserDTO>> data = readPaymentService.getAllPayments(page);
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        PagedResult<List<PaymentUserDTO>> data = readPaymentService.getAllPayments(new UserDTO(new UserId(userDetail.getId()), userDetail.getUsername()), page);
         return ResponseEntity.status(HttpStatus.OK).body(data);
     }
 
@@ -61,6 +63,7 @@ public class ReadPaymentController {
             @ApiResponse(responseCode = "400", description = "Invalid reservation",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
     })
+    @DenyHarry
     public ResponseEntity<PagedResult<List<DebtPaymentDTO>>> getAllOpenDebtsFromLoggedInUser(@RequestParam int page) {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         PagedResult<List<DebtPaymentDTO>> data = readPaymentService.getOpenDebtsFromLoggedInUser(new UserDTO(new UserId(userDetail.getId()), userDetail.getUsername()), page);
@@ -73,6 +76,7 @@ public class ReadPaymentController {
             @ApiResponse(responseCode = "400", description = "Invalid reservation",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
     })
+    @DenyHarry
     public ResponseEntity<PagedResult<List<DebtPaymentDTO>>> getAllDebtsToCheck(@RequestParam int page) {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         PagedResult<List<DebtPaymentDTO>> data = readPaymentService.getDebtsToCheck(new UserDTO(new UserId(userDetail.getId()), userDetail.getUsername()), page);
@@ -85,6 +89,7 @@ public class ReadPaymentController {
             @ApiResponse(responseCode = "400", description = "Invalid boat id",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
     })
+    @DenyHarry
     public ResponseEntity<FuelPaymentPeriodDTO> getNextInvoicePeriod(@RequestParam BoatId boatId) {
         org.example.backend.domain.payment.model.FuelPaymentPeriodDTO data = readPaymentService.getNextFuelPaymentPeriod(boatId);
         return ResponseEntity.status(HttpStatus.OK).body(new FuelPaymentPeriodDTO(data.startDate(), data.endDate()));

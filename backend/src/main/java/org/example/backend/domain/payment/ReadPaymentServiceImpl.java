@@ -55,7 +55,7 @@ public class ReadPaymentServiceImpl implements ReadPaymentService {
     }
 
     @Override
-    public PagedResult<List<PaymentUserDTO>> getAllPayments(int page) {
+    public PagedResult<List<PaymentUserDTO>> getAllPayments(UserDTO userDTO, int page) {
         PagedResult<List<PaymentWithUsername>> payments = readPaymentRepository.getAllPayments(page, PAGE_SIZE);
 
         return new PagedResult<>(
@@ -72,7 +72,11 @@ public class ReadPaymentServiceImpl implements ReadPaymentService {
                                     payment.creditor(),
                                     debts
                             );
-                        }).toList(),
+                        })
+                        .filter(paymentUserDTO -> {
+                            return paymentUserDTO.isFuelPayment() || !userDTO.username().equals("Harry");
+                        })
+                        .toList(),
                 payments.hasNext(),
                 payments.totalNumber()
         );
