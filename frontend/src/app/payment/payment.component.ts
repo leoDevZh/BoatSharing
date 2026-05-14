@@ -46,7 +46,6 @@ export class PaymentComponent implements OnInit {
   }
 
   private loadData() {
-    console.log(this.user)
     if (this.user?.username !== 'Harry') {
       this.isLoading = true
       forkJoin({
