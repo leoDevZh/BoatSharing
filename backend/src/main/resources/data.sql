@@ -1,7 +1,7 @@
 INSERT INTO users(username, password)
 VALUES ('testUser', '$2a$12$GbqlJ0fs.00G5MLiCA9AZuA0QF000rXCrkQ0sP5EkGbwsOb.KmlEm'),
        ('testUser2', '$2a$12$GbqlJ0fs.00G5MLiCA9AZuA0QF000rXCrkQ0sP5EkGbwsOb.KmlEm'),
-       ('testUser3', '$2a$12$GbqlJ0fs.00G5MLiCA9AZuA0QF000rXCrkQ0sP5EkGbwsOb.KmlEm');/*password123*/
+       ('Harry', '$2a$12$GbqlJ0fs.00G5MLiCA9AZuA0QF000rXCrkQ0sP5EkGbwsOb.KmlEm');/*password123*/
 
 
 INSERT INTO boats(name)

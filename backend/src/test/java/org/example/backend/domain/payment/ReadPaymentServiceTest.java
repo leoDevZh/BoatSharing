@@ -110,7 +110,7 @@ public class ReadPaymentServiceTest {
             when(readPaymentRepository.getAllPayments(page, 30)).thenReturn(new PagedResult<>(List.of(payment), true, 1));
             when(readDebtRepository.getDebtsByPaymentId(payment.paymentId())).thenReturn(List.of(debtUserDTO));
 
-            PagedResult<List<PaymentUserDTO>> actual = readPaymentService.getAllPayments(page);
+            PagedResult<List<PaymentUserDTO>> actual = readPaymentService.getAllPayments(user, page);
 
             assertTrue(actual.hasNext());
             assertEquals(1, actual.result().size());

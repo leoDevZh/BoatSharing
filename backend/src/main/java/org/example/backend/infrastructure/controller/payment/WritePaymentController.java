@@ -15,6 +15,7 @@ import org.example.backend.domain.payment.model.PaymentId;
 import org.example.backend.infrastructure.controller.excpetion.ExceptionDTO;
 import org.example.backend.infrastructure.controller.payment.model.CreatePaymentDTO;
 import org.example.backend.infrastructure.controller.payment.model.CreatePaymentMapper;
+import org.example.backend.infrastructure.controller.util.DenyHarry;
 import org.example.backend.infrastructure.security.user.CustomUserDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,6 +49,7 @@ public class WritePaymentController {
             @ApiResponse(responseCode = "400", description = "Invalid debt",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
     })
+    @DenyHarry
     public ResponseEntity<ExceptionDTO> setDebtToPayed(@PathVariable(value = "debtId") DebtId debtId) {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         writePaymentService.setDebtToPayed(new UserId(userDetail.getId()), debtId);
@@ -60,6 +62,7 @@ public class WritePaymentController {
             @ApiResponse(responseCode = "400", description = "Invalid debt",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
     })
+    @DenyHarry
     public ResponseEntity<ExceptionDTO> setDebtToClosed(@PathVariable(value = "debtId") DebtId debtId) {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         writePaymentService.setDebtToClosed(new UserId(userDetail.getId()), debtId);
@@ -72,6 +75,7 @@ public class WritePaymentController {
             @ApiResponse(responseCode = "400", description = "Invalid payment",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
     })
+    @DenyHarry
     public ResponseEntity<ExceptionDTO> deletePayment(@PathVariable(value = "paymentId") PaymentId paymentId) {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         writePaymentService.deletePayment(new UserId(userDetail.getId()), paymentId);
@@ -84,6 +88,7 @@ public class WritePaymentController {
             @ApiResponse(responseCode = "400", description = "Error on creating invoice",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class)))
     })
+    @DenyHarry
     public ResponseEntity<FuelInvoiceDTO> createInvoice(@RequestParam BoatId boatId) {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         org.example.backend.domain.payment.model.FuelInvoiceDTO data = writePaymentService.createInvoice(boatId, new UserId(userDetail.getId()));
