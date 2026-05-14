@@ -94,6 +94,13 @@ export class PaymentListComponent implements OnInit {
     this.loadData()
   }
 
+  isNewYear(index: number): boolean {
+    if (index === 0) return false;
+    const current = DateTime.fromISO(this.paymentUserDTOs?.result?.[index].payedAt!).year;
+    const previous = DateTime.fromISO(this.paymentUserDTOs?.result?.[index - 1].payedAt!).year;
+    return current !== previous;
+  }
+
   deletePayment(paymentId: PaymentId): void {
     this.writePaymentService.deletePayment(paymentId.value?.toString()!)
       .pipe(catchError((err: ErrorInfo) => {

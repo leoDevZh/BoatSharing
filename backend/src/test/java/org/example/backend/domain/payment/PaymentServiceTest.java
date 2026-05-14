@@ -3,11 +3,17 @@ package org.example.backend.domain.payment;
 import org.example.backend.domain.User.model.UserDTO;
 import org.example.backend.domain.User.model.UserId;
 import org.example.backend.domain.User.spi.UserRepository;
+import org.example.backend.domain.boat.BoatId;
+import org.example.backend.domain.payment.api.ReadPaymentService;
 import org.example.backend.domain.payment.model.*;
 import org.example.backend.domain.payment.spi.DebtRepository;
 import org.example.backend.domain.payment.spi.PaymentRepository;
 import org.example.backend.domain.payment.spi.ReadDebtRepository;
 import org.example.backend.domain.payment.spi.ReadPaymentRepository;
+import org.example.backend.domain.payment.spi.WriteInvoiceRepository;
+import org.example.backend.domain.reservation.api.ReadReservationService;
+import org.example.backend.domain.reservation.model.ReservationId;
+import org.example.backend.domain.reservation.model.ReservationUserDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -29,6 +35,8 @@ import java.util.stream.Stream;
 import static org.example.backend.domain.payment.model.DebtStatus.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
+import static org.testcontainers.shaded.org.hamcrest.Matchers.containsInAnyOrder;
 
 public class PaymentServiceTest {
 
@@ -46,6 +54,15 @@ public class PaymentServiceTest {
 
     @Mock
     ReadPaymentRepository readPaymentRepository;
+
+    @Mock
+    private ReadPaymentService readPaymentService;
+
+    @Mock
+    private ReadReservationService readReservationService;
+
+    @Mock
+    private WriteInvoiceRepository writeInvoiceRepository;
 
     @InjectMocks
     private WritePaymentServiceImpl writePaymentService;
@@ -295,6 +312,105 @@ public class PaymentServiceTest {
             verify(readDebtRepository, times(1)).getDebtById(debtId);
             verify(debtRepository, never()).saveDebts(any());
             assertEquals("Debt is in wrong status", exception.getMessage());
+        }
+    }
+
+    @Nested
+    class CreateInvoiceTests {
+
+        private final BoatId boatId = new BoatId(1L);
+        private final UserId userId1 = new UserId(1L);
+        private final UserId userId2 = new UserId(2L);
+        private final UserDTO user1 = new UserDTO(userId1, "alice");
+        private final UserDTO user2 = new UserDTO(userId2, "bob");
+        private final LocalDateTime periodStart = LocalDateTime.of(2024, 1, 1, 0, 0);
+        private final LocalDateTime periodEnd = LocalDateTime.of(2024, 1, 31, 23, 59);
+        private final FuelPaymentPeriodDTO period = new FuelPaymentPeriodDTO(periodStart, periodEnd);
+
+        @Test
+        void shouldCreateInvoiceSuccessfully() {
+            // alice: 4 hours, bob: 2 hours → total 6h
+            // alice paid 60 CHF, bob paid 0 → total 60
+            // alice should pay 4/6*60=40, paid 60 → creditor of 20
+            // bob should pay 2/6*60=20, paid 0  → debitor of 20
+            ReservationUserDTO res1 = new ReservationUserDTO(new ReservationId(1L), periodStart, periodEnd, 0., 4., boatId, user1);
+            ReservationUserDTO res2 = new ReservationUserDTO(new ReservationId(2L), periodStart, periodEnd, 0., 2., boatId, user2);
+            PaymentWithUsername alicePayment = new PaymentWithUsername(new PaymentId(10L), periodStart, 60., "Benzin", true, PaymentStatus.OPEN, user1);
+            PaymentId chargedPaymentId = new PaymentId(99L);
+
+            when(readPaymentService.getNextFuelPaymentPeriod(boatId)).thenReturn(period);
+            when(userRepository.getUsersByBoatId(boatId)).thenReturn(List.of(user1, user2));
+            when(readReservationService.getReservationForPeriod(periodStart, periodEnd, boatId, userId1)).thenReturn(List.of(res1, res2));
+            when(readPaymentRepository.getFuelPaymentsForPeriod(periodStart, periodEnd)).thenReturn(List.of(alicePayment));
+            when(paymentRepository.savePayment(any())).thenReturn(chargedPaymentId);
+            when(writeInvoiceRepository.createInvoice(any())).thenReturn(new InvoiceId(1L));
+
+            ArgumentCaptor<CreateInvoice> invoiceCaptor = ArgumentCaptor.forClass(CreateInvoice.class);
+            ArgumentCaptor<Payment> paymentCaptor = ArgumentCaptor.forClass(Payment.class);
+            ArgumentCaptor<List<Debt>> debtsCaptor = ArgumentCaptor.forClass(List.class);
+
+            FuelInvoiceDTO result = writePaymentService.createInvoice(boatId, userId1);
+
+            verify(paymentRepository, times(1)).setPaymentToClosed(new PaymentId(10L));
+
+            verify(paymentRepository, times(1)).savePayment(paymentCaptor.capture());
+            Payment savedPayment = paymentCaptor.getValue();
+            assertEquals(20.0, savedPayment.getAmount());
+            assertEquals(userId1, savedPayment.getUserId());
+            assertEquals(PaymentStatus.CHARGED, savedPayment.getStatus());
+            assertEquals(false, savedPayment.isFuelPayment());
+            assertEquals("Benzin Ausgleichszahlung", savedPayment.getReason());
+
+            verify(debtRepository, times(1)).saveDebts(debtsCaptor.capture());
+            List<Debt> savedDebts = debtsCaptor.getValue();
+            assertEquals(1, savedDebts.size());
+            assertEquals(20.0, savedDebts.get(0).getAmount());
+            assertEquals(userId2, savedDebts.get(0).getUserId());
+            assertEquals(OPEN, savedDebts.get(0).getStatus());
+            assertEquals(chargedPaymentId, savedDebts.get(0).getPaymentId());
+
+            verify(writeInvoiceRepository, times(1)).createInvoice(invoiceCaptor.capture());
+            CreateInvoice captured = invoiceCaptor.getValue();
+            assertEquals(period, captured.period());
+            assertEquals(boatId, captured.boatId());
+            assertEquals(6.0, captured.totalHours());
+            assertEquals(60.0, captured.totalPayed());
+            assertEquals(2, captured.userHours().size());
+            assertThat(captured.userHours(), containsInAnyOrder(new UserTotalHoursDTO(2., user2), new UserTotalHoursDTO(4., user1)));
+            assertEquals(2, captured.userPayed().size());
+            assertThat(captured.userPayed(), containsInAnyOrder(new UserTotalPayedDTO(0., user2), new UserTotalPayedDTO(60., user1)));
+
+            assertEquals(period, result.fuelPaymentPeriodDTO());
+            assertEquals(6.0, result.totalHours());
+            assertEquals(60.0, result.totalPayed());
+            assertEquals(List.of(chargedPaymentId), result.paymentsCharged());
+        }
+
+        @Test
+        void shouldCreateInvoiceWithNoReservationsSuccessfully() {
+            PaymentWithUsername alicePayment = new PaymentWithUsername(new PaymentId(10L), periodStart, 30., "Benzin", true, PaymentStatus.OPEN, user1);
+
+            when(readPaymentService.getNextFuelPaymentPeriod(boatId)).thenReturn(period);
+            when(userRepository.getUsersByBoatId(boatId)).thenReturn(List.of(user1, user2));
+            when(readReservationService.getReservationForPeriod(periodStart, periodEnd, boatId, userId1)).thenReturn(Collections.emptyList());
+            when(readPaymentRepository.getFuelPaymentsForPeriod(periodStart, periodEnd)).thenReturn(List.of(alicePayment));
+            when(writeInvoiceRepository.createInvoice(any())).thenReturn(new InvoiceId(1L));
+
+            FuelInvoiceDTO result = writePaymentService.createInvoice(boatId, userId1);
+
+            verify(writeInvoiceRepository, times(1)).createInvoice(any());
+            assertEquals(0.0, result.totalHours());
+            assertEquals(30.0, result.totalPayed());
+            assertTrue(result.paymentsCharged().isEmpty());
+        }
+
+        @Test
+        void shouldThrowExceptionWhenNoFuelPaymentPeriodExists() {
+            when(readPaymentService.getNextFuelPaymentPeriod(boatId)).thenThrow(new InvalidPaymentException("No payment period available"));
+
+            assertThrows(InvalidPaymentException.class, () -> writePaymentService.createInvoice(boatId, userId1));
+
+            verify(writeInvoiceRepository, never()).createInvoice(any());
         }
     }
 

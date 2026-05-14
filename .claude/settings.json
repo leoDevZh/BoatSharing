@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(**/.env)",
+      "Write(**/.env)",
+      "Read(**/.ssh/**)",
+      "Write(**/migration/**)",
+      "Bash(git push --force*)"
+    ]
+  }
+}

@@ -5,6 +5,8 @@ DROP TABLE IF EXISTS reservations CASCADE;
 DROP TABLE IF EXISTS payments CASCADE;
 DROP TYPE IF EXISTS PAYMENT_STATUS CASCADE;
 DROP TABLE IF EXISTS debts CASCADE;
+DROP TABLE IF EXISTS invoice_user_hours CASCADE;
+DROP TABLE IF EXISTS invoice_user_payed CASCADE;
 DROP TABLE IF EXISTS invoices CASCADE;
 
 CREATE TABLE IF NOT EXISTS users
@@ -67,9 +69,31 @@ CREATE TABLE IF NOT EXISTS debts
 
 CREATE TABLE IF NOT EXISTS invoices
 (
-    id         SERIAL PRIMARY KEY,
-    start_date TIMESTAMP NOT NULL,
-    end_date   TIMESTAMP NOT NULL,
-    boat_id    INTEGER   NOT NULL,
-    CONSTRAINT fk_boat_id FOREIGN KEY (boat_id) REFERENCES boats (id)
+    id          SERIAL PRIMARY KEY,
+    start_date  TIMESTAMP NOT NULL,
+    end_date    TIMESTAMP NOT NULL,
+    boat_id     INTEGER   NOT NULL,
+    total_hours DECIMAL   NOT NULL,
+    total_payed DECIMAL   NOT NULL,
+    CONSTRAINT fk_invoice_boat FOREIGN KEY (boat_id) REFERENCES boats (id)
+);
+
+CREATE TABLE IF NOT EXISTS invoice_user_hours
+(
+    id          SERIAL PRIMARY KEY,
+    invoice_id  INTEGER NOT NULL,
+    user_id     INTEGER NOT NULL,
+    total_hours DECIMAL NOT NULL,
+    CONSTRAINT fk_invoice_user_hours_invoice FOREIGN KEY (invoice_id) REFERENCES invoices (id) ON DELETE CASCADE,
+    CONSTRAINT fk_invoice_user_hours_user FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
+CREATE TABLE IF NOT EXISTS invoice_user_payed
+(
+    id          SERIAL PRIMARY KEY,
+    invoice_id  INTEGER NOT NULL,
+    user_id     INTEGER NOT NULL,
+    total_payed DECIMAL NOT NULL,
+    CONSTRAINT fk_invoice_user_payed_invoice FOREIGN KEY (invoice_id) REFERENCES invoices (id) ON DELETE CASCADE,
+    CONSTRAINT fk_invoice_user_payed_user FOREIGN KEY (user_id) REFERENCES users (id)
 );

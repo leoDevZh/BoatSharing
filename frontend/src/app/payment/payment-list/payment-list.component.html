@@ -1,6 +1,9 @@
 <bs-payment-form class="form" (createPayment)="reloadPayments()"/>
 @if (paymentUserDTOs !== null) {
   @for (paymentUserDTO of paymentUserDTOs.result; track paymentUserDTO.paymentId; let i = $index) {
+    @if (isNewYear(i)) {
+      <div class="year-separator">{{ DateTime.fromISO(paymentUserDTO.payedAt!).year }}</div>
+    }
     <div class="payment-container" (click)="openIdx(i)">
       <div class="date-container">
         <span>{{ DateTime.fromISO(paymentUserDTO.payedAt!).day }}
