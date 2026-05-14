@@ -159,7 +159,8 @@ public class WritePaymentServiceImpl implements WritePaymentService {
                     return new UserTotalPayedDTO(hours, userDTO);
                 })
                 .toList();
-        this.writeInvoiceRepository.createInvoice(nextFuelPaymentPeriod.startDate(), nextFuelPaymentPeriod.endDate(), boatId);
+        CreateInvoice createInvoice = new CreateInvoice(nextFuelPaymentPeriod, boatId, totalHours, totalPayed, userTotalHoursDTOs, userTotalPayedDTOs);
+        this.writeInvoiceRepository.createInvoice(createInvoice);
         return new FuelInvoiceDTO(nextFuelPaymentPeriod, totalHours, totalPayed, userTotalHoursDTOs, userTotalPayedDTOs, paymentsCharged);
     }
 

@@ -25,4 +25,10 @@ public class Invoice {
 
     @Column(name = "boat_id", nullable = false)
     private Long boatId;
+
+    @Column(name = "total_hours", nullable = false)
+    private Double totalHours;
+
+    @Column(name = "total_payed", nullable = false)
+    private Double totalPayed;
 }

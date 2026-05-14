@@ -1,9 +1,8 @@
 package org.example.backend.domain.payment.spi;
 
-import org.example.backend.domain.boat.BoatId;
-
-import java.time.LocalDateTime;
+import org.example.backend.domain.payment.model.CreateInvoice;
+import org.example.backend.domain.payment.model.InvoiceId;
 
 public interface WriteInvoiceRepository {
-    void createInvoice(LocalDateTime start, LocalDateTime end, BoatId boatId);
+    InvoiceId createInvoice(CreateInvoice createInvoice);
 }
